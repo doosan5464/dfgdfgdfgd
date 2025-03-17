@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.korit.mcdonaldkiosk.mapper.MenuMapper">
+
+    <resultMap id="menuResultMap" type="com.korit.mcdonaldkiosk.entity.Menu">
+        <id property="menuId" column="menu_id" />
+        <result property="menuName" column="menu_name" />
+        <result property="menuCategory" column="menu_category" />
+        <result property="menuSequence" column="menu_sequence" />
+        <result property="singleImg" column="single_img" />
+        <result property="setImg" column="set_img" />
+
+        <!-- db에서 계산식 적용 -->
+        <!-- menuPrice 속성을 menuPriceResultMap과 연결 -->
+        <association property="menuPrice" resultMap="menuPriceResultMap"/>
+    </resultMap>
+
+    <resultMap id="menuPriceResultMap" type="com.korit.mcdonaldkiosk.entity.MenuPrice">
+        <id property="menuPriceId" column="menu_price_id" />
+        <result property="menuId" column="menu_id" />
+        <result property="size" column="size" />
+        <result property="menuPrice" column="menu_price" />
+    </resultMap>
+
+    <select id="selectAllMenus" resultMap="menuResultMap">
+        SELECT
+            m.menu_id,
+            m.menu_name,
+            m.menu_category,
+            m.menu_sequence,
+            m.single_img,
+            m.set_img,
+
+            mp.menu_id AS mp_menu_id,
+            mp.size,
+            mp.menu_price
+        FROM
+            menu_tb m
+            LEFT OUTER JOIN menu_price_tb mp ON m.menu_id = mp.menu_id
+    </select>
+
+</mapper>
