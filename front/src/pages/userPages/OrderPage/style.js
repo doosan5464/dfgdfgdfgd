@@ -124,8 +124,45 @@ export const menu = css`
 
 export const pay = css`
     display: flex;
+    /* flex-direction: column; */
     width: 100%;
     height: 20%;
     border-top: 0.2rem solid black;
     background-color: #ffd154;
+    
+    & > img {
+        margin-top: 1rem;
+        margin-left: 1rem;
+        margin-right: 1rem;
+        width: 5rem;
+        height: 5rem;
+    }
+
+    & > div {
+        display: flex;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        background-color: pink;
+        font-size: 1.1rem;
+    }
+    
+    & > span {
+        display: flex;
+        flex-direction: column;
+        background-color: beige;
+        width: 10rem;
+        justify-content: space-between;
+        margin-right: 1rem;
+        
+        & > p {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffd999;
+            border-radius: 1rem;
+        }
+    }
 `;

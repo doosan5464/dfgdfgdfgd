@@ -11,6 +11,7 @@
         <result property="menuSequence" column="menu_sequence" />
         <result property="singleImg" column="single_img" />
         <result property="setImg" column="set_img" />
+        <result property="isExposure" column="is_exposure" />
 
         <!-- db에서 계산식 적용 -->
         <!-- menuPrice 속성을 menuPriceResultMap과 연결 -->
@@ -32,6 +33,7 @@
             m.menu_sequence,
             m.single_img,
             m.set_img,
+            m.is_exposure,
 
             mp.menu_id AS mp_menu_id,
             mp.size,
