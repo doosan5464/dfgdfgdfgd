@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,5 +20,5 @@ public class Menu {
     private String setImg;
     private int isExposure;
 
-    private MenuPrice menuPrice;  // 💡 가격 정보를 포함하도록 추가
+    private List<MenuPrice> menuPrice;  // 💡 가격 정보를 포함하도록 추가
 }

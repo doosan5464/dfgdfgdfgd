@@ -34,13 +34,14 @@ function DessertMenu({ onMenuItemClick }) {
                             img: dessert.singleImg, 
                             img2: dessert.setImg,
                             size: dessert.size,
-                            price: dessert.menuPrice.menuPrice || 0,
+                            price1: dessert.menuPrice[0].menuPrice || 0,
+                            price2: dessert.menuPrice.length > 1 ? dessert.menuPrice[1].menuPrice : 0,
                         })}
                         style={{ cursor: 'pointer' }} // 클릭 가능하도록 스타일 추가
                     >
                         <img src={dessert.singleImg} alt={dessert.menuName} />
                         <p>{dessert.menuName}</p>
-                        <p>{dessert.menuPrice.menuPrice ? `${dessert.menuPrice.menuPrice}원` : "가격 없음"}</p>
+                        <p>{dessert.menuPrice && dessert.menuPrice[0]?.menuPrice ? `${dessert.menuPrice[0].menuPrice}원` : "가격 없음"}</p>
                     </div>
                 ))}
         </div>

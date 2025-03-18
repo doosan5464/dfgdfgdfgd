@@ -15,7 +15,7 @@
 
         <!-- db에서 계산식 적용 -->
         <!-- menuPrice 속성을 menuPriceResultMap과 연결 -->
-        <association property="menuPrice" resultMap="menuPriceResultMap"/>
+        <collection property="menuPrice" resultMap="menuPriceResultMap"/>
     </resultMap>
 
     <resultMap id="menuPriceResultMap" type="com.korit.mcdonaldkiosk.entity.MenuPrice">
@@ -23,6 +23,7 @@
         <result property="menuId" column="menu_id" />
         <result property="size" column="size" />
         <result property="menuPrice" column="menu_price" />
+        <result property="discountPrice" column="discount_price" />
     </resultMap>
 
     <select id="selectAllMenus" resultMap="menuResultMap">
@@ -37,7 +38,8 @@
 
             mp.menu_id AS mp_menu_id,
             mp.size,
-            mp.menu_price
+            mp.menu_price,
+            mp.discount_price
         FROM
             menu_tb m
             LEFT OUTER JOIN menu_price_tb mp ON m.menu_id = mp.menu_id

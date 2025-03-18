@@ -62,8 +62,8 @@ export const modalBuguerSetImage = css`
         border-radius: 10px;
         box-shadow: 0.2rem 0.2rem 0.2rem rgba(0,0,0,0.25); 
 
-        font-size: 15px;
-        font-weight: 500;
+        font-size: 11px;
+        font-weight: 600;
 
         &:hover {
             background-color: #f0f0f0; 

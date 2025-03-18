@@ -45,10 +45,42 @@ function OrderPage(props) {
         setSelectedMenu(null); // 모달 닫기
     }
 
-    // 삭제할 아이템의 index로 .filter()를 사용하여 해당 index가 아닌 요소만 남김, _는 안 씀(요소는 안쓰니까)
+    // 삭제할 아이템의 index로 .filter()를 사용하여 해당 index가 아닌 요소만 남김
     const handleRemoveFromCart = (index) => {
-        setAddedCartState(prevCart => prevCart.filter((_, i) => i !== index));
+        setAddedCartState(prevCart => {
+            const updatedCart = prevCart.filter((_, i) => i !== index);
+            console.log("Updated Cart after Removal:", updatedCart);
+            return updatedCart;
+        });
     };
+
+    // quantity 를 1씩 증가
+    const handleUpFromCart = (index) => {
+        setAddedCartState(prevCart => {
+            const updatedCart = prevCart.map((item, i) =>
+                i === index ? { ...item, quantity: item.quantity + 1 } : item
+            );
+            console.log("Updated Cart after Increment:", updatedCart[0]);
+            return updatedCart;
+        });
+    };
+
+    // quantity 를 1씩 감소 (최소값 1 유지)
+    const handleDownFromCart = (index) => {
+        setAddedCartState(prevCart => {
+            const updatedCart = prevCart.map((item, i) =>
+                i === index && item.quantity > 1
+                    ? { ...item, quantity: item.quantity - 1 }
+                    : item
+            );
+            console.log("Updated Cart after Decrement:", updatedCart[0]);
+            return updatedCart;
+        });
+    };
+
+    // menu_id -> 갯수만 있으면 백엔드에서 계산해서 db에 넣는다
+    // 장바구니 결제전에 이 2가지로 계싼
+
 
 
 
@@ -95,10 +127,13 @@ function OrderPage(props) {
                     {addedCartState.length > 0 ? (
                         <ul>
                             {addedCartState.map((item, index) => (
-                                <li key={index}>{item.detailMenu} - {item.detailPrice}원
+                                <li key={index} css={s.xUpDown}>{item.detailMenu} - {item.detailPrice}원
                                     <button onClick={() => handleRemoveFromCart(index)}>❌</button>
-                                </li> // 아이템 이름과 가격 표시
-                                
+                                    <div>
+                                        <button onClick={() => handleUpFromCart(index)}>up</button>
+                                        <button onClick={() => handleDownFromCart(index)}>down</button>
+                                    </div>
+                                </li> // 아이템 이름과 가격 표시                           
                             ))}
                         </ul>
                     ) : (

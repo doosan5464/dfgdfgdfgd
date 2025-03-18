@@ -136,6 +136,7 @@ export const pay = css`
         margin-right: 1rem;
         width: 5rem;
         height: 5rem;
+        background-color: #ffd999;
     }
 
     & > div {
@@ -154,6 +155,7 @@ export const pay = css`
         width: 10rem;
         justify-content: space-between;
         margin-right: 1rem;
+        background-color: blueviolet;
         
         & > p {
             display: flex;
@@ -161,8 +163,36 @@ export const pay = css`
             height: 100%;
             justify-content: center;
             align-items: center;
-            background-color: #ffd999;
+            background-color: #fdfdfd;
             border-radius: 1rem;
+        }
+    }
+`;
+
+export const xUpDown = css`
+    display: flex;
+    justify-content: flex-end;
+    background-color: aqua;
+    width: 20rem;
+    
+
+    & > button {
+        display: flex;
+        justify-content: flex-end;
+    }
+    & > div {
+        display: flex;
+        flex-direction: column;
+        /* justify-content: flex-end; */
+        /* align-items: flex-end; */
+
+        & > button {
+            display: flex;
+            font-size: 0.8rem;
+            justify-content: center;
+            align-items: center;
+            width: 3rem;
+            height: 1rem;
         }
     }
 `;

@@ -34,13 +34,14 @@ function DrinkMenu({ onMenuItemClick }) {
                             img: drink.singleImg, 
                             img2: drink.setImg,
                             size: drink.size,
-                            price: drink.menuPrice.menuPrice || 0,
+                            price1: drink.menuPrice[0].menuPrice || 0,
+                            price2: drink.menuPrice.length > 1 ? drink.menuPrice[1].menuPrice : 0,
                         })}
                         style={{ cursor: 'pointer' }} // 클릭 가능하도록 스타일 추가
                     >
                         <img src={drink.singleImg} alt={drink.menuName} />
                         <p>{drink.menuName}</p>
-                        <p>{drink.menuPrice.menuPrice ? `${drink.menuPrice.menuPrice}원` : "가격 없음"}</p>
+                        <p>{drink.menuPrice && drink.menuPrice[0]?.menuPrice ? `${drink.menuPrice[0].menuPrice}원` : "가격 없음"}</p>
                     </div>
                 ))}
         </div>

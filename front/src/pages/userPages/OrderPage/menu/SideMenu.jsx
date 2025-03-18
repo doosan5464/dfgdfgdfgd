@@ -34,13 +34,14 @@ function SideMenu({ onMenuItemClick }) {
                             img: side.singleImg, 
                             img2: side.setImg,
                             size: side.size,
-                            price: side.menuPrice.menuPrice || 0
+                            price1: side.menuPrice[0].menuPrice || 0,
+                            price2: side.menuPrice.length > 1 ? side.menuPrice[1].menuPrice : 0,
                         })}
                         style={{ cursor: 'pointer' }} // 클릭 가능하도록 스타일 추가
                     >
                         <img src={side.singleImg} alt={side.menuName} />
                         <p>{side.menuName}</p>
-                        <p>{side.menuPrice.menuPrice ? `${side.menuPrice.menuPrice}원` : "가격 없음"}</p>
+                        <p>{side.menuPrice && side.menuPrice[0]?.menuPrice ? `${side.menuPrice[0].menuPrice}원` : "가격 없음"}</p>
                     </div>
                 ))}
         </div>
