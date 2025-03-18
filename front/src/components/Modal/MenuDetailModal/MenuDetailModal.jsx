@@ -5,10 +5,6 @@ import * as s from './style';
 import React, { useState, useEffect } from 'react';
 import useMenuData from '../../../hooks/menu/getMenuHooks';
 
-// 현재 버거까지는 구현
-// 버거없이 그냥 사이드만 고르면 음료만 추가 선택
-// 맥모닝, 맥런치도 아직 안 만듦
-// 커피, 음료도 스탭 하나 새로 만들어서 세트칸 대신에 미디엄-라지 이렇게 만들어야 함
 
 const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage에서 전달받은 선택한 메뉴 상태
     const [step, setStep] = useState(1);

@@ -12,20 +12,20 @@ function BurgerMenu({ onMenuItemClick }) {
     }, [menuData]);
 
 
-    useEffect(() => {
-        if (menuData) {
-            console.log("111Fetched Menu Data:", menuData);
-            console.log("222Fetched Menu Data (pretty print):", JSON.stringify(menuData, null, 2));
+    // useEffect(() => {
+    //     if (menuData) {
+    //         console.log("111Fetched Menu Data:", menuData);
+    //         console.log("222Fetched Menu Data (pretty print):", JSON.stringify(menuData, null, 2));
     
-            if (Array.isArray(menuData)) {
-                menuData.forEach((item, index) => {
-                    console.log(`333Item ${index + 1}:`, JSON.stringify(item, null, 2));
-                });
-            } else {
-                console.log("menuData is not an array:", menuData);
-            }
-        }
-    }, [menuData]);
+    //         if (Array.isArray(menuData)) {
+    //             menuData.forEach((item, index) => {
+    //                 console.log(`333Item ${index + 1}:`, JSON.stringify(item, null, 2));
+    //             });
+    //         } else {
+    //             console.log("menuData is not an array:", menuData);
+    //         }
+    //     }
+    // }, [menuData]);
     
 
 

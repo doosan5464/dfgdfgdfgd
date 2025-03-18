@@ -124,38 +124,32 @@ export const menu = css`
 
 export const pay = css`
     display: flex;
-    /* flex-direction: column; */
     width: 100%;
     height: 20%;
     border-top: 0.2rem solid black;
-    background-color: #ffd154;
+    background-color:rgb(248, 210, 106);
     
-    & > img {
-        margin-top: 1rem;
-        margin-left: 1rem;
-        margin-right: 1rem;
-        width: 5rem;
-        height: 5rem;
-        background-color: #ffd999;
-    }
 
     & > div {
         display: flex;
         margin: 0;
         padding: 0;
         width: 100%;
-        background-color: pink;
         font-size: 1.1rem;
+        overflow-y: auto;
+
+    
+        &::-webkit-scrollbar {
+            display: none;
+        }
     }
     
     & > span {
         display: flex;
         flex-direction: column;
-        background-color: beige;
         width: 10rem;
         justify-content: space-between;
         margin-right: 1rem;
-        background-color: blueviolet;
         
         & > p {
             display: flex;
@@ -163,36 +157,43 @@ export const pay = css`
             height: 100%;
             justify-content: center;
             align-items: center;
-            background-color: #fdfdfd;
+            background-color: rgb(219, 68, 85);
             border-radius: 1rem;
+            color: white;
         }
     }
 `;
 
 export const xUpDown = css`
     display: flex;
-    justify-content: flex-end;
-    background-color: aqua;
-    width: 20rem;
-    
+    justify-content: space-between; /* 좌우 정렬 */
+    align-items: center;
+    width: 25rem;
+    padding: 0.2rem;
+    font-size: 1rem;
+    font-weight: 550;
 
-    & > button {
-        display: flex;
-        justify-content: flex-end;
-    }
     & > div {
         display: flex;
-        flex-direction: column;
-        /* justify-content: flex-end; */
-        /* align-items: flex-end; */
-
-        & > button {
-            display: flex;
-            font-size: 0.8rem;
-            justify-content: center;
-            align-items: center;
-            width: 3rem;
-            height: 1rem;
-        }
+        align-items: center;
+        gap: 0.1rem;
     }
+
+    & > div > div {
+        display: flex;
+        flex-direction: column;
+        gap: 0.1rem;
+    }
+
+    & button {
+        width: 2.8rem;
+        font-size: 0.8rem;
+        justify-content: center;
+        align-items: center;
+    }
+`;
+
+export const modify = css`
+    /* width: 1rem; */
+    height: 3rem;
 `;

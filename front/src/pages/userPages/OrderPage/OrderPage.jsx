@@ -122,18 +122,31 @@ function OrderPage(props) {
             </main>
 
             <footer css={s.pay}>
-                <img src="https://cdn-icons-png.flaticon.com/512/8467/8467963.png" alt="" />
                 <div>
                     {addedCartState.length > 0 ? (
                         <ul>
                             {addedCartState.map((item, index) => (
-                                <li key={index} css={s.xUpDown}>{item.detailMenu} - {item.detailPrice}원
-                                    <button onClick={() => handleRemoveFromCart(index)}>❌</button>
+                                <div css={s.xUpDown} key={index}>
                                     <div>
-                                        <button onClick={() => handleUpFromCart(index)}>up</button>
-                                        <button onClick={() => handleDownFromCart(index)}>down</button>
+                                        <li>
+                                            {item.detailMenu} 
+                                            <span style={{ marginLeft: "auto" }}>
+                                                {item.isSet && " 세트"}
+                                            </span>
+                                            - {item.detailPrice}원
+                                        </li>   
                                     </div>
-                                </li> // 아이템 이름과 가격 표시                           
+                                    <div>
+                                        <span>
+                                            {/* <button onClick={() => handleRemoveFromCart(index)} css={s.modify}>수정</button> */}
+                                            <button onClick={() => handleRemoveFromCart(index)}>❌</button>
+                                        </span>
+                                        <div>
+                                            <button onClick={() => handleUpFromCart(index)}>▲</button>
+                                            <button onClick={() => handleDownFromCart(index)}>▼</button>
+                                        </div>
+                                    </div>
+                                </div>
                             ))}
                         </ul>
                     ) : (
