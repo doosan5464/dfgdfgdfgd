@@ -5,6 +5,8 @@ import OrderPage from '../../pages/userPages/OrderPage/OrderPage';
 import NotFoundPage from '../../pages/NotFoundPage/NotFoundPage';
 import { selectedLanguageState } from '../../atoms/selectedLanguage/selectedLanguage';
 import { useRecoilValue } from "recoil";
+import Payment from '../../pages/userPages/Payment/Payment';
+import PrePayment from '../../pages/userPages/PrePayment/PrePayment';
 
 
 function UserRoute(props) {
@@ -13,6 +15,8 @@ function UserRoute(props) {
 
     return (
         <Routes>
+          <Route path="/PrePayment/*" element={<PrePayment />} />
+          <Route path="/payment/*" element={<Payment />} />
           <Route path="/menu/*" element={<SelectMenu />} />
           <Route path="/order/*" element={<OrderPage />} />
           <Route path="/*" element={<NotFoundPage />} />

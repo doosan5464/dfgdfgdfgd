@@ -186,14 +186,10 @@ export const xUpDown = css`
     }
 
     & button {
-        width: 2.8rem;
         font-size: 0.8rem;
+        font-weight: 550;
         justify-content: center;
         align-items: center;
+        margin-right: 1px;
     }
-`;
-
-export const modify = css`
-    /* width: 1rem; */
-    height: 3rem;
 `;

@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 import useMenuData from '../../../hooks/menu/getMenuHooks';
 
 
-const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage에서 전달받은 선택한 메뉴 상태
+const MenuModifyModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage에서 전달받은 선택한 메뉴 상태
     const [step, setStep] = useState(1);
     const [isSet, setIsSet] = useState(null);
     const [side, setSide] = useState(null);
@@ -307,4 +307,4 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
     );
 };
 
-export default MenuDetailModal;
+export default MenuModifyModal;

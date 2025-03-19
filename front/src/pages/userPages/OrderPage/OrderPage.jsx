@@ -10,10 +10,12 @@ import React, { useState, useEffect } from 'react';
 import CoffeeMenu from './menu/CoffeeMenu';
 import CallManagerModal from '../../../components/Modal/CallManagerModal/CallManagerModal';
 import MenuDetailModal from '../../../components/Modal/MenuDetailModal/MenuDetailModal';
+import MenuModifySideAndDrinkModal from '../../../components/Modal/MenuModifySideAndDrinkModal/MenuModifySideAndDrinkModal';
 import DessertMenu from './menu/DessertMenu';
 import { addedCart } from '../../../atoms/addedCart/addedCart';
 import { useRecoilState } from 'recoil';
 
+// 보류@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 function OrderPage(props) {
     const navi = useNavigate();
@@ -23,6 +25,9 @@ function OrderPage(props) {
 
     // 장바구니
     const [addedCartState, setAddedCartState] = useRecoilState(addedCart);
+
+    // 세트메뉴의 사이드와 음료 수정 모달
+    const [editingItem, setEditingItem] = useState(null);
 
     const handleMenuCategoryOnClick = (category) => {
         if (selectedCategory !== category) {
@@ -54,6 +59,17 @@ function OrderPage(props) {
         });
     };
 
+    const handleModifyFromCart = (index) => {
+        setEditingItem({ ...addedCartState[index], index });
+    };
+
+    const handleSaveModifiedItem = (updatedItem) => {
+        setAddedCartState(prevCart => 
+            prevCart.map((item, i) => (i === updatedItem.index ? updatedItem : item))
+        );
+        setEditingItem(null);
+    };
+
     // quantity 를 1씩 증가
     const handleUpFromCart = (index) => {
         setAddedCartState(prevCart => {
@@ -80,10 +96,7 @@ function OrderPage(props) {
 
     // menu_id -> 갯수만 있으면 백엔드에서 계산해서 db에 넣는다
     // 장바구니 결제전에 이 2가지로 계싼
-
-
-
-
+    
 
     return (
         <div css={s.container}>
@@ -138,8 +151,11 @@ function OrderPage(props) {
                                     </div>
                                     <div>
                                         <span>
-                                            {/* <button onClick={() => handleRemoveFromCart(index)} css={s.modify}>수정</button> */}
-                                            <button onClick={() => handleRemoveFromCart(index)}>❌</button>
+                                        {/* 수정 버튼은 isSet이 true이거나 실제 메뉴 이름이 일치하는 경우에만 보임 */}
+                                        {(item.isSet) && (
+                                            <button onClick={() => handleModifyFromCart(index)}>수정</button>
+                                        )}
+                                            <button onClick={() => handleRemoveFromCart(index)}>삭제</button>
                                         </span>
                                         <div>
                                             <button onClick={() => handleUpFromCart(index)}>▲</button>
@@ -155,12 +171,13 @@ function OrderPage(props) {
                 </div>
                 <span>
                     <p>주문하기</p>
-                    <p>쿠폰</p>
+                    <p>마일리지 조회</p>
                 </span>
             </footer>
 
             {/* 선택된 메뉴가 있을 경우 모달을 띄운다 */}
             {selectedMenu && <MenuDetailModal menu={selectedMenu} onClose={handleCloseMenuDetailModal} />}
+            {editingItem && <MenuModifySideAndDrinkModal menu={editingItem} onClose={() => setEditingItem(null)} onSave={handleSaveModifiedItem} />}
         </div>
     );
 }
