@@ -8,4 +8,3 @@ export const addedCart = atom({
     default: [],
     effects_UNSTABLE: [persistAtom], // 상태를 유지하도록 설정
 });
-    

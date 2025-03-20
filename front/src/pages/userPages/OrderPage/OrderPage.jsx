@@ -10,7 +10,7 @@ import React, { useState, useEffect } from 'react';
 import CoffeeMenu from './menu/CoffeeMenu';
 import CallManagerModal from '../../../components/Modal/CallManagerModal/CallManagerModal';
 import MenuDetailModal from '../../../components/Modal/MenuDetailModal/MenuDetailModal';
-import MenuModifySideAndDrinkModal from '../../../components/Modal/MenuModifySideAndDrinkModal/MenuModifySideAndDrinkModal';
+import MenuModifyModal from '../../../components/Modal/MenuModifyModal/MenuModifyModal';
 import DessertMenu from './menu/DessertMenu';
 import { addedCart } from '../../../atoms/addedCart/addedCart';
 import { useRecoilState } from 'recoil';
@@ -37,6 +37,9 @@ function OrderPage(props) {
     
     const handleBackMenuOnClick = () => {
         navi("/menu");
+    }
+    const handlePaymentOnClick = () => {
+        navi("/prePayment")
     }
 
     // 선택된 메뉴 정보를 저장할 상태
@@ -151,7 +154,7 @@ function OrderPage(props) {
                                     </div>
                                     <div>
                                         <span>
-                                        {/* 수정 버튼은 isSet이 true이거나 실제 메뉴 이름이 일치하는 경우에만 보임 */}
+                                        {/* 수정 버튼은 isSet이 true일 때만*/}
                                         {(item.isSet) && (
                                             <button onClick={() => handleModifyFromCart(index)}>수정</button>
                                         )}
@@ -170,14 +173,14 @@ function OrderPage(props) {
                     )}
                 </div>
                 <span>
-                    <p>주문하기</p>
+                    <p onClick={handlePaymentOnClick}>주문하기</p>
                     <p>마일리지 조회</p>
                 </span>
             </footer>
 
             {/* 선택된 메뉴가 있을 경우 모달을 띄운다 */}
             {selectedMenu && <MenuDetailModal menu={selectedMenu} onClose={handleCloseMenuDetailModal} />}
-            {editingItem && <MenuModifySideAndDrinkModal menu={editingItem} onClose={() => setEditingItem(null)} onSave={handleSaveModifiedItem} />}
+            {editingItem && <MenuModifyModal menu={editingItem} onClose={() => setEditingItem(null)} onSave={handleSaveModifiedItem} />}
         </div>
     );
 }

@@ -3,8 +3,11 @@ import React from 'react';
 import * as s from './style';
 import { useRecoilState } from 'recoil';
 import { addedCart } from '../../../atoms/addedCart/addedCart';
+import { useNavigate } from 'react-router-dom';
 
 function PrePayment(props) {
+    const navi = useNavigate();
+
     // 장바구니
     const [addedCartState, setAddedCartState] = useRecoilState(addedCart);
     
@@ -38,6 +41,17 @@ function PrePayment(props) {
         });
     };
 
+    // 장바구니 총합 계산
+    const totalPrice = addedCartState.reduce((total, item) => {
+        return total + (item.detailPrice * item.quantity);
+    }, 0);
+
+    const handleCompletePayment = () => {
+        navi("/payment");
+    }
+    const handleReturn = () => {
+        navi("/order");
+    }
 
 
     return (
@@ -55,7 +69,7 @@ function PrePayment(props) {
                                 <span style={{ marginLeft: "auto" }}>
                                     {item.isSet && " 세트"}
                                 </span>
-                                - {item.detailPrice}원
+                                 - {item.detailPrice}원
                             </li>   
                         </div>
                         <div>
@@ -71,7 +85,17 @@ function PrePayment(props) {
                 ))}
             </main>
             <footer css={s.footer}>
-
+                <div>
+                    <p>총합: {totalPrice}원</p> {/* 총합을 여기 표시 */}
+                </div>
+                <div>
+                    <div onClick={handleCompletePayment}>
+                        결제방법
+                    </div>
+                    <div onClick={handleReturn}>
+                        돌아가기
+                    </div>
+                </div>
             </footer>
         </div>
     );

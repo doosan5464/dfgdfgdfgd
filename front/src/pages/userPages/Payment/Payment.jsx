@@ -6,6 +6,10 @@ import * as s from './style';
 function Payment(props) {
     const navi = useNavigate();
 
+    const handleEasyPay = () => {
+        navi("/kakaopay");
+    }
+
     return (
         <div css={s.container}>
             <header>
@@ -22,7 +26,7 @@ function Payment(props) {
                     </div>
                     <div>
                         <img src="https://img.khan.co.kr/news/2023/11/23/news-p.v1.20231123.9a9908bef5904a3cab46a5afc2bce234_P1.jpg" alt="" />
-                        <div>
+                        <div onClick={handleEasyPay}>
                             <p>간편결제</p>
                             <p>(SmartPay)</p>
                         </div>
