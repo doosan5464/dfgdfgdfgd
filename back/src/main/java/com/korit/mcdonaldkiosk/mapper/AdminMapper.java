@@ -3,6 +3,7 @@ package com.korit.mcdonaldkiosk.mapper;
 import com.korit.mcdonaldkiosk.entity.Admin;
 import com.korit.mcdonaldkiosk.entity.OAuth2;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface AdminMapper {
@@ -15,5 +16,17 @@ public interface AdminMapper {
 
     int saveOAuth2(OAuth2 oAuth2);
 
+    int updatePasswordById(
+            @Param("adminId") int adminId,
+            @Param("password") String password);
+
+    int updateEmailById(
+            @Param("adminId") int adminId,
+            @Param("email") String email
+    );
+
+    int updateTradeNameById(
+            @Param("adminId") int adminId,
+            @Param("tradeName") String tradeName);
 
 }

@@ -16,6 +16,45 @@ export const fetchMenuData = async () => {
     return sortedData;
 };
 
+
+// 특정 메뉴 가져오기
+export const fetchMenuDetail = async (menuId) => {
+  const response = await api.get(`/user/menu/${menuId}`);
+  return response.data;
+};
+
+// 메뉴 추가
+export const addMenuData = async (formData) => {
+  const token = localStorage.getItem("accessToken"); // JWT 토큰 가져오기
+
+  const data = new FormData();
+  data.append("menuName", formData.menuName);
+  data.append("menuCategory", formData.menuCategory);
+  data.append("menuSequence", formData.menuSequence);
+  data.append("isExposure", formData.isExposure);
+  data.append("prices", JSON.stringify(formData.prices));
+
+  if (formData.singleImg) data.append("singleImg", formData.singleImg);
+  if (formData.setImg) data.append("setImg", formData.setImg);
+
+  // 🚀 JWT 토큰을 헤더에 추가
+  const response = await api.post("/admin/menu", data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}`, // ✅ JWT 토큰 추가
+    },
+  });
+
+  return response.data;
+};
+
+// 메뉴 삭제
+export const deleteMenuData = async (menuId) => {
+  const response = await api.delete(`/admin/menu/${menuId}`);
+  return response.data;
+};
+
+
 /*
 [
 333Item 24: {

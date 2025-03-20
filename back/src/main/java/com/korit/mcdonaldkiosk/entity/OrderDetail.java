@@ -9,12 +9,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MenuPrice {
+public class OrderDetail {
+    private int orderDetailId;
+    private Integer orderId;
     private int menuPriceId;
-    private int menuId;
-    private String size;
+    private int menuCount;
+    private int isSet;
     private int menuPrice;
     private int discountPrice;
-
-    //private Menu menu; //나중에 확인
 }
+
+//세일즈
+/*
+    메뉴 선택 -> 갯수및 옵션이 디테일에 저장 -> 모든 선택된게 오더에 저장 ->
+
+ */

@@ -8,7 +8,7 @@ function AdminProductPage(props) {
     const navigate = useNavigate();
 
     const handleProduckServiceOnClick = () => {
-        navigate("/admin/main/product/product")
+        navigate("/admin/main/product/manage")
     }
 
 
@@ -16,12 +16,10 @@ function AdminProductPage(props) {
         <div css={s.mainContainer}>
             <div css={s.mainLayout}>
                 <div css={s.conBox}>
-                    <div><h2>제품관리</h2></div>
                     <div css={s.mainCon}>
                         <div onClick={handleProduckServiceOnClick}>
                             <MdProductionQuantityLimits/>
                             <h5>상품 관리</h5>
-                            
                         </div>
                         <div>
                             <MdOutlineCategory />

@@ -25,18 +25,7 @@ export const conBox = css`
     position: relative;
     
 
-    & > div:nth-of-type(1) {
-        position: absolute;
-        top: -25rem;
-        left: -10rem;
-        width: 15rem;
-        height: 8rem;
-        border: 0.1rem solid #000;
-        & > h2 {
-            margin-top: 1rem;
-            font-size: 36px;
-        }
-    }
+    
 `;
 
 export const mainCon = css`

@@ -13,10 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 public class User {
     private int userId;
-    private int roleId;
-    private String roleNameKor;
-    private int phoneNumber;
-    private int totalPoint;
+    private String phoneNumber;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 }

@@ -45,4 +45,34 @@
             LEFT OUTER JOIN menu_price_tb mp ON m.menu_id = mp.menu_id
     </select>
 
+    <select id="find1ByMenuPriceId" resultMap="menuPriceResultMap" >
+        select
+        mp.menu_price_id,
+        mp.menu_id AS mp_menu_id,
+        mp.size,
+        mp.menu_price,
+        mp.discount_price
+        from
+        menu_price_tb mp
+        where
+        mp.menu_price_id = #{menuPriceId}
+    </select>
+
+
+    <insert id="addMenuPrice" useGeneratedKeys="true" keyProperty="menuPriceId" >
+        INSERT INTO
+        menu_price_tb (menu_id, size, menu_price, discount_price)
+        VALUES
+        (#{menuId},#{size},#{menuPrice},#{discountPrice},
+        CASE
+        WHEN
+        (SELECT menu_category FROM menu_tb WHERE menu_id = ?) IN ('햄버거', '맥모닝', '디저트')
+        THEN
+        #{menuPrice}  -- 할인 없이 menu_price와 동일
+        ELSE
+        ROUND(? * 0.7, -2)  -- 30% 할인 후 100의 자리에서 반올림한 값
+        END
+        );
+    </insert>
+
 </mapper>

@@ -48,6 +48,23 @@ export const buttons = css`
     }
 `;
 
+export const menuListContainer = css`
+    & li {
+        display: flex;
+        justify-content: space-between;
+
+        
+        & div {
+            text-align: center;
+            min-width: 3rem;
+        }
+    }
+`;
+
+export const pageNum = (isSelect) => css`
+ background-color: ${isSelect ? "#eeeeee" : "#ffffff"} !important;
+`;
+
 export const footer = css`
 
 `;

@@ -4,4 +4,41 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.korit.mcdonaldkiosk.mapper.PointMapper">
 
+    <resultMap id="pointResultMap" type="com.korit.mcdonaldkiosk.entity.Point">
+        <id property="pointId" column="point_id" />
+        <result property="userId" column="user_id" />
+        <result property="calcul" column="calcul" />
+        <result property="point" column="point" />
+    </resultMap>
+
+    <!-- 포인트 적립 -->
+    <insert id="insertPoint">
+        INSERT INTO point_tb (user_id, calcul,point)
+        VALUES (#{userId},#{calcul}, #{point})
+    </insert>
+
+    <!-- 포인트 차감 -->
+    <update id="updatePoint">
+        UPDATE point_tb
+        SET point = point - #{point}
+        WHERE user_id = #{userId}
+        AND point >= #{point} <!-- 포인트가 부족하지 않은지 확인 -->
+    </update>
+
+    <!-- 핸드폰 번호로 포인트 정보 조회 -->
+    <select id="findPointByPhoneNumber" resultMap="pointResultMap">
+        SELECT pt.point_id, pt.user_id, pt.calcul, pt.point
+        FROM
+        point_tb pt
+        LEFT OUTER JOIN user_tb ut
+        ON ut.user_id = pt.user_id
+        WHERE ut.phone_number = #{phoneNumber}
+    </select>
+
+    <!-- 새로운 유저 생성 (user_tb에 저장) -->
+    <insert id="createNewUser">
+        INSERT INTO user_tb (phone_number, create_date, update_date)
+        VALUES (#{phoneNumber}, NOW(), NOW())
+    </insert>
+
 </mapper>

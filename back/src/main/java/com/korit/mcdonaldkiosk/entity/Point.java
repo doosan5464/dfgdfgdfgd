@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class Point {
     private int pointId;
     private int userId;
+    private int calcul;
     private int point;
 }

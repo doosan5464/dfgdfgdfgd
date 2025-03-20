@@ -60,6 +60,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorizeRequests -> {
             authorizeRequests.requestMatchers(
                     "/api/auth/**",
+                    "/api/admin/**", //테스트용 임시 허용
+                    "/api/user/**",
                     "/image/**",
                     "/admin/**",
                     "/swagger-ui/**",

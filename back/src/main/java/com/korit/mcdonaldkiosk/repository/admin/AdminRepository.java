@@ -43,4 +43,15 @@ public class AdminRepository {
         return Optional.of(oAuth2);
     }
 
+    public void updatePassword(int adminID, String adminPassword) {
+        adminMapper.updatePasswordById(adminID, adminPassword);
+    }
+
+    public void updateTradeName(int adminID, String tradeName) {
+        adminMapper.updateTradeNameById(adminID, tradeName);
+    }
+    public void updateEmail(int adminID, String email) {
+        adminMapper.updateEmailById(adminID, email);
+    }
+
 }
