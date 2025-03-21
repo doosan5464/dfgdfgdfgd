@@ -1,31 +1,46 @@
+import { useState } from "react";
+import { useRecoilState } from "recoil";
+import { addedCart } from "../../../atoms/addedCart/addedCart";
+import useMenuData from "../../../hooks/menu/getMenuHooks";
 /**@jsxImportSource @emotion/react */
 import * as s from './style';
-import { useRecoilState } from 'recoil';
-import { addedCart } from '../../../atoms/addedCart/addedCart';
-import React, { useState, useEffect } from 'react';
-import useMenuData from '../../../hooks/menu/getMenuHooks';
+
+// 수정하면 같은 이름의 버거는 다 같이 수정되버림. 어떻게 하지? 인덱스? 고유 ID?
+// 수정하면 같은 이름의 버거는 다 같이 수정되버림. 어떻게 하지? 인덱스? 고유 ID?
+// 수정하면 같은 이름의 버거는 다 같이 수정되버림. 어떻게 하지? 인덱스? 고유 ID?
+// 수정하면 같은 이름의 버거는 다 같이 수정되버림. 어떻게 하지? 인덱스? 고유 ID?
+// 수정하면 같은 이름의 버거는 다 같이 수정되버림. 어떻게 하지? 인덱스? 고유 ID?
+// 수정하면 같은 이름의 버거는 다 같이 수정되버림. 어떻게 하지? 인덱스? 고유 ID?
+// 수정하면 같은 이름의 버거는 다 같이 수정되버림. 어떻게 하지? 인덱스? 고유 ID?
+// 수정하면 같은 이름의 버거는 다 같이 수정되버림. 어떻게 하지? 인덱스? 고유 ID?
 
 const MenuModifyModal = ({ menu, onClose }) => {
     const [step, setStep] = useState(2);
     const [side, setSide] = useState(null);
     const [drink, setDrink] = useState(null);
     const [addedCartState, setAddedCartState] = useRecoilState(addedCart);
-
     const { data: menuData, error, isLoading } = useMenuData();
-    console.log("Fetched menu data:", menuData);
-    
+
+    // 필터링된 사이드와 음료
     const filteredSides = menuData?.filter(item => item.menuCategory === "사이드");
     const filteredDrinks = menuData?.filter(item => item.menuCategory === "음료");
 
+    const filteredBurgers = menuData?.filter(item => item.menuCategory === "버거");
+    console.log("으으이익", filteredBurgers);
+
+    // 기본 사이드와 음료
     const defaultSide = filteredSides?.find(item => item.menuName === "후렌치 후라이")?.menuName;
     const defaultDrink = filteredDrinks?.find(item => item.menuName === "코카 콜라")?.menuName;
+
+    const selectBurger = filteredBurgers?.find(item => item.menuName === menu.detailMenu).menuName;
+    console.log("아아악이익", selectBurger); 
 
     const handleNext = () => {
         if (step === 3) {
             updateCartItemMultiple();
             return;
         }
-        setStep((prev) => prev + 1);
+        setStep(prev => prev + 1);
     };
 
     const handleChangeSideOnClick = (selectedSide) => {
@@ -37,54 +52,69 @@ const MenuModifyModal = ({ menu, onClose }) => {
     };
 
     const handleAddToCart = () => {
-        const basePrice = menu.detailPrice;
-        const sidePrice = side !== defaultSide ? filteredSides?.find(temp1 => temp1.menuName === side)?.menuPrice[0].discountPrice : 0;
-        const drinkPrice = drink !== defaultDrink ? filteredDrinks?.find(temp2 => temp2.menuName === drink)?.menuPrice[0].discountPrice : 0;
+        // 기본 사이드나 음료의 가격을 `discountPrice`로 설정
+        const sidePrice = side !== defaultSide 
+            ? filteredSides?.find(temp1 => temp1.menuName === side)?.menuPrice[0].discountPrice 
+            : filteredSides?.find(temp1 => temp1.menuName === defaultSide)?.menuPrice[0].discountPrice || 0;
+    
+        const drinkPrice = drink !== defaultDrink 
+            ? filteredDrinks?.find(temp2 => temp2.menuName === drink)?.menuPrice[0].discountPrice 
+            : filteredDrinks?.find(temp2 => temp2.menuName === defaultDrink)?.menuPrice[0].discountPrice || 0;
+    
+        // 메뉴의 가격을 menuData에서 동적으로 가져옴
+        const basePrice = filteredBurgers?.find(item => item.menuName === selectBurger)?.menuPrice[0].menuPrice || 0;
 
+        console.log("메뉴우욱 :", menu);
+        console.log("메뉴데이터어억! :", menuData);
+    
+        // 콘솔 로그 추가
+        console.log("sidePrice:", sidePrice);
+        console.log("drinkPrice:", drinkPrice);
+        console.log("basePrice:", basePrice);
+    
         const updatedCart = addedCartState.map(item => {
             if (item.detailMenu === menu.detailMenu) {
+                const updatedPrice = basePrice + sidePrice + drinkPrice;
+                console.log("Updated Price for", menu.detailMenu, ":", updatedPrice);
                 return {
                     ...item,
                     detailSide: side,
                     detailDrink: drink,
-                    detailPrice: basePrice + sidePrice + drinkPrice,
+                    detailPrice: updatedPrice,
                 };
             }
             return item;
         });
-
+    
         setAddedCartState(updatedCart);
         onClose();
     };
-
+    
     const updateCartItemMultiple = () => {
         const updatedCart = addedCartState.map(item => {
             if (item.detailMenu === menu.detailMenu) {
+                const sidePrice = side ? filteredSides.find(s => s.menuName === side)?.menuPrice[0].discountPrice : 0;
+                const drinkPrice = drink ? filteredDrinks.find(d => d.menuName === drink)?.menuPrice[0].discountPrice : 0;
+    
+                const updatedPrice = menu.price1 + sidePrice + drinkPrice;
+                console.log("Updated Price for", menu.detailMenu, ":", updatedPrice);
+    
                 return {
                     ...item,
                     detailSide: side,
                     detailDrink: drink,
-                    detailPrice: menu.price1 + (side ? filteredSides.find(s => s.menuName === side)?.menuPrice[0].discountPrice : 0) + (drink ? filteredDrinks.find(d => d.menuName === drink)?.menuPrice[0].discountPrice : 0),
+                    detailPrice: updatedPrice,
                 };
             }
             return item;
         });
-
+    
         setAddedCartState(updatedCart);
     };
 
-    useEffect(() => {
-        console.log("updated addedCartState:", addedCartState);
-    }, [addedCartState]);
-    
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
+    if (isLoading) return <div>Loading...</div>;
 
-    if (error) {
-        console.error("메뉴 데이터를 가져오는 데 실패했습니다:", error);
-        return <div>메뉴 데이터를 가져오는 데 실패했습니다.</div>;
-    }
+    if (error) return <div>메뉴 데이터를 가져오는 데 실패했습니다.</div>;
 
     return (
         <div css={s.modalOverlay}>

@@ -33,7 +33,6 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
     // 단계
     const handleNext = () => {
         console.log("Current step:", step); // 현재 단계 확인
-
         console.log("카테고리 : ", menu.category);
         console.log("메뉴 : ", menu);
 
