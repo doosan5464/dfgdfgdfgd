@@ -108,6 +108,8 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
     };
 
     const handleAddToCart = () => {
+        const newOrderId = addedCartState.length > 0 ? Math.max(...addedCartState.map(item => item.orderId)) + 1 : 1;
+
         console.log("Menu object before add:", menu); // menu 객체 확인
         const basePrice = isSet ? menu.price1 : isLarge? menu.price2 : menu.price1; // NaN 방지 
         const sidePrice = isSet ? (side !== defaultSide ? filteredSides?.find(temp1 => temp1.menuName === side)?.menuPrice[0].discountPrice : filteredSides?.find(temp1 => temp1.menuName === defaultSide)?.menuPrice[0].discountPrice) : 0;
@@ -118,6 +120,7 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
         console.log("Drink price:", drinkPrice); // 음료 가격 확인
 
         const orderDetails = {
+            orderId: newOrderId,
             detailMenu: menu.name,
             detailSide: isSet ? side : null,
             detailDrink: isSet ? drink : null,
@@ -132,7 +135,16 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
         setAddedCartState((prevCart) => {
             const updatedCart = [...prevCart, orderDetails];
             console.log("Updated cart:", updatedCart); // 장바구니 업데이트 후 확인
-            return updatedCart;
+
+            // 장바구니에서 삭제된 후 orderId를 최신화
+            const reorderedCart = updatedCart.map((item, index) => ({
+                ...item,
+                orderId: index + 1  // orderId를 1부터 순차적으로 재설정
+            }));
+
+            console.log("Updated cart:", reorderedCart);
+            return reorderedCart;
+
         });
 
         console.log("장바구니에 추가됨:", orderDetails);

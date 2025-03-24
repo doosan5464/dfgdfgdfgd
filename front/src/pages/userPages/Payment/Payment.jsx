@@ -10,6 +10,10 @@ function Payment(props) {
         navi("/kakaopay");
     }
 
+    const handleBack = () => {
+        navi("/prePayment")
+    }
+
     return (
         <div css={s.container}>
             <header>
@@ -40,7 +44,7 @@ function Payment(props) {
                     </div>
                 </div>
             </main>
-            <footer css={s.footer}>
+            <footer css={s.footer} onClick={handleBack}>
                 이전 단계
             </footer>
         </div>

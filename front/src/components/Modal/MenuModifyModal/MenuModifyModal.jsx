@@ -5,14 +5,6 @@ import useMenuData from "../../../hooks/menu/getMenuHooks";
 /**@jsxImportSource @emotion/react */
 import * as s from './style';
 
-// 수정하면 같은 이름의 버거는 다 같이 수정되버림. 어떻게 하지? 인덱스? 고유 ID?
-// 수정하면 같은 이름의 버거는 다 같이 수정되버림. 어떻게 하지? 인덱스? 고유 ID?
-// 수정하면 같은 이름의 버거는 다 같이 수정되버림. 어떻게 하지? 인덱스? 고유 ID?
-// 수정하면 같은 이름의 버거는 다 같이 수정되버림. 어떻게 하지? 인덱스? 고유 ID?
-// 수정하면 같은 이름의 버거는 다 같이 수정되버림. 어떻게 하지? 인덱스? 고유 ID?
-// 수정하면 같은 이름의 버거는 다 같이 수정되버림. 어떻게 하지? 인덱스? 고유 ID?
-// 수정하면 같은 이름의 버거는 다 같이 수정되버림. 어떻게 하지? 인덱스? 고유 ID?
-// 수정하면 같은 이름의 버거는 다 같이 수정되버림. 어떻게 하지? 인덱스? 고유 ID?
 
 const MenuModifyModal = ({ menu, onClose }) => {
     const [step, setStep] = useState(2);
@@ -73,7 +65,11 @@ const MenuModifyModal = ({ menu, onClose }) => {
         console.log("basePrice:", basePrice);
     
         const updatedCart = addedCartState.map(item => {
-            if (item.detailMenu === menu.detailMenu) {
+            if (item.orderId === menu.orderId && item.detailMenu === menu.detailMenu) {
+                console.log("item :", item.orderId);
+                console.log("item :", item.detailMenu);
+                console.log("menu :", menu.orderId);
+                console.log("menu :", menu.detailMenu);
                 const updatedPrice = basePrice + sidePrice + drinkPrice;
                 console.log("Updated Price for", menu.detailMenu, ":", updatedPrice);
                 return {
