@@ -38,12 +38,12 @@ public class PointService {
 
         System.out.println("Final userId: " + userId);
 
-        // 포인트 적립 (calcul == 0)
-        if (calcul == 0) {
+        // 포인트 적립 (calcul == 1)
+        if (calcul == 1) {
             System.out.println("Adding points...");
             pointRepository.addPoints(reqPointDto.getPhoneNumber(), reqPointDto.getPoint());
         }
-        // 포인트 차감 (calcul == 1)
+        // 포인트 차감 (calcul == 0)
         else {
             System.out.println("Subtracting points...");
             pointRepository.subtractPoints(reqPointDto.getPhoneNumber(), reqPointDto.getPoint());

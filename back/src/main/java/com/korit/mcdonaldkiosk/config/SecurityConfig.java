@@ -63,6 +63,7 @@ public class SecurityConfig {
                     "/api/admin/**", //테스트용 임시 허용
                     "/api/admin/menuinfo/**",//테스트용 임시 허용
                     "/api/user/**",
+                    "/api/admin/menuinfo",
                     "/image/**",
                     "/admin/**",
                     "/swagger-ui/**",

@@ -1,14 +1,16 @@
+// SavePoint.jsx
 import React, { useState } from "react";
 /**@jsxImportSource @emotion/react */
 import * as s from './style';
-import { usePhoneNumberCheckMutation } from "../../../mutations/userMutation";
+import { useProcessPointMutation } from "../../../mutations/useProcessPointMutation";
 
 const SavePoint = () => {
     const [input, setInput] = useState("");
     const [status, setStatus] = useState(null); // 1: 확인, 0: 넘어가기
-    console.log("마일리지 적용하나요? ", status);
+    const [calcul, setCalcul] = useState(1);  // 포인트 적립(1) 기본 설정
+    const [price, setPrice] = useState(0);  // 기본값 0으로 설정
 
-    const checkPhoneNumber = usePhoneNumberCheckMutation();  // 수정된 부분
+    const { mutateAsync: processPoint } = useProcessPointMutation();  // 포인트 적립 처리 API 호출
 
     // 전화번호 포맷팅 함수
     const formatPhoneNumber = (value) => {
@@ -29,27 +31,20 @@ const SavePoint = () => {
 
                 // 전화번호 포맷팅 후 API 호출
                 const formattedPhoneNumber = input.replace(/-/g, ""); // 하이픈 제거
-                console.log("아아아 : ",formatPhoneNumber);
                 const phoneNumberWithHyphen = formatPhoneNumber(formattedPhoneNumber); // 다시 하이픈 추가
-                console.log("가가가 : ", phoneNumberWithHyphen);
-                // 가가가 :  010-1111-1111
 
-                // 전화번호 중복 확인 API 호출
+                // 포인트 적립 처리
+                const point = Math.floor(price * 0.05);  // 5% 포인트 계산
                 try {
-                    const response = await checkPhoneNumber.mutateAsync(phoneNumberWithHyphen);
-                    console.log("서버 응답:", response);
-
-                    if (response?.data) {
-                        alert(`서버 응답: ${JSON.stringify(response.data)}`);
-                        alert("이미 있는 번호입니다. 마일리지를 적립합니다.");
-                    } else {
-                        alert("새로운 번호입니다. 해당 번호로 마일리지를 적립합니다.");
-                    }
+                    await processPoint({
+                        phoneNumber: phoneNumberWithHyphen,
+                        calcul: 1,  // 포인트 적립
+                        point: point,
+                    });
+                    alert(`포인트 ${point}점이 적립되었습니다!`);
                 } catch (error) {
-                    console.error("에러 발생:", error);
-                    alert("전화번호 확인 중 오류가 발생했습니다.");
+                    alert("포인트 적립 중 오류가 발생했습니다.");
                 }
-
             } else {
                 alert("전화번호 11자리를 입력해주세요.");
             }
@@ -59,7 +54,7 @@ const SavePoint = () => {
             }
         }
     };
-    
+
     const handleSkip = () => {
         setStatus(0);
     };

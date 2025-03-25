@@ -11,7 +11,7 @@ public class PointRepository {
     @Autowired
     private PointMapper pointMapper;
 
-    // 포인트 차감 메서드 (calcul=1)
+    // 포인트 차감 메서드 (calcul=0)
     public void subtractPoints(String phoneNumber, int point) {
         int userId = findUserIdByPhoneNumber(phoneNumber);
 
@@ -58,6 +58,10 @@ public class PointRepository {
             currentPoint.setUserId(userId);
             currentPoint.setPoint(0);
         }
+
+        // 새 유저에 대해 포인트 테이블에 초기값 삽입
+        pointMapper.insertPoint(currentPoint);  // 포인트 초기값 0으로 삽입
+
 
         // 포인트 적립: 기존 포인트에 추가
         int updatedPoint = currentPoint.getPoint() + point;

@@ -18,6 +18,6 @@ export const setTokenLocalStorage = (name, token) => {
     }
 }
 
-export const getTokenFromLocalStorage = (name) => {
-    return localStorage.getItem(name);
+export const getTokenFromLocalStorage = (key) => {
+    return localStorage.getItem(key);
 }
