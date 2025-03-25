@@ -34,6 +34,7 @@ public class PrincipalUser implements UserDetails, OAuth2User {
         return admin.getAdminName();
     }
 
+
     @Override
     public String getName() {
         return attributes.get("id").toString();
@@ -44,6 +45,10 @@ public class PrincipalUser implements UserDetails, OAuth2User {
         return attributes;
     }
 
+    @Override
+    public boolean isEnabled() {
+        return admin.getAccountEnabled() == 1;
+    }
 }
 
 

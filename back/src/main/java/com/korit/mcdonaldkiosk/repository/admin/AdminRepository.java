@@ -53,5 +53,8 @@ public class AdminRepository {
     public void updateEmail(int adminID, String email) {
         adminMapper.updateEmailById(adminID, email);
     }
+    public void updateAccountEnabled(String adminName) {
+        adminMapper.updateAccountEnabledByAdminName(adminName);
+    }
 
 }

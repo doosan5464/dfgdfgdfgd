@@ -34,12 +34,6 @@ function JoinPage(props) {
         console.log(inputValue)
     }
 
-    const isErrors = () => {
-        const isEmpty = Object.values(inputValue).map(value => !!value).includes(false);
-        const isValid = Object.values(inputValidError).includes(true);
-        return isEmpty || isValid;
-    }
-
     const handlePasswordOnFocus = () => {
         setInputValue(prev => ({
             ...prev,
@@ -50,11 +44,25 @@ function JoinPage(props) {
 
 
     const handleJoinOnClick = async () => {
-        if (isErrors()) {
+        // 오류 상태 초기화
+        setInputValidError({
+            adminName: false,
+            email: false,
+            tradeName: false,
+            adminPassword: false,
+            passwordCheck: false,
+        });
+
+        // 필수 정보가 입력되었는지 확인
+        const isEmpty = Object.values(inputValue).map(value => !!value).includes(false);
+        const isValid = Object.values(inputValidError).includes(true);
+    
+        if (isEmpty || isValid) {
             alert("가입 정보를 다시 확인해주세요.");
             return;
         }
-
+    
+        // 비밀번호 불일치 처리
         if (inputValue.adminPassword !== inputValue.passwordCheck) {
             alert("비밀번호가 일치하지 않습니다.");
             setInputValidError(prev => ({
@@ -62,10 +70,11 @@ function JoinPage(props) {
                 adminPassword: true,
                 passwordCheck: true
             }));
-            return;
+            return;  // 비밀번호 불일치 시 오류 처리 후 종료
         }
     
         try {
+            // 회원가입 요청
             const response = await joinMutation.mutateAsync({
                 adminName: inputValue.adminName, 
                 adminPassword: inputValue.adminPassword,
@@ -74,21 +83,31 @@ function JoinPage(props) {
                 tradeName: inputValue.tradeName,
             });
     
+            // 가입 성공 시, 로그인 페이지로 리디렉션
             alert("가입해 주셔서 감사합니다.");
+            navigate("/admin/login");  // 로그인 페이지로 리디렉션
+    
         } catch (error) {
             console.error("회원가입 오류:", error);
     
+            // 오류가 발생한 경우, 서버의 상태 코드와 메시지를 확인하여 사용자에게 안내
             if (error.response?.status === 400) {
+                // 예시로 필드 오류 표시
                 setInputValidError(prev => ({
                     ...prev,
                     adminName: true,
                 }));
+                alert("입력한 정보가 유효하지 않습니다. 다시 확인해주세요.");
             } else {
                 alert("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
-                
             }
         }
     };
+    
+    
+    
+    
+    
 
     const handleOAuth2LoginOnClick = (provider) => {
         window.location.href = `http://localhost:8080/oauth2/authorization/${provider}`;

@@ -11,6 +11,8 @@ import AdminAccountPage from '../../pages/adminPages/AdminAccountPage/AdminAccou
 import AdminOrderPage from '../../pages/adminPages/AdminOrderPage/AdminOrderPage';
 import AdminSalesPage from '../../pages/adminPages/AdminSalesPage/AdminSalesPage';
 import AdminProductManage from '../../pages/adminPages/AdminProductManage/AdminProductManage';
+import AdminMyPage from '../../pages/adminPages/AdminMyPage/AdminMyPage';
+import AdminMainPage from '../../pages/adminPages/AdminMainPage/AdminMainPage';
 
 function AdminMainRoute(props) {
     //로그인 구현 후 사용
@@ -32,11 +34,13 @@ function AdminMainRoute(props) {
             <MainContainer>
                 <Routes>
                     <Route path='/menu' element={<AdminMenuPage />} /> 
+                    <Route path='/' element={<AdminMainPage />} /> 
                     <Route path='/product' element={<AdminProductPage />} /> 
                     <Route path='/product/manage' element={<AdminProductManage />} /> 
                     <Route path='/option' element={<AdminOptionPage />} /> 
-                    <Route path='/sales' element={<AdminSalesPage />} /> 
-                    <Route path='/order' element={<AdminOrderPage />} /> 
+                    <Route path="/sale/*" element={<AdminSalesPage />} />
+                    <Route path='/order' element={<AdminOrderPage />} />
+                    <Route path='/mypage' element={<AdminMyPage />} />
                     <Route path='/account' element={<AdminAccountPage />} /> 
                 </Routes>
             </MainContainer>

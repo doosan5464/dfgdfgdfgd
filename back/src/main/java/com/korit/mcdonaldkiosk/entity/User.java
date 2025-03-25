@@ -14,6 +14,6 @@ import java.time.LocalDateTime;
 public class User {
     private int userId;
     private String phoneNumber;
-    private LocalDateTime createdDate;
-    private LocalDateTime updatedDate;
+    private LocalDateTime createDate;
+    private LocalDateTime updateDate;
 }

@@ -13,8 +13,7 @@
         <result property="setImg" column="set_img" />
         <result property="isExposure" column="is_exposure" />
 
-        <!-- db에서 계산식 적용 -->
-        <!-- menuPrice 속성을 menuPriceResultMap과 연결 -->
+        <!-- 💡 menuPrice 속성을 menuPriceResultMap과 연결 -->
         <collection property="menuPrice" resultMap="menuPriceResultMap"/>
     </resultMap>
 
@@ -28,21 +27,21 @@
 
     <select id="selectAllMenus" resultMap="menuResultMap">
         SELECT
-            m.menu_id,
-            m.menu_name,
-            m.menu_category,
-            m.menu_sequence,
-            m.single_img,
-            m.set_img,
-            m.is_exposure,
+        m.menu_id,
+        m.menu_name,
+        m.menu_category,
+        m.menu_sequence,
+        m.single_img,
+        m.set_img,
 
-            mp.menu_id AS mp_menu_id,
-            mp.size,
-            mp.menu_price,
-            mp.discount_price
+        mp.menu_price_id,
+        mp.menu_id AS mp_menu_id,
+        mp.size,
+        mp.menu_price,
+        mp.discount_price
         FROM
-            menu_tb m
-            LEFT OUTER JOIN menu_price_tb mp ON m.menu_id = mp.menu_id
+        menu_tb m
+        LEFT OUTER JOIN menu_price_tb mp ON m.menu_id = mp.menu_id
     </select>
 
     <select id="find1ByMenuPriceId" resultMap="menuPriceResultMap" >

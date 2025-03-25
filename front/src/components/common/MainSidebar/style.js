@@ -1,5 +1,6 @@
 import { css } from "@emotion/react";
 
+// 기존 스타일 유지
 export const container = css`
     display: flex;
     flex-direction: column;
@@ -17,6 +18,10 @@ export const header = css`
     font-size: 3rem;
     font-weight: 800;
 `;
+
+export const headerLink = css`
+    text-decoration: none;
+`
 
 export const body = css`
     display: flex;
@@ -60,7 +65,15 @@ export const buttonstyle = css`
     }
 `;
 
+// 추가: 클릭된 버튼에만 적용할 강조 스타일
+export const activeButton = css`
+    background-color: #00000033;  // 강조 색을 여기서 정의
+    color: white;
+    border: none;
+    font-weight: 800;
+`;
+
 export const footer = css`
     display: flex;
     flex-grow: 1;
-`
+`;

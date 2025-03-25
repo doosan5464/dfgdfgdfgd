@@ -8,14 +8,12 @@
     <resultMap id="SalesResultMap" type="com.korit.mcdonaldkiosk.entity.Sales">
         <result property="year" column="year" />
         <result property="month" column="month" />
-        <result property="orderId" column="order_id" />
         <result property="orderCount" column="total_orders" />
         <result property="totalSales" column="total_sales" />
     </resultMap>
 
     <resultMap id="MenuSalesResultMap" type="com.korit.mcdonaldkiosk.entity.MenuSales">
-        <id property="menuSalesId" column="menu_sales_id" />
-        <result property="menuId" column="menu_id" />
+        <id property="menuId" column="menu_id" />
         <result property="orderYear" column="order_year" />
         <result property="orderMonth" column="order_month" />
         <result property="totalCount" column="total_count" />

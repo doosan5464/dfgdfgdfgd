@@ -20,6 +20,7 @@ public class Admin {
     private String adminPassword;
     private String email;
     private String tradeName;
+    private int accountEnabled;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
 

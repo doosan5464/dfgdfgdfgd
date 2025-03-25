@@ -18,7 +18,7 @@ public interface AdminMapper {
 
     int updatePasswordById(
             @Param("adminId") int adminId,
-            @Param("password") String password);
+            @Param("adminPassword") String adminPassword);
 
     int updateEmailById(
             @Param("adminId") int adminId,
@@ -28,5 +28,7 @@ public interface AdminMapper {
     int updateTradeNameById(
             @Param("adminId") int adminId,
             @Param("tradeName") String tradeName);
+
+    int updateAccountEnabledByAdminName(@Param("adminName") String username);
 
 }

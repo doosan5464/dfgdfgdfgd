@@ -3,6 +3,7 @@ package com.korit.mcdonaldkiosk.repository.admin;
 
 import com.korit.mcdonaldkiosk.entity.Menu;
 import com.korit.mcdonaldkiosk.entity.MenuPrice;
+import com.korit.mcdonaldkiosk.entity.MenuWithAllInfo;
 import com.korit.mcdonaldkiosk.entity.Order;
 import com.korit.mcdonaldkiosk.mapper.AdminMenuMapper;
 import com.korit.mcdonaldkiosk.mapper.MenuMapper;
@@ -18,39 +19,29 @@ public class AdminMenuRepository {
     @Autowired
     private AdminMenuMapper adminMenuMapper;
 
+    // 모든 메뉴 리스트를 반환
+    public Optional<MenuWithAllInfo> findAllInfoMenuById(int menuId) {
+        return Optional.ofNullable(adminMenuMapper.selectAllInfoMenuById(menuId));
+    }
+
     // 모든 카테고리를 반환
     public List<Menu> findAllCategories() {
         return adminMenuMapper.selectAllCategories();
     }
 
-    // 모든 메뉴 리스트를 반환
-    public List<Menu> findAllAdminMenus() {
-        return adminMenuMapper.selectAllAdminMenus();
+    public void updateIsExposure(int menuId,int isExposure) {
+        adminMenuMapper.updateIsExposureByClick(menuId, isExposure);
     }
 
-    // 카테고리에 해당하는 메뉴 갯수를 반환(페이지관리)
-    public int findMenuCountAllBySearchCategory(String searchCategory) {
-        return adminMenuMapper.selectMenuCountAllByCategory(searchCategory);
-    }
-
-    // 카테고리에 해당하는 메뉴를 반환
-    public List<Menu> findMenuListByCategory(
-            int startIndex,
-            int limitSize,
-            String category) {
-        return adminMenuMapper.selectMenuListByCategory(startIndex, limitSize, category);
-
-    }
     // 전체 메뉴 조회
     public Optional<List<Menu>> getAllMenus() {
         List<Menu> foundMenus = adminMenuMapper.selectAllMenus();
         return foundMenus.isEmpty() ? Optional.empty() : Optional.of(foundMenus);
     }
 
-    // 특정 메뉴 가격 조회
-    public Optional<List<MenuPrice>> getMenuPrices(int menuId) {
-        List<MenuPrice> foundMenuPrice = adminMenuMapper.getMenuPrices(menuId);
-        return foundMenuPrice.isEmpty() ? Optional.empty() : Optional.of(foundMenuPrice);
+    // 특정 메뉴 정보 조회
+    public Optional<Menu> getMenuById(int menuId) {
+        return Optional.ofNullable(adminMenuMapper.selectMenuById(menuId));
     }
 
     public Optional<Boolean> addMenu(Menu menu, List<MenuPrice> menuPrices) {
@@ -83,11 +74,16 @@ public class AdminMenuRepository {
                 return Optional.of(false);
             }
 
-            return Optional.of(true); // ✅ 성공 시 true 반환
+            return Optional.of(true); //  성공 시 true 반환
         } catch (Exception e) {
             e.printStackTrace();
-            return Optional.of(false); // ❌ 실패 시 false 반환
+            return Optional.of(false); //  실패 시 false 반환
         }
+    }
+
+    // 페이지네이션 이미지 + 메뉴명
+    public List<Menu> getAllMenuImages() {
+        return adminMenuMapper.selectAllMenuImages();
     }
 
 }

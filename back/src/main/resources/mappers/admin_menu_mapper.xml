@@ -18,12 +18,87 @@
 
     <resultMap id="menuPriceResultMap" type="com.korit.mcdonaldkiosk.entity.MenuPrice">
         <id property="menuPriceId" column="menu_price_id" />
-        <result property="menuId" column="mt_menu_id" />
+        <result property="menuId" column="menu_id" />
         <result property="size" column="size" />
         <result property="menuPrice" column="menu_price" />
         <result property="discountPrice" column="discount_price" />
     </resultMap>
 
+    <resultMap id="menuWithInfoResultMap" type="com.korit.mcdonaldkiosk.entity.MenuWithAllInfo">
+        <id property="menuId" column="menu_id" />
+        <result property="menuName" column="menu_name" />
+        <result property="menuCategory" column="menu_category" />
+        <result property="singleImg" column="single_img" />
+        <result property="isExposure" column="is_exposure" />
+        <result property="menuPrice" column="menu_price" />
+        <result property="size" column="size" />
+        <result property="weightG" column="weight_g" />
+        <result property="volumeMl" column="volume_ml" />
+        <result property="calories" column="calories" />
+        <result property="sugars" column="sugars" />
+        <result property="protein" column="protein" />
+        <result property="saturatedFat" column="saturated_fat" />
+        <result property="sodium" column="sodium" />
+        <result property="caffeine" column="caffeine" />
+        <result property="menuOrigin" column="menu_origin" />
+    </resultMap>
+
+    <!--아이디에 해당하는 메뉴정보 모두 불러오기-->
+    <select id="selectAllInfoMenuById" resultMap="menuWithInfoResultMap">
+        select
+            mt.menu_id,
+            mt.menu_name,
+            mt.menu_category,
+            mt.menu_sequence,
+            mt.single_img,
+            mt.is_exposure,
+
+            mpt.menu_price,
+
+            mit.size,
+            mit.weight_g,
+            mit.volume_ml,
+            mit.calories,
+            mit.sugars,
+            mit.protein,
+            mit.saturated_fat,
+            mit.sodium,
+            mit.caffeine,
+            mit.menu_origin
+
+        from
+            menu_tb mt
+            left outer join menu_price_tb mpt on mt.menu_id = mpt.menu_id
+            left outer join menu_info_tb mit on mt.menu_id = mit.menu_id
+
+        where
+            mt.menu_id = #{menuId}
+    </select>
+
+   
+    <!-- 메뉴 상세 조회 쿼리 추가 -->
+    <select id="selectMenuById" resultMap="menuResultMap">
+        SELECT
+            m.menu_id,
+            m.menu_name,
+            m.menu_category,
+            m.menu_sequence,
+            m.single_img,
+            m.set_img,
+            m.is_exposure,
+            mp.menu_price_id,
+            mp.menu_id,
+            mp.size,
+            mp.menu_price,
+            mp.discount_price
+        FROM
+            menu_tb AS m
+            LEFT OUTER JOIN menu_price_tb AS mp ON m.menu_id = mp.menu_id
+        WHERE
+            m.menu_id = #{menuId}
+    </select>
+
+   
 
     <!--카테고리만 불러오기-->
     <select id="selectAllCategories" resultMap="menuResultMap">
@@ -34,50 +109,17 @@
         group by
             menu_category
     </select>
-
-    <!--모든 메뉴 불러오기-->
-    <select id="selectAllAdminMenus" resultMap="menuResultMap">
-        SELECT
-            mt.menu_id,
-            mt.menu_name,
-            mt.menu_category,
-            mpt.menu_price,
-            mt.is_exposure
-        FROM
-            menu_tb mt
-            LEFT OUTER JOIN menu_price_tb mpt ON mt.menu_id = mpt.menu_id
-    </select>
-
-    <!--리스트 갯수 불러오기-->
-    <select id="selectMenuCountAllByCategory" resultType="java.lang.Integer">
-        select
-            count(*)
-        from
+  
+    <!--클릭된 메뉴 노출여부 변경-->
+    <update id="updateIsExposureByClick">
+        update
             menu_tb
-        <where>
-            <if test="searchCategory != null and searchCategory != '' and searchCategory != '전체'">
-                menu_category = #{searchCategory}
-            </if>
-        </where>
-    </select>
+        set
+            is_exposure = #{isExposure}
+        where
+            menu_id = #{menuId}
+    </update>
 
-    <!--카테고리에 해당하는 메뉴 불러오기-->
-    <select id="selectMenuListByCategory" resultMap="menuResultMap">
-        SELECT
-            mt.menu_id,
-            mt.menu_name,
-            mt.menu_category,
-            mpt.menu_price,
-            mt.is_exposure
-        FROM
-            menu_tb mt
-            LEFT OUTER JOIN menu_price_tb mpt ON mt.menu_id = mpt.menu_id
-        <where>
-            <if test="category != null and category != '' and category != '전체'">
-                menu_category = #{category}
-            </if>
-        </where>
-    </select>
 
     <!-- 전체 메뉴 조회 -->
     <select id="selectAllMenus" resultMap="menuResultMap">
@@ -143,4 +185,16 @@
     <delete id="deleteMenu">
         DELETE FROM menu_tb WHERE menu_id = #{menuId}
     </delete>
+
+    <!--  페이지네이션 이미지 + 메뉴명  -->
+    <select id="selectAllMenuImages" resultType="com.korit.mcdonaldkiosk.entity.Menu">
+        SELECT
+            menu_id,
+            menu_name,
+            single_img,
+            set_img
+        FROM
+            menu_tb
+    </select>
+
 </mapper>

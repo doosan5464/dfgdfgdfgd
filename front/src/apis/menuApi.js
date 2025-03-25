@@ -17,42 +17,93 @@ export const fetchMenuData = async () => {
 };
 
 
-// 특정 메뉴 가져오기
-export const fetchMenuDetail = async (menuId) => {
-  const response = await api.get(`/user/menu/${menuId}`);
-  return response.data;
+// 관리자용 전체 메뉴 목록 가져오기
+export const adminFetchMenuApi = async () => {
+  try {
+      const response = await api.get("/api/admin/menus");
+      console.log("🔥 [adminFetchMenuApi] 전체 메뉴 응답:", response.data);
+      return response.data;
+  } catch (error) {
+      console.error("❌ [adminFetchMenuApi] API 요청 실패:", error);
+      throw error;
+  }
 };
 
-// 메뉴 추가
-export const addMenuData = async (formData) => {
-  const token = localStorage.getItem("accessToken"); // JWT 토큰 가져오기
+
+// 특정 메뉴 상세 정보 가져오기
+export const fetchMenuDetailApi = async (menuId) => {
+  if (!menuId) {
+      console.warn("⚠️ [fetchMenuDetail] menuId가 없습니다.");
+      return null;
+  }
+
+  try {
+      const response = await api.get(`/api/admin/menus/${menuId}`);
+      console.log(`🔥 [fetchMenuDetail] 선택한 메뉴(${menuId}) 응답:`, response.data);
+      return response.data;
+  } catch (error) {
+      console.error("❌ [fetchMenuDetail] API 요청 실패:", error);
+      throw error;
+  }
+};
+
+// 메뉴 추가 (FormData 사용)
+export const addMenuApi = async (formData) => {
+  const token = localStorage.getItem("AccessToken");
+  if (!token) throw new Error("❌ 인증 정보 없음! 다시 로그인해주세요.");
 
   const data = new FormData();
   data.append("menuName", formData.menuName);
   data.append("menuCategory", formData.menuCategory);
   data.append("menuSequence", formData.menuSequence);
   data.append("isExposure", formData.isExposure);
-  data.append("prices", JSON.stringify(formData.prices));
+  data.append("prices", JSON.stringify(formData.prices)); // JSON 문자열로 가격 리스트 전송
 
   if (formData.singleImg) data.append("singleImg", formData.singleImg);
   if (formData.setImg) data.append("setImg", formData.setImg);
 
-  // 🚀 JWT 토큰을 헤더에 추가
-  const response = await api.post("/admin/menu", data, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${token}`, // ✅ JWT 토큰 추가
-    },
-  });
-
-  return response.data;
+  try {
+      const response = await api.post("/api/admin/menus", data, {
+          headers: {
+              Authorization: `Bearer ${token}`,
+              // Content-Type 생략: axios가 FormData일 때 자동으로 multipart/form-data 설정함
+          },
+      });
+      console.log("✅ [addMenuApi] 메뉴 추가 성공:", response.data);
+      return response.data;
+  } catch (error) {
+      console.error("❌ [addMenuApi] 메뉴 추가 실패:", error);
+      throw error;
+  }
 };
+
 
 // 메뉴 삭제
-export const deleteMenuData = async (menuId) => {
-  const response = await api.delete(`/admin/menu/${menuId}`);
-  return response.data;
+export const deleteMenuApi = async (menuId) => {
+  const token = localStorage.getItem("AccessToken");
+  if (!token) throw new Error("❌ 인증 정보 없음! 다시 로그인해주세요.");
+
+  try {
+      const response = await api.delete(`/api/admin/menus/${menuId}`, {
+          headers: {
+              Authorization: `Bearer ${token}`,
+          },
+      });
+      console.log(`✅ [deleteMenuApi] 메뉴(${menuId}) 삭제 성공:`, response.data);
+      return response.data;
+  } catch (error) {
+      console.error("❌ [deleteMenuApi] 메뉴 삭제 실패:", error);
+      throw error;
+  }
 };
+
+//카테고리ID로 메뉴찾아오기
+export const getMenuRequest = async (categoryId) => {
+  return await instance.get(`/menus?categoryId=${categoryId}`);
+};
+
+
+
 
 
 /*

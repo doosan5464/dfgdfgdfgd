@@ -37,7 +37,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         Date expires = new Date(new Date().getTime() + (1000l * 60 * 60 * 7));
         String accessToken = jwtUtil
                 .generateToken(admin.getEmail(), Integer.toString(admin.getAdminId()), expires);
-        response.sendRedirect(String.format("%s://%s:%d/auth/login/oauth2?accessToken=%s", protocol, host, port, accessToken));
+        response.sendRedirect(String.format("%s://%s:%d/admin/login/oauth2?accessToken=%s", protocol, host, port, accessToken));
     }
 
 }

@@ -14,8 +14,10 @@ public interface PointMapper {
     int updatePoint(Point point);
 
     // 핸드폰 번호로 포인트 조회
-    Point findPointByPhoneNumber(int userId);
+    Integer findUserIdByPhoneNumber(String phoneNumber);
 
     // 새 유저 생성 (user_tb에 저장)
     int createNewUser(String phoneNumber);
+
+    Point findCurrentPointByUserId(int userId);
 }

@@ -7,8 +7,8 @@
     <resultMap id="userResultMap" type="com.korit.mcdonaldkiosk.entity.User">
         <id property="userId" column="user_id" />
         <result property="phoneNumber" column="phone_number" />
-        <result property="createdDate" column="create_date" />
-        <result property="updatedDate" column="update_date" />
+        <result property="createDate" column="create_date" />
+        <result property="updateDate" column="update_date" />
 
     </resultMap>
 

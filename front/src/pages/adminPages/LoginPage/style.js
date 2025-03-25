@@ -57,18 +57,25 @@ export const accountMessage = css`
     color: #777777;
     font-weight: 700;
     cursor: default;
+
+    & a {
+        text-decoration: none;
+        color: inherit; /* 링크 색상을 기본 텍스트 색상과 같게 */
+    }
 `;
+
 
 export const accountButton = css`
     box-sizing: border-box;
     border: none;
-    border-radius: 0.5rem;
     font-size: 2rem;
     font-weight: 700;
-    background-color: #ffffff;
+    color: #777777;
+    background-color: transparent; /* 버튼 배경 투명 */
     letter-spacing: 0.1rem;
     cursor: pointer;
 `;
+
 
 export const footerbox = css`
     display: flex;

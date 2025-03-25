@@ -30,6 +30,12 @@ export const header = css`
     }
 `;
 
+export const title = css`
+    margin: 0.5rem 0 0 1.5rem;
+    font-size: 2rem;
+    font-weight: 500;
+`;
+
 export const buttons = css`
     padding: 0.4rem 1.5rem;
     box-sizing: border-box;
@@ -49,22 +55,108 @@ export const buttons = css`
 `;
 
 export const menuListContainer = css`
+    margin: 0 2.5rem;
+    padding: 0;
+
     & li {
         display: flex;
-        justify-content: space-between;
+        justify-content: start;
+        border-bottom: 0.1rem solid #000000;
 
         
         & div {
+            justify-content: center;
+            align-items: center;
+            align-content: center;
+            margin: 1rem 4rem 1rem 0;
             text-align: center;
-            min-width: 3rem;
+            font-size: 2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex-grow: 1;
         }
     }
 `;
 
-export const pageNum = (isSelect) => css`
- background-color: ${isSelect ? "#eeeeee" : "#ffffff"} !important;
+export const numBox = css`
+    width: 4rem;
 `;
+
+export const nameBox = css`
+    width: 15rem;
+`;
+
+export const priceBox = css`
+    width: 6rem;
+`;
+
+export const exBox = css`
+    display: flex;
+    position: relative;
+    padding: 0;
+    width: 7rem;
+    
+
+    & input {
+        appearance: none; /* 기본 체크박스 스타일을 제거 */
+        margin: 0;
+        border-radius: 0.2rem; 
+        border: 0.1rem solid #333333; 
+        height: 1.8rem;
+        width: 1.8rem;
+        background-color: #eeeeee;  
+
+        &:checked {
+            border-radius: 35%; 
+            border: none;
+            height: 2.6rem;
+            width: 2.6rem;
+            background-color: #d18828;
+            transition: ease-out 0.15s;
+        }
+
+        &:checked::after {
+            content: '✓';  /* V 모양을 텍스트로 표시 */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); 
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: white;
+        }
+    }
+`;
+
 
 export const footer = css`
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0 2rem 0;
 
+    & button {
+        padding: 1rem;
+        border: none;
+        border-radius: 1rem;
+        background-color: transparent;
+        cursor: pointer;
+    }
+
+    & button:disabled {
+        opacity: 0;
+        cursor: default;
+    }
 `;
+
+export const pageNum = (isSelect) => css`
+
+    font-size: 1.5rem;
+    font-weight: 600;
+    /* color: ${isSelect ? "#ffffff" : "#000000"}!important; */
+    background-color: ${isSelect ? "#bbbbbb" : "#ffffff00"}!important;
+`;
+
+
+
+

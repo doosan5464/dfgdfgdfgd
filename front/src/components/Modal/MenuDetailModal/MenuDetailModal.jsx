@@ -233,9 +233,9 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
                                             <div>
                                                 <p>{drink.menuName}</p>
                                                 <p>
-                                                    {drink.menuName === defaultSide 
+                                                    {drink.menuName === defaultDrink 
                                                         ? "+0원" 
-                                                        : `+${Math.max(drink.menuPrice[0].discountPrice - filteredSides?.find(side => side.menuName === defaultSide)?.menuPrice[0]?.discountPrice, 0)}원`}
+                                                        : `+${Math.max(drink.menuPrice[0].discountPrice - filteredDrinks?.find(drink => drink.menuName === defaultDrink)?.menuPrice[0]?.discountPrice, 0)}원`}
                                                 </p>
                                             </div>
                                         </div>
