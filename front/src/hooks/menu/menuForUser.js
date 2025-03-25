@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'; // react-query v5는 @tanstack
 import { fetchMenuData } from '../../apis/menuApi';  // menuApi에서 요청 함수 가져오기
 
 // 메뉴 데이터를 가져오는 커스텀 훅
-const useMenuData = () => {
+const menuForUser = () => {
     // useQuery 훅을 사용하여 서버에서 메뉴 데이터를 가져옴
     const { data, error, isLoading } = useQuery({
         queryKey: ['menuData'],  // queryKey를 배열로 수정
@@ -14,7 +14,7 @@ const useMenuData = () => {
     return { data, error, isLoading };
 };
 
-export default useMenuData;
+export default menuForUser;
 
 
 /*

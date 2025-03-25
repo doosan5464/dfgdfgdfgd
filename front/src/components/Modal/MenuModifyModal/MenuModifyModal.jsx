@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useRecoilState } from "recoil";
 import { addedCart } from "../../../atoms/addedCart/addedCart";
-import useMenuData from "../../../hooks/menu/getMenuHooks";
 /**@jsxImportSource @emotion/react */
 import * as s from './style';
+import menuForUser from "../../../hooks/menu/menuForUser";
 
 
 const MenuModifyModal = ({ menu, onClose }) => {
@@ -11,7 +11,7 @@ const MenuModifyModal = ({ menu, onClose }) => {
     const [side, setSide] = useState(null);
     const [drink, setDrink] = useState(null);
     const [addedCartState, setAddedCartState] = useRecoilState(addedCart);
-    const { data: menuData, error, isLoading } = useMenuData();
+    const { data: menuData, error, isLoading } = menuForUser();
 
     // 필터링된 사이드와 음료
     const filteredSides = menuData?.filter(item => item.menuCategory === "사이드");

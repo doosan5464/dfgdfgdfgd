@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import useMenuData from '../../../../hooks/menu/getMenuHooks';
+import menuForUser from '../../../../hooks/menu/menuForUser';
 
 function CoffeeMenu({ onMenuItemClick }) {
     // useMenuData 훅을 사용하여 메뉴 데이터를 가져옴
-    const { data: menuData, error, isLoading } = useMenuData();
+    const { data: menuData, error, isLoading } = menuForUser();
 
     useEffect(() => {
         if (menuData) {

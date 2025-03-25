@@ -15,8 +15,7 @@ import DessertMenu from './menu/DessertMenu';
 import { addedCart } from '../../../atoms/addedCart/addedCart';
 import { useRecoilState } from 'recoil';
 
-// 보류@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
+// 메뉴가격ID, 세트여부, 개수(), 포인트 사용 여부, 10000 (결제 + 마일리지)
 function OrderPage(props) {
     const navi = useNavigate();
 
@@ -149,16 +148,18 @@ function OrderPage(props) {
                                             <span style={{ marginLeft: "auto" }}>
                                                 {item.isSet && " 세트"}
                                             </span>
-                                            - {item.detailPrice}원
+                                            - {item.detailPrice}원 × {item.quantity}
                                         </li>   
                                     </div>
                                     <div>
                                         <span>
+                                        <div></div>
                                         {/* 수정 버튼은 isSet이 true일 때만*/}
                                         {(item.isSet) && (
                                             <button onClick={() => handleModifyFromCart(index)}>수정</button>
                                         )}
                                             <button onClick={() => handleRemoveFromCart(index)}>삭제</button>
+                                            
                                         </span>
                                         <div>
                                             <button onClick={() => handleUpFromCart(index)}>▲</button>
@@ -174,7 +175,7 @@ function OrderPage(props) {
                 </div>
                 <span>
                     <p onClick={handlePaymentOnClick}>주문하기</p>
-                    <p>마일리지 조회</p>
+                    <p>상품권</p>
                 </span>
             </footer>
 

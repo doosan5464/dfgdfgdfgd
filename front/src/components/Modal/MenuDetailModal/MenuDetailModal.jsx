@@ -3,7 +3,7 @@ import * as s from './style';
 import { useRecoilState } from 'recoil';
 import { addedCart } from '../../../atoms/addedCart/addedCart';
 import React, { useState, useEffect } from 'react';
-import useMenuData from '../../../hooks/menu/getMenuHooks';
+import menuForUser from '../../../hooks/menu/menuForUser';
 
 
 const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage에서 전달받은 선택한 메뉴 상태
@@ -15,8 +15,9 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
 
     const [isLarge, setIsLarge] = useState(null);
 
-    const { data: menuData, error, isLoading } = useMenuData(); // 메뉴 데이터 및 가격을 훅에서 가져옴 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    console.log("Fetched menu data:", menuData); // 메뉴 데이터 확인
+    const { data: menuData, error, isLoading } = menuForUser(); 
+    console.log("DB메뉴 : ", menuData); // 메뉴 데이터 확인
+    console.log("장바구니 : ", addedCartState); // 메뉴 데이터 확인
 
     // 사이드와 음료 데이터만 필터링
     const filteredSides = menuData?.filter(item => item.menuCategory === "사이드");
@@ -92,7 +93,10 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
     const handleChangeSideOnClick = (selectedSide) => {
         console.log("Selected side:", selectedSide); // 선택한 사이드 확인
         if (isSet) {
-            const newPrice = filteredSides?.find(side => side.menuName === selectedSide)?.menuPrice[0].discountPrice - filteredSides?.find(side => side.menuName === defaultSide)?.menuPrice[0].discountPrice;
+            let newPrice = filteredSides?.find(side => side.menuName === selectedSide)?.menuPrice[0].discountPrice - filteredSides?.find(side => side.menuName === defaultSide)?.menuPrice[0].discountPrice;
+            if (newPrice < 0) {
+                newPrice = 0;
+            }
             setSide(selectedSide);
             console.log(`선택한 사이드: ${selectedSide}, 추가 금액: ${newPrice}`);
         }
@@ -101,7 +105,10 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
     const handleChangeDrinkOnClick = (selectedDrink) => {
         console.log("Selected drink:", selectedDrink); // 선택한 음료 확인
         if (isSet) {
-            const newPrice = filteredDrinks?.find(drink => drink.menuName === selectedDrink)?.menuPrice[0].discountPrice  - filteredDrinks?.find(drink => drink.menuName === defaultDrink)?.menuPrice[0].discountPrice ;
+            let newPrice = filteredDrinks?.find(drink => drink.menuName === selectedDrink)?.menuPrice[0].discountPrice - filteredDrinks?.find(drink => drink.menuName === defaultDrink)?.menuPrice[0].discountPrice;
+            if (newPrice < 0) {
+                newPrice = 0;
+            }
             setDrink(selectedDrink);
             console.log(`선택한 음료: ${selectedDrink}, 추가 금액: ${newPrice}`);
         }
@@ -120,7 +127,7 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
         console.log("Drink price:", drinkPrice); // 음료 가격 확인
 
         const orderDetails = {
-            orderId: newOrderId,
+            orderId: newOrderId,  // 새로운 orderId를 할당
             detailMenu: menu.name,
             detailSide: isSet ? side : null,
             detailDrink: isSet ? drink : null,
@@ -134,21 +141,19 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
         // 장바구니에 추가
         setAddedCartState((prevCart) => {
             const updatedCart = [...prevCart, orderDetails];
-            console.log("Updated cart:", updatedCart); // 장바구니 업데이트 후 확인
 
             // 장바구니에서 삭제된 후 orderId를 최신화
             const reorderedCart = updatedCart.map((item, index) => ({
                 ...item,
                 orderId: index + 1  // orderId를 1부터 순차적으로 재설정
-            }));
+        }));
 
-            console.log("Updated cart:", reorderedCart);
-            return reorderedCart;
+        console.log("Updated cart:", reorderedCart);
+        return reorderedCart;
+    });
 
-        });
-
-        console.log("장바구니에 추가됨:", orderDetails);
-        onClose(); // 모달 닫기
+    console.log("장바구니에 추가됨:", orderDetails);
+    onClose(); // 모달 닫기
     };
 
     if (isLoading) {
@@ -198,7 +203,11 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
                                             <img src={side.singleImg} alt={side.menuName} />
                                             <div>
                                                 <p>{side.menuName}</p>
-                                                <p>{side.menuName === defaultSide ? "+0원" : `+${side.menuPrice[0].discountPrice - filteredSides?.find(side => side.menuName === defaultSide)?.menuPrice[0]?.discountPrice}원`}</p>
+                                                <p>
+                                                {side.menuName === defaultSide 
+                                                    ? "+0원" 
+                                                    : `+${Math.max(side.menuPrice[0].discountPrice - filteredSides?.find(side => side.menuName === defaultSide)?.menuPrice[0]?.discountPrice, 0)}원`}
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
@@ -223,7 +232,11 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
                                             <img src={drink.singleImg} alt={drink.menuName} />
                                             <div>
                                                 <p>{drink.menuName}</p>
-                                                <p>{drink.menuName === defaultDrink ? "+0원" : `+${drink.menuPrice[0].discountPrice - filteredDrinks?.find(drink => drink.menuName === defaultDrink)?.menuPrice[0]?.discountPrice}원`}</p>
+                                                <p>
+                                                    {drink.menuName === defaultSide 
+                                                        ? "+0원" 
+                                                        : `+${Math.max(drink.menuPrice[0].discountPrice - filteredSides?.find(side => side.menuName === defaultSide)?.menuPrice[0]?.discountPrice, 0)}원`}
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
@@ -254,57 +267,6 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
                                     </div>
                                 </div>
                             )}
-                        </div>
-                        <div css={s.nextAndClose}>
-                            <span onClick={handleNext}>다음</span>
-                            <span onClick={onClose}>닫기</span>
-                        </div>
-                    </div>
-                )}
-
-                {/* 최종적으로 결제하기 전에 추천할 저기 */}
-                {step === 100 && isSet === false && (
-                    <div>
-                        <h3 css={s.modalBasich3}>사이드 추가</h3>
-                        <div css={s.mapParent}>
-                            {filteredSides?.map((side, index) => (
-                                <div css={s.childrenDiv} key={`${side.menuName}-${index}`}>
-                                    <div css={s.modalSideSetImage}>
-                                        <div onClick={() => handleChangeSideOnClick(side.menuName)}>
-                                            <img src={side.singleImg} alt={side.menuName} />
-                                            <div>
-                                                <p>{side.menuName}</p>
-                                                <p>{side.menuPrice[0].menuPrice}원</p> {/* 추가 가격 설정 */}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                        <div css={s.nextAndClose}>
-                            <span onClick={handleNext}>다음</span>
-                            <span onClick={onClose}>닫기</span>
-                        </div>
-                    </div>
-                )}
-
-                {step === 101 && isSet === false && (
-                    <div>
-                        <h3 css={s.modalBasich3}>음료 추가</h3>
-                        <div css={s.mapParent}>
-                            {filteredDrinks?.map((drink, index) => (
-                                <div css={s.childrenDiv} key={`${drink.menuName}-${index}`}>
-                                    <div css={s.modalSideSetImage}>
-                                        <div onClick={() => handleChangeSideOnClick(drink.menuName)}>
-                                            <img src={drink.singleImg} alt={drink.menuName} />
-                                            <div>
-                                                <p>{drink.menuName}</p>
-                                                <p>{drink.menuPrice[0].menuPrice}원</p> {/* 추가 가격 설정 */}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
                         </div>
                         <div css={s.nextAndClose}>
                             <span onClick={handleNext}>다음</span>
