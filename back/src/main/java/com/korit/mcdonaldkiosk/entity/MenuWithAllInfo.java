@@ -28,5 +28,5 @@ public class MenuWithAllInfo {
     private int saturatedFat;
     private int sodium;
     private int caffeine;
-    private int menuOrigin;
+    private String menuOrigin;
 }
