@@ -102,6 +102,11 @@ export const getMenuRequest = async (categoryId) => {
   return await instance.get(`/menus?categoryId=${categoryId}`);
 };
 
+// 페이지네이션용 이미지 + 메뉴명 가지고오기
+export const fetchAllMenuImages = async () => {
+  const response = await api.get("/api/admin/menus/images");
+  return response.data;
+};
 
 
 

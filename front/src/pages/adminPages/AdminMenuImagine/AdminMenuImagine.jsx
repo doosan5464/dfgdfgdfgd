@@ -1,70 +1,89 @@
 /** @jsxImportSource @emotion/react */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as s from "./style";
 
-function ImageModal({ isOpen, onClose, images, onSelect }) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [selectedUrl, setSelectedUrl] = useState(null);
+function ImageModal({ isOpen, onClose, menus = [], imageType, onSelect }) {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [selectedCategory, setSelectedCategory] = useState("전체");
+    const [filteredImages, setFilteredImages] = useState([]);
+    const [selectedUrl, setSelectedUrl] = useState(null);
 
-  const imagesPerPage = 25;
-  const totalPages = Math.ceil(images.length / imagesPerPage);
+    const images = menus
+        .filter((menu) => menu[imageType])
+        .map((menu) => ({
+            url: menu[imageType],
+            name: menu.menuName,
+            category: menu.menuCategory,
+        }));
 
-  const startIndex = (currentPage - 1) * imagesPerPage;
-  const currentImages = images.slice(startIndex, startIndex + imagesPerPage);
+    const categoryOptions = ["전체", ...new Set(images.map((img) => img.category))];
 
-  if (!isOpen) return null;
+    useEffect(() => {
+        const filtered = selectedCategory === "전체"
+            ? images
+            : images.filter((img) => img.category === selectedCategory);
 
-  const handleClick = (img) => {
-    setSelectedUrl(img);
-    onSelect(img);
-    onClose();
-  };
+        setFilteredImages(filtered);
+        setCurrentPage(1);
+    }, [selectedCategory, imageType, menus]);
 
-  const handleNext = () => {
-    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
-  };
+    const imagesPerPage = 20;
+    const totalPages = Math.ceil(filteredImages.length / imagesPerPage);
+    const startIndex = (currentPage - 1) * imagesPerPage;
+    const currentImages = filteredImages.slice(startIndex, startIndex + imagesPerPage);
 
-  const handlePrev = () => {
-    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
-  };
+    if (!isOpen) return null;
 
-  return (
-    <div css={s.modalOverlay} onClick={onClose}>
-      <div css={s.modalContent} onClick={(e) => e.stopPropagation()}>
-        <button css={s.closeButton} onClick={onClose}>X</button>
-        <h3>이미지를 선택하세요</h3>
+    const handleImgClick = (img) => {
+        setSelectedUrl(img.url);
+        onSelect(img.url);
+        onClose();
+    };
 
-        <div css={s.imageGrid}>
-          {currentImages.length > 0 ? (
-            currentImages.map((img, index) => (
-              <img
-                key={index}
-                src={img}
-                alt="메뉴 이미지"
-                css={[
-                  s.modalImage,
-                  selectedUrl === img && s.selectedImage,
-                ]}
-                onClick={() => handleClick(img)}
-              />
-            ))
-          ) : (
-            <p>이미지가 없습니다.</p>
-          )}
+    return (
+        <div css={s.modalOverlay} onClick={onClose}>
+            <div css={s.modalContent} onClick={(e) => e.stopPropagation()}>
+                <button css={s.closeButton} onClick={onClose}>X</button>
+
+                <div css={s.topBar}>
+                    <h3>이미지를 선택하세요</h3>
+                    <select
+                        css={s.categorySelect}
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                    >
+                        {categoryOptions.map((cat, idx) => (
+                            <option key={idx} value={cat}>{cat}</option>
+                        ))}
+                    </select>
+                </div>
+
+                <div css={s.imageGrid}>
+                    {currentImages.map((img, index) => (
+                        <div key={index} css={s.imageBox}>
+                            <img
+                                src={img.url}
+                                alt={img.name}
+                                css={[s.modalImage, selectedUrl === img.url && s.selectedImage]}
+                                onClick={() => handleImgClick(img)}
+                            />
+                            <p css={s.imageLabel}>{img.name}</p>
+                        </div>
+                    ))}
+                </div>
+
+                <div css={s.pagination}>
+                    <button onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} disabled={currentPage === 1}>
+                        ◀ 이전
+                    </button>
+                    <span>{currentPage} / {totalPages}</span>
+                    <button onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}>
+                        다음 ▶
+                    </button>
+                </div>
+            </div>
         </div>
-
-        <div css={s.pagination}>
-          <button onClick={handlePrev} disabled={currentPage === 1}>
-            ◀ 이전
-          </button>
-          <span>{currentPage} / {totalPages}</span>
-          <button onClick={handleNext} disabled={currentPage === totalPages}>
-            다음 ▶
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 export default ImageModal;

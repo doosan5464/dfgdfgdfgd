@@ -20,9 +20,17 @@ export const useAllMenuList = () => useQuery({
 });
 
 //아이디에 해당하는 메뉴 상세정보 불러오기
-export const useInfoMenuById = () => useQuery({
-    queryKey: ["useInfoMenuById"],
-    queryFn: getAllInfoMenuByIdApi,
+export const useInfoMenuById = (menuId) => useQuery({
+    queryKey: ["useInfoMenuById", menuId],
+    queryFn: () => getAllInfoMenuByIdApi({menuId}),
+    //풀어쓴 형태 - 학습용 삭제 ㄴㄴ
+    // queryFn: async () => {
+    //     const params = {
+    //         "menuId": menuId,
+    //     }
+    //     return await getAllInfoMenuByIdApi(params);
+    // },
+
     retry: 0,
     staleTime: 1000 * 60 * 10,
     gcTime: 1000 * 60 * 5

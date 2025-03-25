@@ -91,43 +91,43 @@ export const priceBox = css`
     width: 6rem;
 `;
 
-export const exBox = css`
-    display: flex;
-    position: relative;
-    padding: 0;
-    width: 7rem;
+// export const exBox = css`
+//     display: flex;
+//     position: relative;
+//     padding: 0;
+//     width: 7rem;
     
 
-    & input {
-        appearance: none; /* 기본 체크박스 스타일을 제거 */
-        margin: 0;
-        border-radius: 0.2rem; 
-        border: 0.1rem solid #333333; 
-        height: 1.8rem;
-        width: 1.8rem;
-        background-color: #eeeeee;  
+//     & input {
+//         appearance: none; /* 기본 체크박스 스타일을 제거 */
+//         margin: 0;
+//         border-radius: 0.2rem; 
+//         border: 0.1rem solid #333333; 
+//         height: 1.8rem;
+//         width: 1.8rem;
+//         background-color: #eeeeee;  
 
-        &:checked {
-            border-radius: 35%; 
-            border: none;
-            height: 2.6rem;
-            width: 2.6rem;
-            background-color: #d18828;
-            transition: ease-out 0.15s;
-        }
+//         &:checked {
+//             border-radius: 35%; 
+//             border: none;
+//             height: 2.6rem;
+//             width: 2.6rem;
+//             background-color: #d18828;
+//             transition: ease-out 0.15s;
+//         }
 
-        &:checked::after {
-            content: '✓';  /* V 모양을 텍스트로 표시 */
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%); 
-            font-size: 2.4rem;
-            font-weight: 800;
-            color: white;
-        }
-    }
-`;
+//         &:checked::after {
+//             content: '✓';  /* V 모양을 텍스트로 표시 */
+//             position: absolute;
+//             top: 50%;
+//             left: 50%;
+//             transform: translate(-50%, -50%); 
+//             font-size: 2.4rem;
+//             font-weight: 800;
+//             color: white;
+//         }
+//     }
+// `;
 
 
 export const footer = css`

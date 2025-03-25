@@ -79,10 +79,6 @@ public class AdminMenuController {
         adminMenuService.deleteMenu(menuId);
     }
 
-    @GetMapping("/menus/images")
-    public ResponseEntity<List<Menu>> getAllMenuImages() {
-        return ResponseEntity.ok().body(adminMenuService.getAllMenuImages());
-    }
 
 
 }

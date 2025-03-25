@@ -20,7 +20,7 @@ function AdminMenuPage(props) {
     const allMenuList = useAllMenuList(); //모든 메뉴 불러오기
     const { data: searchMenuList, isLoading: isMenuLoading } = allMenuList; //모든 메뉴 배열에 담기
     
-    const updateIsExposureMutation = useUpdateIsPosureMutation(); //노출여부 뮤태이션
+    // const updateIsExposureMutation = useUpdateIsPosureMutation(); //노출여부 뮤태이션
 
     const [ infoModalOpen, setInfoModalOpen ] = useState(false); //모달 열림 상태
     const [ infoModalDate, setInfoModalDate ] = useState(1); //모달에 전달할 메뉴데이터
@@ -45,7 +45,7 @@ function AdminMenuPage(props) {
                 <div css={s.numBox}>{menu.menuId}</div>
                 <div css={s.nameBox}>{menu.menuName}</div>
                 <div css={s.priceBox}>{menu.menuPrice[0].menuPrice}</div>
-                <div css={s.exBox}>
+                {/* <div css={s.exBox}>
                     <input 
                         type='checkbox' 
                         checked={menu.isExposure === 1}
@@ -54,7 +54,7 @@ function AdminMenuPage(props) {
                             handleChangeIsExposureOnClick(menu.menuId, newCheckedState);
                         }}
                     />
-                </div>
+                </div> */}
             </li>
         ));
     };
@@ -65,11 +65,11 @@ function AdminMenuPage(props) {
             setInfoModalOpen(true); //모달 열기
         }
 
-    //노출여부 변경 및 목록 다시 불러오기
-    const handleChangeIsExposureOnClick = async (menuId, isExposure) => {
-        await updateIsExposureMutation.mutateAsync({ "menuId": menuId, "isExposure": isExposure });
-        allMenuList.refetch();
-    }
+    // //노출여부 변경 및 목록 다시 불러오기
+    // const handleChangeIsExposureOnClick = async (menuId, isExposure) => {
+    //     await updateIsExposureMutation.mutateAsync({ "menuId": menuId, "isExposure": isExposure });
+    //     allMenuList.refetch();
+    // }
 
     //카테고리 설정
     const { data: getCategory } = useGetCategories();//카테고리 백에서 불러오기
@@ -155,7 +155,7 @@ function AdminMenuPage(props) {
                         <div css={s.numBox}>NO.</div>
                         <div css={s.nameBox}>Name</div>
                         <div css={s.priceBox}>Price</div>
-                        <div css={s.exBox}>On/Off</div>
+                        {/* <div css={s.exBox}>On/Off</div> */}
                     </li>
                     { renderMenuList() }
                 </ul>
@@ -174,7 +174,7 @@ function AdminMenuPage(props) {
                             boxSizing: "border-box",
                             borderRadius: "1.5rem",
                             height: "100rem",
-                            width: "100rem",
+                            width: "120rem",
                         }
                     }}
                 >
