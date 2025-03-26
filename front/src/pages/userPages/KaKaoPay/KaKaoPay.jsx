@@ -1,101 +1,72 @@
 import React, { useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { addedCart } from '../../../atoms/addedCart/addedCart';
+import * as PortOne from "@portone/browser-sdk/v2"; // PortOne 결제 SDK
+import { v4 as uuid } from 'uuid'; // UUID 라이브러리
+/**@jsxImportSource @emotion/react */
+import * as s from './style';
 
 const KakaoPay = () => {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [message, setMessage] = useState('');
-    const [success, setSuccess] = useState(false);
-    const [pgToken, setPgToken] = useState(null);
+    const [payments, setPayments] = useState([]); // 결제 목록을 저장하는 상태
 
-    // 결제 준비 API를 호출하여 카카오페이 결제 URL을 가져오는 함수
-    const handleKakaoPay = async () => {
+    // 결제 상태를 한글로 매핑
+    const PAYSTAUTS = {
+        "PAID": "결제 완료",
+        "FAILED": "결제 실패",
+    };
+
+    // 장바구니 상태 관리
+    const [addedCartState, setAddedCartState] = useRecoilState(addedCart);
+
+    // 첫 번째 메뉴 이름을 기준으로 "버거 및 외 n개" 형식으로 상품명 설정
+    const productNames = addedCartState.map((item) => item.detailMenu);
+    const productName = `${productNames[0]} 및 외 ${addedCartState.length - 1}개`; // 첫 번째 메뉴 이름 + 나머지 개수
+
+    // 장바구니의 가격 합산
+    const totalPrice = addedCartState.reduce((sum, item) => sum + item.detailPrice, 0); // 모든 상품 가격 합산
+
+    // 결제 상품 리스트 생성
+    const products = addedCartState.map((item) => ({
+        orderId: Math.min(addedCartState.length * 1000, 9000) + (addedCartState.length - 1), // 1000부터 시작, 1씩 증가
+        productName: item.detailMenu,
+        price: item.detailPrice,
+    }));
+
+    // 결제 요청 함수
+    const handlePaymentOnClick = async () => {
         try {
-            setLoading(true);
-            const response = await fetch('/payment/ready', { 
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+            // PortOne 결제 요청
+            const paymentResponse = await PortOne.requestPayment({
+                storeId: import.meta.env.VITE_PORTONE_STOREID, // 환경 변수에서 가져온 상점 ID
+                paymentId: uuid(), // UUID를 사용해 유니크한 결제 ID 생성
+                orderName: productName, // "버거 및 외 n개" 형식으로 주문명 설정
+                totalAmount: totalPrice, // 합산된 가격
+                currency: "CURRENCY_KRW", // 결제 통화 (원화)
+                payMethod: "EASY_PAY", // 간편결제 방식 사용
+                channelKey: "channel-key-39a34f05-a2cb-44f1-a0ca-0798cf19bca2", // PortOne 채널 키
+                products: products.map(product => ({
+                    id: product.orderId.toString(), // 상품 ID
+                    name: product.productName, // 상품명
+                    amount: product.price, // 상품 가격
+                    quantity: 1, // 수량
+                })),
             });
-            const data = await response.json();
-    
-            if (data && data.tid) {
-                window.location.href = data.next_redirect_pc_url;
-            } else {
-                setError('결제 준비에 실패했습니다.');
-            }
-        } catch (err) {
-            setError('결제 준비 중 오류가 발생했습니다.');
-        } finally {
-            setLoading(false);
+
+            console.log("푸하 : ", paymentResponse)
+
+        } catch (error) {
+            console.log(error); // 결제 요청 중 에러 발생 시 출력
         }
     };
 
-    // URL에서 pg_token 추출
-    const getParams = () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get('pg_token');
-    };
 
-    useEffect(() => {
-        const token = getParams();
-        if (token) {
-            setPgToken(token);
-        }
-    }, []);
-
-    // 결제 승인 요청
-    useEffect(() => {
-        if (pgToken) {
-            const approvePayment = async () => {
-                setLoading(true);
-                try {
-                    const response = await fetch('/payment/approve', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ pg_token: pgToken }),
-                    });
-    
-                    const data = await response.json();
-    
-                    if (data.success) {
-                        setMessage('결제가 완료되었습니다!');
-                        setSuccess(true);
-                    } else {
-                        setMessage('결제 실패!');
-                    }
-                } catch (err) {
-                    setMessage('결제 처리 중 오류가 발생했습니다.');
-                } finally {
-                    setLoading(false);
-                }
-            };
-    
-            approvePayment();
-        }
-    }, [pgToken]);
-    
 
     return (
-        <div>
-            {!pgToken ? (
-                <div>
-                    <button onClick={handleKakaoPay} disabled={loading}>
-                        {loading ? '결제 준비 중...' : '카카오페이로 결제하기'}
-                    </button>
-                    {error && <p style={{ color: 'red' }}>{error}</p>}
-                </div>
-            ) : (
-                <div>
-                    {loading ? (
-                        <p>결제 처리 중...</p>
-                    ) : (
-                        <p style={{ color: success ? 'green' : 'red' }}>{message}</p>
-                    )}
-                </div>
-            )}
+        <div css={s.container}>
+            <div css={s.header}>
+                {/* 결제 요청 버튼 */}
+                <p onClick={handlePaymentOnClick}>결제하기</p>
+            </div>
         </div>
     );
 };
