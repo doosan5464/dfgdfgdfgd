@@ -167,18 +167,29 @@
         );
     </insert>
 
-    <!-- 가격 추가 -->
+    <!-- 가격 재삽입 -->
     <insert id="insertMenuPrices">
-        INSERT INTO menu_price_tb (menu_id, size, menu_price, discount_price)
+        INSERT INTO menu_price_tb (
+            menu_id,
+            size,
+            menu_price,
+            discount_price
+        )
         VALUES
         <foreach collection="menuPrices" item="price" separator=",">
-            (#{menuId}, #{price.size}, #{price.menuPrice}, #{price.discountPrice})
+            (
+                #{menuId},
+                #{price.size},
+                #{price.menuPrice},
+                #{price.discountPrice}
+            )
         </foreach>
     </insert>
 
-    <!-- 가격 삭제 -->
-    <delete id="deleteMenuPrices">
-        DELETE FROM menu_price_tb WHERE menu_id = #{menuId}
+    <!-- 기존 가격 삭제 -->
+    <delete id="deleteMenuPrices" parameterType="int">
+        DELETE FROM menu_price_tb
+        WHERE menu_id = #{menuId}
     </delete>
 
     <!-- 메뉴 삭제 -->
@@ -196,5 +207,21 @@
         FROM
             menu_tb
     </select>
+
+    <!-- 메뉴 수정 (menu_tb) -->
+    <update id="updateMenu" parameterType="com.korit.mcdonaldkiosk.entity.Menu">
+        UPDATE
+            menu_tb
+        SET
+            menu_name = #{menuName},
+            menu_category = #{menuCategory},
+            menu_sequence = #{menuSequence},
+            single_img = #{singleImg},
+            set_img = #{setImg},
+            is_exposure = #{isExposure}
+        WHERE
+            menu_id = #{menuId}
+    </update>
+
 
 </mapper>

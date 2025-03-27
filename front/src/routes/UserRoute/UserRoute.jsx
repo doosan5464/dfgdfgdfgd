@@ -7,8 +7,9 @@ import { selectedLanguageState } from '../../atoms/selectedLanguage/selectedLang
 import { useRecoilValue } from "recoil";
 import Payment from '../../pages/userPages/Payment/Payment';
 import PrePayment from '../../pages/userPages/PrePayment/PrePayment';
-import KaKaoPay from '../../pages/userPages/KaKaoPay/KaKaoPay';
+import SelectPayMethod from '../../pages/userPages/SelectPayMethod/SelectPayMethod';
 import SavePoint from '../../pages/userPages/SavePoint/SavePoint';
+
 
 
 function UserRoute(props) {
@@ -17,8 +18,9 @@ function UserRoute(props) {
 
     return (
         <Routes>
-          <Route path="/savePoint/*" element={<SavePoint />} />
-          <Route path="/kakaoPay/*" element={<KaKaoPay />} />
+          <Route path="/exportOrderId/*" element={<ExportOrderId />} /> 
+          <Route path="/savePoint/*" element={<SavePoint />} /> 
+          <Route path="/selectPayMethod/*" element={<SelectPayMethod />} />
           <Route path="/prePayment/*" element={<PrePayment />} />
           <Route path="/payment/*" element={<Payment />} />
           <Route path="/menu/*" element={<SelectMenu />} />

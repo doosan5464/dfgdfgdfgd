@@ -7,7 +7,7 @@ function Payment(props) {
     const navi = useNavigate();
 
     const handleEasyPay = () => {
-        navi("/kakaopay");
+        navi("/selectPayMethod");
     }
 
     const handleBack = () => {

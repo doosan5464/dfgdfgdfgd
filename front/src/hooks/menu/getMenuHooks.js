@@ -34,7 +34,7 @@ export const useMenuDetail = (menuId) => {
             if (!menuId) return null;
 
             try {
-                const response = await fetchMenuDetailApi(menuId); // ✅ response 변수에 할당
+                const response = await fetchMenuDetailApi(menuId); // response 변수에 할당
                 console.log("🔥 [useMenuDetail] 받아온 response:", response);
 
                 return response || null;

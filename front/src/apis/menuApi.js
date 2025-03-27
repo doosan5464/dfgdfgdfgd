@@ -47,33 +47,23 @@ export const fetchMenuDetailApi = async (menuId) => {
   }
 };
 
-// 메뉴 추가 (FormData 사용)
+// 메뉴 추가 API (JSON으로 전송)
 export const addMenuApi = async (formData) => {
   const token = localStorage.getItem("AccessToken");
   if (!token) throw new Error("❌ 인증 정보 없음! 다시 로그인해주세요.");
 
-  const data = new FormData();
-  data.append("menuName", formData.menuName);
-  data.append("menuCategory", formData.menuCategory);
-  data.append("menuSequence", formData.menuSequence);
-  data.append("isExposure", formData.isExposure);
-  data.append("prices", JSON.stringify(formData.prices)); // JSON 문자열로 가격 리스트 전송
-
-  if (formData.singleImg) data.append("singleImg", formData.singleImg);
-  if (formData.setImg) data.append("setImg", formData.setImg);
-
   try {
-      const response = await api.post("/api/admin/menus", data, {
-          headers: {
-              Authorization: `Bearer ${token}`,
-              // Content-Type 생략: axios가 FormData일 때 자동으로 multipart/form-data 설정함
-          },
-      });
-      console.log("✅ [addMenuApi] 메뉴 추가 성공:", response.data);
-      return response.data;
+    const response = await api.post("/api/admin/menus", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("✅ [addMenuApi] 메뉴 추가 성공:", response.data);
+    return response.data;
   } catch (error) {
-      console.error("❌ [addMenuApi] 메뉴 추가 실패:", error);
-      throw error;
+    console.error("❌ [addMenuApi] 메뉴 추가 실패:", error);
+    throw error;
   }
 };
 
@@ -97,18 +87,31 @@ export const deleteMenuApi = async (menuId) => {
   }
 };
 
-//카테고리ID로 메뉴찾아오기
-export const getMenuRequest = async (categoryId) => {
-  return await instance.get(`/menus?categoryId=${categoryId}`);
-};
-
 // 페이지네이션용 이미지 + 메뉴명 가지고오기
 export const fetchAllMenuImages = async () => {
   const response = await api.get("/api/admin/menus/images");
   return response.data;
 };
 
+// 메뉴 수정
+export const updateMenuApi = async ({ menuId, ...data }) => {
+  const token = localStorage.getItem("AccessToken");
+  if (!token) throw new Error("❌ 인증 정보 없음! 다시 로그인해주세요.");
 
+  try {
+    const response = await api.put(`/api/admin/menus/${menuId}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("✅ [updateMenuApi] 메뉴 수정 성공:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("❌ [updateMenuApi] 메뉴 수정 실패:", error);
+    throw error;
+  }
+};
 
 
 /*

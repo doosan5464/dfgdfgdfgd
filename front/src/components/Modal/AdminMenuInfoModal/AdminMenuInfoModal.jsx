@@ -25,10 +25,9 @@ function AdminMenuInfoModal({ menuId }) {
             navigate(`/admin/main/product/manage?menuId=${menuData}`);  
         }
         if(buttonName === 'info') {
-
             navigate(`/admin/main/option/`); 
         }
-    //AdminProductManage수정할거
+    //AdminProductManage수정할거 - 나중에 메뉴 상세정보 변경에도 사용해야댐.
     // const [ searchParams, setSearchParams ] = useSearchParams();
     // const [selectedMenu, setSelectedMenu] = useState(!!searchParams.get("menuId") ? parseInt(searchParams.get("menuId")) : 1);
     //
@@ -101,48 +100,50 @@ function AdminMenuInfoModal({ menuId }) {
                         </div>
                         <div className="line">
                             <div>중량(g)</div>
-                            <div>{getInfoMenuById?.data?.data?.weightG}</div>
-                            <div>{getInfoMenuById?.data?.data?.weightG}</div>
+                            <div>{getInfoMenuById?.data?.data?.weightG}g</div>
+                            <div>-</div>
                         </div>
                         <div className="line">
                             <div>중량(ml)</div>
-                            <div>{getInfoMenuById?.data?.data?.volumeMl}</div>
-                            <div>{getInfoMenuById?.data?.data?.volumeMl}</div>
+                            <div>{getInfoMenuById?.data?.data?.volumeMl}ml</div>
+                            <div>-</div>
                         </div>
                         <div className="line">
                             <div>열량</div>
-                            <div>{getInfoMenuById?.data?.data?.calories}</div>
-                            <div>{getInfoMenuById?.data?.data?.calories}</div>
+                            <div>{getInfoMenuById?.data?.data?.calories}kcal</div>
+                            <div>-</div>
                         </div>
                         <div className="line">
                             <div>당</div>
-                            <div>{getInfoMenuById?.data?.data?.sugars}</div>
-                            <div>{getInfoMenuById?.data?.data?.sugars}</div>
+                            <div>{getInfoMenuById?.data?.data?.sugars}g</div>
+                            <div>{Math.round((getInfoMenuById?.data?.data?.sugars / 100) * 100)}%</div>
                         </div>
                         <div className="line">
                             <div>단백질</div>
-                            <div>{getInfoMenuById?.data?.data?.protein}</div>
-                            <div>{getInfoMenuById?.data?.data?.protein}</div>
+                            <div>{getInfoMenuById?.data?.data?.protein}g</div>
+                            <div>{Math.round((getInfoMenuById?.data?.data?.protein / 55) * 100)}%</div>
                         </div>
                         <div className="line">
                             <div>포화지방</div>
-                            <div>{getInfoMenuById?.data?.data?.saturatedFat}</div>
-                            <div>{getInfoMenuById?.data?.data?.saturatedFat}</div>
+                            <div>{getInfoMenuById?.data?.data?.saturatedFat}g</div>
+                            <div>{Math.round((getInfoMenuById?.data?.data?.saturatedFat / 54) * 100)}%</div>
                         </div>
                         <div className="line">
                             <div>나트륨</div>
-                            <div>{getInfoMenuById?.data?.data?.sodium}</div>
-                            <div>{getInfoMenuById?.data?.data?.sodium}</div>
+                            <div>{getInfoMenuById?.data?.data?.sodium}mg</div>
+                            <div>{Math.round((getInfoMenuById?.data?.data?.sodium / 2000) * 100)}%</div>
                         </div>
                         <div className="line">
                             <div>카페인</div>
-                            <div>{getInfoMenuById?.data?.data?.caffeine}</div>
-                            <div>{getInfoMenuById?.data?.data?.caffeine}</div>
+                            <div>{getInfoMenuById?.data?.data?.caffeine}mg</div>
+                            <div>{Math.round((getInfoMenuById?.data?.data?.caffeine / 400) * 100)}%</div>
                         </div>
                     </div>
                     <div css={s.bodydown}>
                         <div>원산지</div>
-                        <div>{getInfoMenuById?.data?.data?.menuOrigin}</div>
+                        {getInfoMenuById?.data?.data?.menuOrigin?.split('/').map((item, index) => (
+                            <div key={index}>{item}</div>))
+                        }
                     </div>
                 </div>
                 <div css={s.modalfooter}>

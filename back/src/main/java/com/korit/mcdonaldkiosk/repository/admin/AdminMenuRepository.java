@@ -46,14 +46,10 @@ public class AdminMenuRepository {
 
     public Optional<Boolean> addMenu(Menu menu, List<MenuPrice> menuPrices) {
         try {
-            // 1. 메뉴 데이터 추가 (menu_tb)
             adminMenuMapper.insertMenu(menu);
-
-            // 2. 가격 데이터 추가 (menu_price_tb)
             if (!menuPrices.isEmpty()) {
                 adminMenuMapper.insertMenuPrices(menu.getMenuId(), menuPrices);
             }
-
             return Optional.of(true);
         } catch (Exception e) {
             e.printStackTrace();
@@ -63,21 +59,26 @@ public class AdminMenuRepository {
 
     public Optional<Boolean> deleteMenu(int menuId) {
         try {
-            // 1. 가격 정보 삭제 (menu_price_tb) - menu_id 외래키 참조로 인해 먼저 삭제 필요
             adminMenuMapper.deleteMenuPrices(menuId);
-
-            // 2. 메뉴 정보 삭제 (menu_tb)
             int deletedRows = adminMenuMapper.deleteMenu(menuId);
-
-            // 삭제된 행이 없으면 false 반환
-            if (deletedRows == 0) {
-                return Optional.of(false);
-            }
-
-            return Optional.of(true); //  성공 시 true 반환
+            return Optional.of(deletedRows > 0);
         } catch (Exception e) {
             e.printStackTrace();
-            return Optional.of(false); //  실패 시 false 반환
+            return Optional.of(false);
+        }
+    }
+
+    public Optional<Boolean> updateMenu(Menu menu, List<MenuPrice> menuPrices) {
+        try {
+            adminMenuMapper.updateMenu(menu);
+            adminMenuMapper.deleteMenuPrices(menu.getMenuId());
+            if (!menuPrices.isEmpty()) {
+                adminMenuMapper.insertMenuPrices(menu.getMenuId(), menuPrices);
+            }
+            return Optional.of(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Optional.of(false);
         }
     }
 

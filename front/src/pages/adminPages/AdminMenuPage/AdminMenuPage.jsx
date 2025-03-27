@@ -173,7 +173,7 @@ function AdminMenuPage(props) {
                             position: "static",
                             boxSizing: "border-box",
                             borderRadius: "1.5rem",
-                            height: "100rem",
+                            height: "85rem",
                             width: "120rem",
                         }
                     }}

@@ -3,14 +3,13 @@ import { css } from "@emotion/react";
 export const modalcontainer = css`
     display: flex;
     flex-direction: column;
-    margin: 1rem 0;
 `;
 
 export const text = css`
     margin: 1rem 0 1rem 0rem;
     border-bottom: 0.5rem dashed #00000022;
     padding-bottom: 1rem;
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 600;
     text-align: center;
     width: 10em;
@@ -19,7 +18,7 @@ export const text = css`
 export const modalhead = css`
     display: flex;
     justify-content: space-around;
-    margin-bottom: 3rem;
+    margin-bottom: 2.5rem;
     font-size: 2.5rem;
     font-weight: 500;
 `;
@@ -40,6 +39,8 @@ export const headright = css`
     flex-direction: column;
     justify-content: center;
     flex-grow: 3;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 
     .onoff {
         display: flex;
@@ -59,10 +60,10 @@ export const headright = css`
             align-items: center;
             border-right: .3rem solid #00000055;
             flex-grow: 1;
+
             
             & div {
                 margin: 1rem 0;
-                
             }
         }
         
@@ -114,9 +115,12 @@ export const modalbody = css`
     display: flex;
     flex-direction: column;
 `;
+
 export const bodyup = css`
     display: flex;
     margin: 1rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     
     
     .line {
@@ -130,6 +134,7 @@ export const bodyup = css`
 
         & > div {
             margin-top: 1.2rem;
+
         }
 
     }
@@ -148,13 +153,13 @@ export const bodyup = css`
 
 export const bodydown = css`
     display: flex;
-    flex-direction: column;
-    margin: 1.5rem 0 1rem 5rem;
-    font-size: 3rem;
+    align-items: center;
+    margin: 2rem 0 2rem 3.5rem;
+    font-size: 2.5rem;
 
     & div {
-        border-top: 0.1rem dashed #00000055;
-        padding: 1rem 0;
+        border-left: 0.1rem dashed #00000055;
+        padding: 0 1.5rem;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -163,8 +168,10 @@ export const bodydown = css`
 
     & div:nth-of-type(1) {
         border: none;
-        font-size: 3.5rem;
+        padding-right: 2rem;
+        font-size: 3rem;
         font-weight: 500;
+        overflow: unset;
     }
 `;
 
@@ -172,7 +179,7 @@ export const modalfooter = css`
     display: flex;
     justify-content: space-around;
     align-items: center;
-    margin-top: 4rem;
+    margin-top: 2rem;
     padding: 0 10rem;
 
     & button {

@@ -1,6 +1,7 @@
 package com.korit.mcdonaldkiosk.controller.admin;
 
 import com.korit.mcdonaldkiosk.dto.request.ReqExposureDto;
+import com.korit.mcdonaldkiosk.dto.request.ReqMenuDto;
 import com.korit.mcdonaldkiosk.entity.Menu;
 import com.korit.mcdonaldkiosk.entity.MenuPrice;
 import com.korit.mcdonaldkiosk.entity.MenuWithAllInfo;
@@ -22,7 +23,7 @@ public class AdminMenuController {
     // 메뉴의 모든 정보를 조회하는 API
     @GetMapping("/menuinfo")
     public ResponseEntity<MenuWithAllInfo> getAllInfoMenu(@ModelAttribute ReqExposureDto dto) {
-        System.out.println(adminMenuService.getAllInfoMenuList(dto.getMenuId()));
+        //System.out.println(adminMenuService.getAllInfoMenuList(dto.getMenuId()));
         return ResponseEntity.ok().body(adminMenuService.getAllInfoMenuList(dto.getMenuId()));
     }
 
@@ -66,6 +67,9 @@ public class AdminMenuController {
         return ResponseEntity.ok().body(menu);
     }
 
+    // 메뉴 수정
+
+
 
     // 메뉴 추가 (가격 포함)
     @PostMapping("/menus")
@@ -79,7 +83,40 @@ public class AdminMenuController {
         adminMenuService.deleteMenu(menuId);
     }
 
+    //  메뉴 수정 API
+    @PutMapping("/menus/{menuId}")
+    public ResponseEntity<?> updateMenu(
+            @PathVariable int menuId,
+            @RequestBody ReqMenuDto requestDto
+    ) {
+        // DTO → Entity로 변환
+        Menu menu = Menu.builder()
+                .menuId(menuId)
+                .menuName(requestDto.getMenuName())
+                .menuCategory(requestDto.getMenuCategory())
+                .menuSequence(requestDto.getMenuSequence())
+                .singleImg(requestDto.getSingleImg())
+                .setImg(requestDto.getSetImg())
+                .isExposure(requestDto.getIsExposure())
+                .build();
 
+        List<MenuPrice> menuPrices = requestDto.getPrices().stream()
+                .map(priceDto -> MenuPrice.builder()
+                        .menuId(menuId)
+                        .size(priceDto.getSize())
+                        .menuPrice(priceDto.getPrice())
+                        .discountPrice(priceDto.getDiscountPrice())
+                        .build())
+                .toList();
+
+        boolean result = adminMenuService.updateMenu(menu, menuPrices);
+
+        if (result) {
+            return ResponseEntity.ok("메뉴 수정 성공");
+        } else {
+            return ResponseEntity.internalServerError().body("메뉴 수정 실패");
+        }
+    }
 
 }
 

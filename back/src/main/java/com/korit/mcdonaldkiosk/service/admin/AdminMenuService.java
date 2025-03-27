@@ -43,16 +43,19 @@ public class AdminMenuService {
         return adminMenuRepository.getMenuById(menuId).orElse(null);
     }
 
-    // 메뉴 추가 (가격 정보 포함)
-    @Transactional
+    // 메뉴 추가
     public boolean addMenu(Menu menu, List<MenuPrice> menuPrices) {
         return adminMenuRepository.addMenu(menu, menuPrices).orElse(false);
     }
 
-    // 메뉴 삭제 (menu_tb & menu_price_tb)
-    @Transactional
+    // 메뉴 삭제
     public boolean deleteMenu(int menuId) {
         return adminMenuRepository.deleteMenu(menuId).orElse(false);
+    }
+
+    // 메뉴 수정
+    public boolean updateMenu(Menu menu, List<MenuPrice> menuPrices) {
+        return adminMenuRepository.updateMenu(menu, menuPrices).orElse(false);
     }
 
 
@@ -61,26 +64,3 @@ public class AdminMenuService {
     }
 }
 
-
-//    public List<String> getAllCategories() {
-//        List<Menu> allCategories = adminMenuRepository.findAllCategories();
-//        //객체에서 카테고리 값만 빼온다.
-//        List<String> categories = allCategories.stream()
-//                .map(Menu::getMenuCategory)
-//                .collect(Collectors.toList());
-//        return categories;
-//    }
-//
-//    // 메뉴 갯수를 페이지에 할당하는 메서드
-//    public int getMenuListCountByCategory(String searchCategory) {
-//        return adminMenuRepository.findMenuCountAllBySearchCategory(searchCategory);
-//    }
-//
-//    public List<Menu> getMenuListSearchByCategory(ReqMenuListDto reqMenuListDto) {
-//      int startIndex = (reqMenuListDto.getPage() - 1) * reqMenuListDto.getLimitCount();
-//      return adminMenuRepository.findMenuListByCategory(
-//              startIndex,
-//              reqMenuListDto.getLimitCount(),
-//              reqMenuListDto.getCategory()
-//      );
-//    }

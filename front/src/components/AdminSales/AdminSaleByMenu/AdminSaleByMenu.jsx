@@ -17,7 +17,7 @@ function AdminSaleByMenu({menuList}) {
     const [menuInfo, setMenuInfo] = useState();
     const [selectedMenu, setSelectedMenu] = useState();
     const [yearOptions, setYearOptions] = useState([]);
-    const [year, setYear] = useState();
+    const [year, setYear] = useState({ value: "", label: "" });
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -113,24 +113,19 @@ function AdminSaleByMenu({menuList}) {
                                 <div>총 주문 수</div>
                             </div>
                             <Select
-                                options={[...new Set(yearOptions)].map(
-                                    (year) => ({
-                                        label: year,
-                                        value: year,
-                                    })
-                                )}
-                                value={year}
+                                options={[...new Set(yearOptions)].map((year) => ({
+                                    label: year,
+                                    value: year,
+                                }))}
+                                value={year?.value}  // year의 value 속성 사용
                                 onChange={handleYearOptionsOnChange}
                                 placeholder="연도"
                                 styles={{
                                     control: (baseStyles, state) => ({
                                         ...baseStyles,
-                                        border: state.isFocused
-                                            ? "none"
-                                            : "none",
-                                        // borderBottom: "2px solid #222",
+                                        border: state.isFocused ? "none" : "none",
                                         backgroundColor: "transparent",
-                                        fontSize: "25px",
+                                        fontSize: "20px",
                                     }),
                                 }}
                             />

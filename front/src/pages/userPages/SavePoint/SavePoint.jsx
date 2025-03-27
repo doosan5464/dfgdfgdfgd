@@ -3,14 +3,19 @@ import React, { useState } from "react";
 /**@jsxImportSource @emotion/react */
 import * as s from './style';
 import { useProcessPointMutation } from "../../../mutations/useProcessPointMutation";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const SavePoint = () => {
+    const navi = useNavigate();
+
     const [input, setInput] = useState("");
     const [status, setStatus] = useState(null); // 1: 확인, 0: 넘어가기
     const [calcul, setCalcul] = useState(1);  // 포인트 적립(1) 기본 설정
-    const [price, setPrice] = useState(0);  // 기본값 0으로 설정
 
     const { mutateAsync: processPoint } = useProcessPointMutation();  // 포인트 적립 처리 API 호출
+
+    const location = useLocation();
+    const [point, setPoint] = useState(location.state?.point || 0);
 
     // 전화번호 포맷팅 함수
     const formatPhoneNumber = (value) => {
@@ -33,8 +38,6 @@ const SavePoint = () => {
                 const formattedPhoneNumber = input.replace(/-/g, ""); // 하이픈 제거
                 const phoneNumberWithHyphen = formatPhoneNumber(formattedPhoneNumber); // 다시 하이픈 추가
 
-                // 포인트 적립 처리
-                const point = Math.floor(price * 0.05);  // 5% 포인트 계산
                 try {
                     await processPoint({
                         phoneNumber: phoneNumberWithHyphen,
@@ -42,6 +45,10 @@ const SavePoint = () => {
                         point: point,
                     });
                     alert(`포인트 ${point}점이 적립되었습니다!`);
+                    
+                    setPoint(0);
+                    
+                    navi("/exportOrderId");
                 } catch (error) {
                     alert("포인트 적립 중 오류가 발생했습니다.");
                 }
@@ -57,6 +64,8 @@ const SavePoint = () => {
 
     const handleSkip = () => {
         setStatus(0);
+
+        navi("/exportOrderId");
     };
 
     return (

@@ -11,7 +11,7 @@ export const searchSalesByMenuRequest = async () => {
 export const getPaymentsRequest = async () => {
     return await portOneInstance.get("/payments", {
         headers: {
-            Authorization: `PortOne ${process.env.REACT_APP_PORTONE_API_SECRET_KEY}`,
+            Authorization: `Bearer ${import.meta.env.REACT_APP_PORTONE_API_SECRET_KEY}`,
         },
         params: {
             requestBody: JSON.stringify({
@@ -19,7 +19,7 @@ export const getPaymentsRequest = async () => {
                     size: 1000,
                 },
                 filter: {
-                    storeId: process.env.REACT_APP_STORE_ID,
+                    storeId: import.meta.env.REACT_APP_STORE_ID,
                     isTest: true,
                 },
             }),
@@ -35,7 +35,7 @@ export const paymentsCancelRequest = async (id) => {
         },
         {
             headers: {
-                Authorization: `PortOne ${process.env.REACT_APP_PORTONE_API_SECRET_KEY}`,
+                Authorization: `Bearer ${import.meta.env.REACT_APP_PORTONE_API_SECRET_KEY}`,
             },
         }
     );

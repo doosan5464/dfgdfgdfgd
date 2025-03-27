@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.korit.mcdonaldkiosk.mapper.AdminPayMapper">
+
+    <select id="selectPayListByDate" resultType="com.korit.mcdonaldkiosk.entity.PayList">
+        SELECT
+            od.order_id,
+            m.menu_name,
+            mp.size,
+            mp.menu_price,
+            CASE
+                WHEN od.is_set = 1 THEN mp.discount_price
+                ELSE mp.menu_price
+                END AS price,
+            od.menu_count,
+            o.total_price,
+            o.order_time
+        FROM
+            order_detail_tb od
+        LEFT OUTER JOIN
+            menu_price_tb mp ON od.menu_price_id = mp.menu_price_id
+        LEFT OUTER JOIN
+            menu_tb m ON mp.menu_id = m.menu_id
+        LEFT OUTER JOIN
+            order_tb o ON od.order_id = o.order_id;
+        WHERE
+            o.order_time LIKE CONCAT(#{time}, '%');
+    </select>
+
+</mapper>

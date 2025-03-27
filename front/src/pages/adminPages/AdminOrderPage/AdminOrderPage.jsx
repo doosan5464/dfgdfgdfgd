@@ -3,8 +3,20 @@ import * as s from './style';
 import React, { useState } from 'react';
 
 function AdminOrderPage(props) {
+    const [ payments, setPayments ] = useState([]);
 
-    
+    const PAYSTATUS = { //status의 값을 보고 메세지 띄우기
+        "PAID": "결제완료",
+        "FAILED": "결제실패",
+        "CANCELLED": "결제취소",
+        "READY": "결제 중"
+    }
+
+    const products = {
+
+    }
+
+    //날짜 선택
     const today = () => {
         const date = new Date();
         const year = date.getFullYear();
