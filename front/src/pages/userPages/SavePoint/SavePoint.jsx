@@ -7,6 +7,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const SavePoint = () => {
     const navi = useNavigate();
+    
+    const location = useLocation();
+    const [point, setPoint] = useState(location.state?.point || 0);
 
     const [input, setInput] = useState("");
     const [status, setStatus] = useState(null); // 1: 확인, 0: 넘어가기
@@ -14,8 +17,6 @@ const SavePoint = () => {
 
     const { mutateAsync: processPoint } = useProcessPointMutation();  // 포인트 적립 처리 API 호출
 
-    const location = useLocation();
-    const [point, setPoint] = useState(location.state?.point || 0);
 
     // 전화번호 포맷팅 함수
     const formatPhoneNumber = (value) => {
@@ -45,10 +46,10 @@ const SavePoint = () => {
                         point: point,
                     });
                     alert(`포인트 ${point}점이 적립되었습니다!`);
-                    
+
                     setPoint(0);
                     
-                    navi("/exportOrderId");
+                    navi("/exportOrderId", { state: { orderId: location.state?.orderId } });
                 } catch (error) {
                     alert("포인트 적립 중 오류가 발생했습니다.");
                 }

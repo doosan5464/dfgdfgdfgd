@@ -72,7 +72,7 @@ const KakaoPay = () => {
             const point = Math.floor(totalPrice * 0.05);  // 5% 포인트 계산
             console.log("마일리지 금액 : ", point);
 
-            navi("/savePoint", { state: { point: point } }); // state로 넘김
+            navi("/savePoint", { state: { point: point, orderId: products[0].orderId } }); // state로 넘김
 
             // 여기서 order_detail_tb에 보내야 함 (장바구니 초기화 하기 전에)
             console.log("주문번호 : ", products);

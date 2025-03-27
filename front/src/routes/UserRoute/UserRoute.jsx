@@ -9,6 +9,7 @@ import Payment from '../../pages/userPages/Payment/Payment';
 import PrePayment from '../../pages/userPages/PrePayment/PrePayment';
 import SelectPayMethod from '../../pages/userPages/SelectPayMethod/SelectPayMethod';
 import SavePoint from '../../pages/userPages/SavePoint/SavePoint';
+import ExportOrderId from '../../pages/userPages/ExportOrderId/ExportOrderId';
 
 
 
