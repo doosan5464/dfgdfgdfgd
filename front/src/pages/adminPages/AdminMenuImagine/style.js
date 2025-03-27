@@ -82,6 +82,29 @@ export const imageBox = css`
 	cursor: pointer;
 `;
 
+export const addImageBox = css`
+	width: 70%;
+	height: 70%;
+	border: 2px dashed #ccc;
+	border-radius: 8px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+
+	svg {
+		font-size: 2.5rem;
+		color: #aaa;
+	}
+
+	p {
+		margin-top: 0.5rem;
+		font-size: 1.2rem;
+		color: #666;
+	}
+`;
+
 export const modalImage = css`
 	width: 12rem;
 	height: 12rem;

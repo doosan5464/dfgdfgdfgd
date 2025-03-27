@@ -63,33 +63,46 @@ public class AdminMenuController {
     // 특정 메뉴의 가격 정보 조회
     @GetMapping("/menus/{menuId}")
     public ResponseEntity<?> getMenuDetail(@PathVariable int menuId) {
-        Menu menu = adminMenuService.getMenuById(menuId);
-        return ResponseEntity.ok().body(menu);
+        return ResponseEntity.ok().body(adminMenuService.getMenuById(menuId));
     }
-
-    // 메뉴 수정
-
-
 
     // 메뉴 추가 (가격 포함)
     @PostMapping("/menus")
-    public void addMenu(@RequestBody Menu menu, @RequestParam List<MenuPrice> prices) {
-        adminMenuService.addMenu(menu, prices);
+    public ResponseEntity<?> addMenu(@RequestBody ReqMenuDto dto) {
+        // DTO → Entity 변환
+        Menu menu = Menu.builder()
+                .menuName(dto.getMenuName())
+                .menuCategory(dto.getMenuCategory())
+                .menuSequence(dto.getMenuSequence())
+                .singleImg(dto.getSingleImg())
+                .setImg(dto.getSetImg())
+                .isExposure(dto.getIsExposure())
+                .build();
+
+        List<MenuPrice> menuPrices = dto.getPrices().stream()
+                .map(p -> MenuPrice.builder()
+                        .size(p.getSize())
+                        .menuPrice(p.getMenuPrice())
+                        .discountPrice(p.getDiscountPrice())
+                        .build())
+                .toList();
+
+        return ResponseEntity.ok().body(adminMenuService.addMenu(menu, menuPrices));
     }
 
     // 메뉴 삭제
     @DeleteMapping("/menus/{menuId}")
-    public void deleteMenu(@PathVariable int menuId) {
-        adminMenuService.deleteMenu(menuId);
+    public ResponseEntity<?> deleteMenu(@PathVariable int menuId) {
+
+        return ResponseEntity.ok().body(adminMenuService.deleteMenu(menuId));
     }
 
-    //  메뉴 수정 API
+    //  메뉴 수정
     @PutMapping("/menus/{menuId}")
     public ResponseEntity<?> updateMenu(
             @PathVariable int menuId,
-            @RequestBody ReqMenuDto requestDto
-    ) {
-        // DTO → Entity로 변환
+            @RequestBody ReqMenuDto requestDto) {
+        // DTO -> Entity로 변환
         Menu menu = Menu.builder()
                 .menuId(menuId)
                 .menuName(requestDto.getMenuName())
@@ -104,18 +117,12 @@ public class AdminMenuController {
                 .map(priceDto -> MenuPrice.builder()
                         .menuId(menuId)
                         .size(priceDto.getSize())
-                        .menuPrice(priceDto.getPrice())
+                        .menuPrice(priceDto.getMenuPrice())
                         .discountPrice(priceDto.getDiscountPrice())
                         .build())
                 .toList();
 
-        boolean result = adminMenuService.updateMenu(menu, menuPrices);
-
-        if (result) {
-            return ResponseEntity.ok("메뉴 수정 성공");
-        } else {
-            return ResponseEntity.internalServerError().body("메뉴 수정 실패");
-        }
+        return ResponseEntity.ok().body(adminMenuService.updateMenu(menu, menuPrices));
     }
 
 }

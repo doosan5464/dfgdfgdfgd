@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 @Builder
 public class ReqUserOrderDto {
+    private int orderId;
     private int menuPriceId;
     private int menuCount;
     private int isSet;

@@ -8,6 +8,7 @@
         SELECT
             od.order_id,
             m.menu_name,
+            m.menu_category,
             mp.size,
             mp.menu_price,
             CASE

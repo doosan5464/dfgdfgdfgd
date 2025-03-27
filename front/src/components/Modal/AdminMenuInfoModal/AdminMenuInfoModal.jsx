@@ -27,6 +27,8 @@ function AdminMenuInfoModal({ menuId }) {
         if(buttonName === 'info') {
             navigate(`/admin/main/option/`); 
         }
+    
+    //삭제ㄴㄴㄴ
     //AdminProductManage수정할거 - 나중에 메뉴 상세정보 변경에도 사용해야댐.
     // const [ searchParams, setSearchParams ] = useSearchParams();
     // const [selectedMenu, setSelectedMenu] = useState(!!searchParams.get("menuId") ? parseInt(searchParams.get("menuId")) : 1);

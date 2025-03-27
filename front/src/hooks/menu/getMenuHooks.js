@@ -12,15 +12,11 @@ const useMenuData = () => {
                 const response = await adminFetchMenuApi();
                 return response || [];
             } catch (err) {
-                console.error("❌ [useMenuData] API 요청 실패:", err);
                 return [];
             }
         },
         staleTime: 5 * 60 * 1000,  // 5분 캐싱
     });
-
-    console.log("🔥 [useMenuData] 전체 메뉴 응답:", data);
-    if (error) console.error("❌ [useMenuData] 오류 발생:", error);
 
     // data, error, isLoading 값을 반환
     return { data, error, isLoading };
@@ -35,18 +31,15 @@ export const useMenuDetail = (menuId) => {
 
             try {
                 const response = await fetchMenuDetailApi(menuId); // response 변수에 할당
-                console.log("🔥 [useMenuDetail] 받아온 response:", response);
 
                 return response || null;
             } catch (err) {
-                console.error("❌ [useMenuDetail] API 요청 실패:", err);
                 return null;
             }
         },
         enabled: !!menuId,
     });
 
-    console.log(`🔥 [useMenuDetail] 선택한 메뉴(${menuId}) 응답:`, data);
     return { data, error };
 };
 

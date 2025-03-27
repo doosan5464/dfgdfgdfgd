@@ -9,7 +9,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class ReqMenuDto {
     private String menuName;
     private String menuCategory;
@@ -18,16 +17,6 @@ public class ReqMenuDto {
     private String setImg;
     private int isExposure;
 
-    private List<PriceDto> prices;
+    private List<ReqMenuPriceDto> prices;
 
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class PriceDto {
-        private String size;         // "M" or "L"
-        private int price;           // 정가
-        private Integer discountPrice; // 할인가는 nullable
-    }
 }

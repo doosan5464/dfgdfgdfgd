@@ -1,3 +1,4 @@
+import axios from "axios";
 import { api } from "../../configs/axiosConfig";
 import { instance, portOneInstance } from "../utils/instance";
 
@@ -26,9 +27,14 @@ export const searchSalesByMenuRequest = async () => {
 
 
 export const getPaymentsRequest = async () => {
-    return await portOneInstance.get("/payments", {
+    const jwtResponse = await axios.post("https://api.portone.io/login/api-secret",{
+        "apiSecret": import.meta.env.VITE_PORTONE_API_KEY,
+
+      });
+    const accessToken = jwtResponse.data.accessToken;
+    return await axios.get("https://api.portone.io/payments", {
         headers: {
-            Authorization: `Bearer ${import.meta.env.REACT_APP_PORTONE_API_SECRET_KEY}`,
+            Authorization: `Bearer ${accessToken}`,
         },
         params: {
             requestBody: JSON.stringify({

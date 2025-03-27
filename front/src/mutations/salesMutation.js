@@ -1,4 +1,5 @@
-import { getSalesRequest, searchSalesByMenuRequest } from "../apis/AdminApi/AdminSalesApi";
+import { useMutation } from "@tanstack/react-query";
+import { getPaymentsRequest, getSalesRequest, searchSalesByMenuRequest } from "../apis/AdminApi/AdminSalesApi";
 
 export const searchSalesByMenu = () => useMutation({
     mutationKey: ["searchSalesByMenu"],
@@ -11,3 +12,9 @@ export const getSales = () => useMutation({
     mutationFn: getSalesRequest,
     retry: 0,
 });
+
+export const portOneSales = () => useMutation({
+    mutationKey: ["portOneSales"],
+    mutationFn: getPaymentsRequest,
+    retry: 0,
+})

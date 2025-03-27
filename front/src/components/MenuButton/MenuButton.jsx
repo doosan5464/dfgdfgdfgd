@@ -2,8 +2,8 @@
 import * as s from "./style";
 
 function MenuButton({ img, menuName, price, onClick }) {
-    // price가 객체일 경우, 객체의 값을 적절히 추출
-    const displayPrice = typeof price === 'object' ? price.menuPrice : price; // menuPrice 속성만 추출하여 사용
+    // 가격이 배열로 전달되는 경우 첫 번째 요소에서 menuPrice를 가져오기
+    const displayPrice = price && price.length > 0 ? price[0].menuPrice : '가격 정보 없음';  // 첫 번째 항목의 menuPrice를 사용
 
     return (
         <div css={s.menuLayout}>

@@ -9,6 +9,7 @@ import PageModal from '../../Modal/PageModal/PageModal';
 import { Select } from '@mui/material';
 import ToggleSwitch from '../../ToggleSwitch/ToggleSwitch';
 import AdminSalesChart from '../AdminSalesChart/AdminSalesChart';
+import { salesModeState } from '../../../atoms/salesModeState/salesModeState';
 
 function AdminSaleByMenu({menuList}) {
     const [searchParams, setSearchParams] = useSearchParams();

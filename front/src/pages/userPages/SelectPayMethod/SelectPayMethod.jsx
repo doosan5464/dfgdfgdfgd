@@ -34,9 +34,12 @@ const KakaoPay = () => {
     // 장바구니 상태 관리
     const [addedCartState] = useRecoilState(addedCart);
 
-    console.log("장바구니 목록 : ", addedCartState);
+    // 장바구니의 가격 합산
+    const totalPrice = addedCartState.reduce((sum, item) => sum + (item.detailPrice) * item.quantity, 0); // 모든 상품 가격 합산
 
-    // const productName = `(${productMain[0]}${productSide[0]}${productDrink[0]}) ${productQuantity[0]}개`; // 첫 번째 메뉴 이름 + 나머지 개수
+    console.log("장바구니 목록 : ", addedCartState);
+    
+    console.log("DB에 보낼 총 가격 : ", totalPrice);
 
     const productName = addedCartState
     .map((temp) => 
@@ -45,13 +48,8 @@ const KakaoPay = () => {
             .join(", ") // 공백 하나로 이어붙이기
     )
     .join(", "); // 여러 개의 상품명을 하나의 문자열로 변환 (그래야 카카오페이API에 포함시킬 수 있음)
-
-    console.log("포트원에 보낼 이름 (문자열 확인):", productName, typeof productName);
     
-    // 장바구니의 가격 합산
-    const totalPrice = addedCartState.reduce((sum, item) => sum + (item.detailPrice) * item.quantity, 0); // 모든 상품 가격 합산
-
-    // 결제 상품 리스트 생성
+    // 지금은 임시로 주문번호를 쓰는데, 관리자 메뉴쪽에서 주문번호를 관리하는 페이지를 만들어서, 1000 9001 9001 9002 9003 / 9001 9066
     const products = addedCartState.map((item) => ({
         orderId: Math.min(addedCartState.length * 1000, 9000) + (addedCartState.length - 1), // 1000부터 시작, 1씩 증가
         productName: item.detailMenu,
@@ -97,8 +95,6 @@ const KakaoPay = () => {
             }); // state로 넘김
 
             // 여기서 order_detail_tb에 보내야 함 (장바구니 초기화 하기 전에) @@@@@@@@@@@@@@@@@@@@@@@
-            console.log("주문번호 : ", products);
-            console.log("임시 주문번호 : ", products[0].orderId);
 
 
             // 장바구니 상태 초기화

@@ -19,128 +19,124 @@ export const fetchMenuData = async () => {
 
 // 관리자용 전체 메뉴 목록 가져오기
 export const adminFetchMenuApi = async () => {
-  try {
-      const response = await api.get("/api/admin/menus");
-      console.log("🔥 [adminFetchMenuApi] 전체 메뉴 응답:", response.data);
-      return response.data;
-  } catch (error) {
-      console.error("❌ [adminFetchMenuApi] API 요청 실패:", error);
-      throw error;
-  }
+    try {
+        const response = await api.get("/api/admin/menus");
+        return response.data;
+    } catch (error) {
+        console.error("❌ [adminFetchMenuApi] API 요청 실패:", error);
+        throw error;
+    }
 };
 
 
 // 특정 메뉴 상세 정보 가져오기
 export const fetchMenuDetailApi = async (menuId) => {
-  if (!menuId) {
-      console.warn("⚠️ [fetchMenuDetail] menuId가 없습니다.");
-      return null;
-  }
+    if (!menuId) {
+        console.warn("⚠️ [fetchMenuDetail] menuId가 없습니다.");
+        return null;
+    }
 
-  try {
-      const response = await api.get(`/api/admin/menus/${menuId}`);
-      console.log(`🔥 [fetchMenuDetail] 선택한 메뉴(${menuId}) 응답:`, response.data);
-      return response.data;
-  } catch (error) {
-      console.error("❌ [fetchMenuDetail] API 요청 실패:", error);
-      throw error;
-  }
-};
-
-// 메뉴 추가 API (JSON으로 전송)
-export const addMenuApi = async (formData) => {
-  const token = localStorage.getItem("AccessToken");
-  if (!token) throw new Error("❌ 인증 정보 없음! 다시 로그인해주세요.");
-
-  try {
-    const response = await api.post("/api/admin/menus", formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-    console.log("✅ [addMenuApi] 메뉴 추가 성공:", response.data);
-    return response.data;
-  } catch (error) {
-    console.error("❌ [addMenuApi] 메뉴 추가 실패:", error);
-    throw error;
-  }
-};
-
-
-// 메뉴 삭제
-export const deleteMenuApi = async (menuId) => {
-  const token = localStorage.getItem("AccessToken");
-  if (!token) throw new Error("❌ 인증 정보 없음! 다시 로그인해주세요.");
-
-  try {
-      const response = await api.delete(`/api/admin/menus/${menuId}`, {
-          headers: {
-              Authorization: `Bearer ${token}`,
-          },
-      });
-      console.log(`✅ [deleteMenuApi] 메뉴(${menuId}) 삭제 성공:`, response.data);
-      return response.data;
-  } catch (error) {
-      console.error("❌ [deleteMenuApi] 메뉴 삭제 실패:", error);
-      throw error;
-  }
+    try {
+        const response = await api.get(`/api/admin/menus/${menuId}`);
+        return response.data;
+    } catch (error) {
+        console.error("❌ [fetchMenuDetail] API 요청 실패:", error);
+        throw error;
+    }
 };
 
 // 페이지네이션용 이미지 + 메뉴명 가지고오기
 export const fetchAllMenuImages = async () => {
-  const response = await api.get("/api/admin/menus/images");
-  return response.data;
+    const response = await api.get("/api/admin/menus/images");
+    return response.data;
+};
+
+// 메뉴 추가
+export const addMenuApi = async (formData) => {
+    const token = localStorage.getItem("AccessToken");
+    if (!token) throw new Error("❌ 인증 정보 없음! 다시 로그인해주세요.");
+  
+    const validPrices = formData.prices
+        .filter((p) => p.price && Number(p.price) > 0)
+        .map((p) => ({
+            size: p.size,
+            price: Number(p.price),
+            discountPrice: p.discountPrice ? Number(p.discountPrice) : 0,
+        }));
+    
+        const payload = {
+        menuName: formData.menuName,
+        menuCategory: formData.menuCategory,
+        menuSequence: formData.menuSequence,
+        singleImg: formData.singleImg,
+        setImg: formData.setImg,
+        isExposure: formData.isExposure,
+        prices: validPrices,
+        };
+    
+        try {
+        const response = await api.post("/api/admin/menus", payload, {
+            headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            },
+        });
+        console.log("✅ [addMenuApi] 메뉴 추가 성공:", response.data);
+        return response.data;
+        } catch (error) {
+        console.error("❌ [addMenuApi] 메뉴 추가 실패:", error);
+        throw error;
+        }
 };
 
 // 메뉴 수정
-export const updateMenuApi = async ({ menuId, ...data }) => {
-  const token = localStorage.getItem("AccessToken");
-  if (!token) throw new Error("❌ 인증 정보 없음! 다시 로그인해주세요.");
+export const updateMenuApi = async (menuId, formData) => {
+    const token = localStorage.getItem("AccessToken");
+    if (!token) throw new Error("❌ 인증 정보 없음! 다시 로그인해주세요.");
 
-  try {
-    const response = await api.put(`/api/admin/menus/${menuId}`, data, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-    console.log("✅ [updateMenuApi] 메뉴 수정 성공:", response.data);
-    return response.data;
-  } catch (error) {
-    console.error("❌ [updateMenuApi] 메뉴 수정 실패:", error);
-    throw error;
-  }
+    const validPrices = formData.prices
+    .filter(p => p.price && Number(p.price) > 0)
+    .map(p => ({
+        size: p.size,
+        price: Number(p.price),
+        discountPrice: p.discountPrice ? Number(p.discountPrice) : 0,
+    }));
+
+    const payload = {
+        menuName: formData.menuName,
+        menuCategory: formData.menuCategory,
+        menuSequence: formData.menuSequence,
+        singleImg: formData.singleImg,
+        setImg: formData.setImg,
+        isExposure: formData.isExposure,
+        prices: formData.prices.map((p) => ({
+            size: p.size,
+            menuPrice: Number(p.price),
+            discountPrice: p.discountPrice ? Number(p.discountPrice) : 0,
+        })),
+    };
+
+    try {
+        const response = await api.put(`/api/admin/menus/${menuId}`, payload, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+        },});
+        return response.data;
+    } catch (error) {
+        console.error("❌ [updateMenuApi] 메뉴 수정 실패:", error);
+        throw error;
+    }
 };
 
+// 메뉴 삭제
+export const deleteMenuApi = async (menuId) => {
+    const token = localStorage.getItem("AccessToken");
+    if (!token) throw new Error("❌ 인증 정보 없음! 다시 로그인해주세요.");
 
-/*
-[
-333Item 24: {
-  "menuId": 24,
-  "menuName": "베이컨 토마토 에그 머핀",
-  "menuCategory": "맥모닝",
-  "menuSequence": 5,
-  "singleImg": "https://www.mcdonalds.co.kr/upload/product/pcList/1646207398160.png",
-  "setImg": "https://www.mcdonalds.co.kr/upload/product/pcList/1677677491958.png",
-  "isExposure": 1,
-  "menuPrice": [
-    {
-      "menuPriceId": 0,
-      "menuId": 24,
-      "size": "L",
-      "menuPrice": 5700,
-      "discountPrice": 0
-    },
-    {
-      "menuPriceId": 0,
-      "menuId": 24,
-      "size": "M",
-      "menuPrice": 3700,
-      "discountPrice": 0
-    }
-  ]
-}
-  ...
-]
-*/
+    const response = await api.delete(`/api/admin/menus/${menuId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+
+    return response.data;
+};

@@ -23,13 +23,16 @@ function AdminSalesChart({
     return (
         <ResponsiveContainer width="100%" height="90%">
             <ComposedChart data={sales}>
-                <XAxis dataKey={month} />
+                <XAxis dataKey={month}
+                tick={{ fontSize: 11 }} />
+                
                 <YAxis
                     width={100}
                     tickCount={7}
                     type="number"
                     domain={[0, "auto"]}
                     allowDecimals={false}
+                    tick={{ fontSize: 11 }}
                 />
                 <Tooltip />
                 <Legend />
