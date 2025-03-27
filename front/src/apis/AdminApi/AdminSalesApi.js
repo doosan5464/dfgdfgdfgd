@@ -1,12 +1,29 @@
+import { api } from "../../configs/axiosConfig";
 import { instance, portOneInstance } from "../utils/instance";
 
 export const getSalesRequest = async () => {
-    return await instance.get("/admin/sales");
-};
+    try {
+        const response = await api.get("/admin/sales");
+        console.log("🔥 [getSalesRequest] 전체 메뉴 응답:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("❌ [getSalesRequest] API 요청 실패:", error);
+        throw error;
+    }
+  };
 
 export const searchSalesByMenuRequest = async () => {
-    return await instance.get("/admin/menusales");
-};
+    try {
+          const response = await api.get("/admin/menusales");
+          console.log("🔥 [searchSalesByMenuRequest] 전체 메뉴 응답:", response.data);
+          return response.data;
+      } catch (error) {
+          console.error("❌ [searchSalesByMenuRequest] API 요청 실패:", error);
+          throw error;
+      }
+    };
+
+
 
 export const getPaymentsRequest = async () => {
     return await portOneInstance.get("/payments", {

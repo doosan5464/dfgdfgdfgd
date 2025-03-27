@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { addMenuApi, deleteMenuApi, updateMenuApi } from '../apis/menuApi';
+import { addMenuApi, adminFetchMenuApi, deleteMenuApi, updateMenuApi } from '../apis/menuApi';
 import axios from "axios";
 
 // 메뉴 추가 (POST) → useMutation 사용
@@ -50,3 +50,9 @@ export const useUpdateMenuMutation = () => {
         },
     });
 };
+
+export const getAllMenuMutation = () => useMutation({
+    mutationKey: ["getAllMenuMutation"],
+    mutationFn: adminFetchMenuApi,
+    retry: 0,
+});

@@ -11,6 +11,9 @@ const SavePoint = () => {
     const location = useLocation();
     const [point, setPoint] = useState(location.state?.point || 0);
 
+    console.log("으익 : ", point);
+    console.log("꾸익 : ", location.state?.orderId);
+
     const [input, setInput] = useState("");
     const [status, setStatus] = useState(null); // 1: 확인, 0: 넘어가기
     const [calcul, setCalcul] = useState(1);  // 포인트 적립(1) 기본 설정
@@ -45,11 +48,17 @@ const SavePoint = () => {
                         calcul: 1,  // 포인트 적립
                         point: point,
                     });
+                    console.log("악0");
                     alert(`포인트 ${point}점이 적립되었습니다!`);
-
+                    console.log("악1");
                     setPoint(0);
-                    
-                    navi("/exportOrderId", { state: { orderId: location.state?.orderId } });
+                    console.log("악2");
+                    console.log("여기서도 orderId가 됨 : ", location.state?.orderId); 
+                    navi("/exportOrderId", {
+                        state: {
+                            orderId: location.state?.orderId
+                        }
+                    });
                 } catch (error) {
                     alert("포인트 적립 중 오류가 발생했습니다.");
                 }
@@ -66,7 +75,11 @@ const SavePoint = () => {
     const handleSkip = () => {
         setStatus(0);
 
-        navi("/exportOrderId");
+        navi("/exportOrderId", {
+            state: {
+                orderId: location.state?.orderId
+            }
+        });
     };
 
     return (

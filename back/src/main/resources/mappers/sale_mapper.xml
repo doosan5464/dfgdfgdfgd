@@ -25,13 +25,10 @@
         SELECT
         year,
         month,
-        order_id,
         total_orders,
         total_sales
         FROM
         sales_tb
-        WHERE
-        year = #{year}
         ORDER BY
         month;
     </select>

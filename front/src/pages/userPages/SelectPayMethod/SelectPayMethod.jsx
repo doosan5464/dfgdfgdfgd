@@ -34,18 +34,31 @@ const KakaoPay = () => {
     // 장바구니 상태 관리
     const [addedCartState] = useRecoilState(addedCart);
 
-    // 첫 번째 메뉴 이름을 기준으로 "버거 및 외 n개" 형식으로 상품명 설정
-    const productNames = addedCartState.map((item) => item.detailMenu);
-    const productName = `${productNames[0]} 및 외 ${addedCartState.length - 1}개`; // 첫 번째 메뉴 이름 + 나머지 개수
+    console.log("장바구니 목록 : ", addedCartState);
 
+    // const productName = `(${productMain[0]}${productSide[0]}${productDrink[0]}) ${productQuantity[0]}개`; // 첫 번째 메뉴 이름 + 나머지 개수
+
+    const productName = addedCartState
+    .map((temp) => 
+        [`${temp.detailMenu}, ${temp.detailSide}, ${temp.detailDrink}`]
+            .filter(Boolean) // `null`, `undefined`, `""` 같은 값 제거
+            .join(", ") // 공백 하나로 이어붙이기
+    )
+    .join(", "); // 여러 개의 상품명을 하나의 문자열로 변환 (그래야 카카오페이API에 포함시킬 수 있음)
+
+    console.log("포트원에 보낼 이름 (문자열 확인):", productName, typeof productName);
+    
     // 장바구니의 가격 합산
-    const totalPrice = addedCartState.reduce((sum, item) => sum + item.detailPrice, 0); // 모든 상품 가격 합산
+    const totalPrice = addedCartState.reduce((sum, item) => sum + (item.detailPrice) * item.quantity, 0); // 모든 상품 가격 합산
 
     // 결제 상품 리스트 생성
     const products = addedCartState.map((item) => ({
         orderId: Math.min(addedCartState.length * 1000, 9000) + (addedCartState.length - 1), // 1000부터 시작, 1씩 증가
         productName: item.detailMenu,
+        side: item.detailSide,
+        drink: item.detailDrink,
         price: item.detailPrice,
+        quantity: item.quantity,
     }));
 
     // 결제 요청 함수
@@ -55,26 +68,35 @@ const KakaoPay = () => {
             const paymentResponse = await PortOne.requestPayment({
                 storeId: import.meta.env.VITE_PORTONE_STOREID, // 환경 변수에서 가져온 상점 ID
                 paymentId: uuid(), // UUID를 사용해 유니크한 결제 ID 생성
-                orderName: productName, // "버거 및 외 n개" 형식으로 주문명 설정
+                orderName: productName, 
                 totalAmount: totalPrice, // 합산된 가격
                 currency: "CURRENCY_KRW", // 결제 통화 (원화)
                 payMethod: "EASY_PAY", // 간편결제 방식 사용
                 channelKey: "channel-key-39a34f05-a2cb-44f1-a0ca-0798cf19bca2", // PortOne 채널 키
+                // menuId:
                 products: products.map(product => ({
                     id: product.orderId.toString(), // 상품 ID
-                    name: product.productName, // 상품명
+                    name: [product.productName, product.side, product.drink].filter(Boolean).join(", "),  // 상품명
                     amount: product.price, // 상품 가격
-                    quantity: 1, // 수량
+                    quantity: product.quantity, // 수량
                 })),
             });
 
             // 포인트 적립 처리
-            const point = Math.floor(totalPrice * 0.05);  // 5% 포인트 계산
+            const point = Math.floor(totalPrice * 0.05);  // 0.5% 포인트 계산
             console.log("마일리지 금액 : ", point);
 
-            navi("/savePoint", { state: { point: point, orderId: products[0].orderId } }); // state로 넘김
+            console.log("보내기전 주문번호 : ", products);
+            console.log("보내기전 임시 주문번호 : ", products[0].orderId);
 
-            // 여기서 order_detail_tb에 보내야 함 (장바구니 초기화 하기 전에)
+            navi("/savePoint", {
+                state: {
+                    point: point,
+                    orderId: products[0].orderId,
+                }
+            }); // state로 넘김
+
+            // 여기서 order_detail_tb에 보내야 함 (장바구니 초기화 하기 전에) @@@@@@@@@@@@@@@@@@@@@@@
             console.log("주문번호 : ", products);
             console.log("임시 주문번호 : ", products[0].orderId);
 

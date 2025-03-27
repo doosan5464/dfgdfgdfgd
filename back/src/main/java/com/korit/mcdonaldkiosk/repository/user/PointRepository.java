@@ -44,9 +44,9 @@ public class PointRepository {
     }
 
     public void addPoints(String phoneNumber, int point) {
-        int userId = findUserIdByPhoneNumber(phoneNumber);
+        Integer userId = findUserIdByPhoneNumber(phoneNumber);
 
-        if (userId == 0) {
+        if (userId == null) {
             throw new IllegalArgumentException("User not found for phone number: " + phoneNumber);
         }
 
@@ -58,10 +58,6 @@ public class PointRepository {
             currentPoint.setUserId(userId);
             currentPoint.setPoint(0);
         }
-
-        // 새 유저에 대해 포인트 테이블에 초기값 삽입
-        pointMapper.insertPoint(currentPoint);  // 포인트 초기값 0으로 삽입
-
 
         // 포인트 적립: 기존 포인트에 추가
         int updatedPoint = currentPoint.getPoint() + point;
@@ -84,6 +80,7 @@ public class PointRepository {
             System.out.println("No update needed for userId " + userId + " current points: " + currentPoint.getPoint());
         }
     }
+
     // 유저 생성 메서드
     public void save(String phoneNumber) {
         int userId = findUserIdByPhoneNumber(phoneNumber);
@@ -92,6 +89,15 @@ public class PointRepository {
             // 유저가 없으면 새로 생성
             createNewUser(phoneNumber);
             System.out.println("New user created for phoneNumber: " + phoneNumber);
+
+            // 새로 생성된 유저의 ID를 이용하여 포인트 테이블에 초기 포인트를 삽입
+            userId = findUserIdByPhoneNumber(phoneNumber); // 새로 생성된 userId 조회
+            Point newPoint = new Point();
+            newPoint.setUserId(userId);
+            newPoint.setPoint(0);  // 초기 포인트 설정
+            newPoint.setCalcul(0); // 계산 값 초기화 (필요한 경우)
+            pointMapper.insertPoint(newPoint);  // 포인트 테이블에 새 데이터 삽입
+            System.out.println("Point record created for new userId: " + userId);
         }
     }
 

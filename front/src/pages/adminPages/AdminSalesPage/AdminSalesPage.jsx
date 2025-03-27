@@ -8,95 +8,86 @@ import MenuButton from '../../../components/MenuButton/MenuButton';
 import { adminFetchMenuApi } from '../../../apis/menuApi';
 import { useEffect, useState } from 'react';
 import ToggleSwitch from '../../../components/ToggleSwitch/ToggleSwitch';
-import { Select } from '@mui/material';
+import { InputLabel, MenuItem, Select } from '@mui/material';
 import { useRecoilState } from 'recoil';
 import { salesModeState } from '../../../atoms/salesModeState/salesModeState';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 function AdminSalesPage(props) {
-    const [sales, setSales] = useState([]);
-    const [menuList, setMenuList] = useState([]);
-    const [salesMode, setSalesMode] = useRecoilState(salesModeState);
-    const [yearOptions, setYearOptions] = useState([]);
-    const [year, setYear] = useState({ value: "", label: "" });
-    const [salesData, setSalesData] = useState([]);
+    const [sales, setSales] = useState([]); // 매출 데이터
+    const [menuList, setMenuList] = useState([]); // 메뉴 목록
+    const [salesMode, setSalesMode] = useRecoilState(salesModeState); // 매출/주문 모드 상태
+    const [yearOptions, setYearOptions] = useState([]); // 연도 옵션
+    const [year, setYear] = useState(""); // 선택된 연도
+    const [salesData, setSalesData] = useState([]); // 필터링된 매출 데이터
     const navigate = useNavigate();
 
+    // sales와 year가 변경될 때마다 salesData 업데이트
     useEffect(() => {
-        setSalesData(() => sales.filter((sales) => sales.year === year.value));
-    }, [year]);
+        const filteredSales = sales.filter((sale) => sale.year === year);
+        setSalesData(filteredSales);
+    }, [sales, year]);
 
-    useEffect(() => {
-        let maxYear = -Infinity;  // 최대값을 저장할 변수를 음수 무한대로 초기화
-    
-        sales.forEach((item) => {
-            if (item.year > maxYear) {
-                maxYear = item.year;  // 현재 year 속성이 최대값보다 크면 최대값을 업데이트
-            }
-        });
-    
-        // maxYear가 여전히 -Infinity인 경우 기본값을 설정합니다.
-        const validMaxYear = maxYear === -Infinity ? 2025 : maxYear; // 기본값 예: 2025년
-        setYear({
-            value: validMaxYear,
-            label: validMaxYear,
-        });
-
-        // sales data에서 연도별 option을 추출하고 중복을 제거하여 설정합니다.
-        const years = [...new Set(sales.map((item) => item.year))];
-        setYearOptions(years);
-    }, [sales]);
-
-    const salesQuery = useQuery({
-        queryKey: ["salesQuery"],  // queryKey는 배열이어도 됩니다.
-        queryFn: getSalesRequest,  // 쿼리 함수
+    // 매출 데이터를 API에서 받아오고 연도 옵션 설정
+    const salesMutation = useMutation({
+        mutationKey: ["getSales"],
+        mutationFn: getSalesRequest,
         retry: 0,
         refetchOnWindowFocus: false,
         onSuccess: (response) => {
-            setSales(response.data);
-            const years = [...new Set(response.data.map((data) => data.year))];
-            setYearOptions(years);
+            // 응답이 배열인 경우 year 값 추출
+            if (Array.isArray(response) && response.length > 0) {
+                const salesData = response; // 매출 데이터
+                setSales(salesData);
+    
+                // 고유 연도 목록 추출하여 yearOptions에 설정
+                const years = salesData.map((data) => ({label: data.year, value: data.year}));
+                setYearOptions(years);
+    
+                // 첫 번째 연도를 기본값으로 설정
+                if (years.length > 0) {
+                    // year.value가 설정된 값이 yearOptions에 포함되지 않으면 빈 값으로 초기화
+                    const selectedYear = years[0].value;
+                    setYear(selectedYear);
+                }
+            }
         },
         onError: (error) => {
             console.log("salesQuery", error);
         },
     });
 
-    // adminFetchMenuApi를 사용하여 전체 메뉴 목록을 가져오는 부분
-        const menuQuery = useQuery({
-            queryKey: ["menuQuery"],  // queryKey는 배열이어도 됩니다.
-            queryFn: adminFetchMenuApi,  // 쿼리 함수
-            retry: 0,
-            refetchOnWindowFocus: false,
-            onSuccess: (response) => {
-                setMenuList(response.data);  // 성공적으로 데이터를 받으면 menuList에 저장
-                console.log("Menu List:", response.data);  // 콘솔에 메뉴 목록 출력
-            },
-            onError: (error) => {
-                console.log(error);
-            },
-        });
+    useEffect(() => {
+        console.log("Updated yearOptions: ", yearOptions);
+    }, [yearOptions]);
+
+    // 메뉴 조회 API 요청
+    const menuMutation = useMutation({
+        mutationKey: ["getAllMenuMutation"],
+        mutationFn: adminFetchMenuApi,
+        retry: 0,
+        onSuccess: (response) => {
+            setMenuList(response);
+        },
+        onError: (error) => {
+            console.log("Menu Fetch Error", error);
+        },
+    });
+
+    useEffect(() => {
+        menuMutation.mutate();
+        salesMutation.mutate();
+    }, []);
 
     const handleMenuClick = (id) => {
         navigate(`/admin/sale/menu?menuId=${id}`);
     };
 
-    const handleYearOptionsOnChange = (selectedValue) => {
-        const newYearValue = selectedValue?.value || "";
-        // selectedValue가 yearOptions에 있는지 확인하고 없으면 빈 값으로 설정
-        if (!yearOptions.includes(newYearValue)) {
-            setYear({
-                value: "", // 유효하지 않은 값인 경우 빈 문자열로 설정
-                label: "",
-            });
-        } else {
-            setYear({
-                value: newYearValue,
-                label: selectedValue?.label || "",
-            });
-        }
+    // year.value가 yearOptions에 포함되지 않으면 빈 문자열로 설정
+    const handleYearOptionsOnChange = (e) => {
+        // yearOptions에 포함되는 값만 허용, 아니면 빈 문자열로 설정
+        setYear(e.target.value);
     };
-    
 
     return (
         <div css={s.layout}>
@@ -118,22 +109,22 @@ function AdminSalesPage(props) {
                         <div>총 주문 수</div>
                     </div>
                     <Select
-                        options={yearOptions.map((year) => ({
-                            label: year,
-                            value: year,
-                        }))}
-                        value={year?.value && yearOptions.includes(year.value) ? year.value : ""}  // 유효하지 않은 값이면 빈 문자열로 처리
-                        onChange={handleYearOptionsOnChange}
-                        placeholder="연도"
-                        styles={{
-                            control: (baseStyles, state) => ({
-                                ...baseStyles,
-                                border: state.isFocused ? "none" : "none",
-                                backgroundColor: "transparent",
-                                fontSize: "20px",
-                            }),
-                        }}
-                    />
+                        value={year} // 상태 값 전달
+                        onChange={handleYearOptionsOnChange} // 연도 변경 처리
+                        label="연도"
+                    >
+                        {/* placeholder처럼 사용할 MenuItem */}
+                        <MenuItem value="">
+                            <em>연도 선택</em>
+                        </MenuItem>
+                        {
+                            yearOptions.map((yearOption) => (
+                                <MenuItem key={yearOption.value} value={yearOption.value}>
+                                    {yearOption.label}
+                                </MenuItem>
+                            ))
+                        }
+                    </Select>
 
                 </div>
                 <div css={s.chartBox}>
@@ -160,16 +151,21 @@ function AdminSalesPage(props) {
             </div>
             <div css={s.line}></div>
             <div css={s.menuList}>
-                {menuList.map((menu, index) => (
-                    <MenuButton
-                        key={menu.menuId}
-                        onClick={() => handleMenuClick(menu.menuId)}
-                        menuName={menu.menuName}
-                        price={menu.menuPrice}
-                        img={menu.singleImg}
-                    />
-                ))}
+                {(Array.isArray(menuList) && menuList.length > 0) ? (
+                    menuList.map((menu) => (
+                        <MenuButton
+                            key={menu.menuId}
+                            onClick={() => handleMenuClick(menu.menuId)}
+                            menuName={menu.menuName}
+                            price={menu.menuPrice}
+                            img={menu.singleImg}
+                        />
+                    ))
+                ) : (
+                    <div>메뉴 정보가 없습니다.</div>
+                )}
             </div>
+
             <Routes>
                 <Route path="/" element={<></>} />
                 <Route

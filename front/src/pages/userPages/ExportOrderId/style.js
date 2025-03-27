@@ -20,13 +20,23 @@ export const container = css`
 
         & > div {
             display: flex;
+            width: 40%;
+            height: 6rem;
+            background-color: #ffd154;
+            border-radius: 1rem;
             justify-content: center;
             align-items: center;
-            width: 10rem;
-            height: 5rem;
-            background-color: red;
+            font-size: 2rem;
             margin: 0 2rem 0 2rem;
-            border-radius: 1rem;
         }
     }
 `;
+
+export const head = css`
+    font-size: 5rem;
+`
+
+export const num = css`
+    font-size: 10rem;
+    color: #e22828;
+`
