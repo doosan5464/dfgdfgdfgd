@@ -44,6 +44,7 @@ public class AdminMenuService {
     }
 
     // 메뉴 추가
+    @Transactional(rollbackFor = Exception.class)
     public boolean addMenu(Menu menu, List<MenuPrice> menuPrices) {
         return adminMenuRepository.addMenu(menu, menuPrices).orElse(false);
     }

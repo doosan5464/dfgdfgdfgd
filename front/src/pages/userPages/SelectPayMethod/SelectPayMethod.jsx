@@ -174,7 +174,7 @@ const SelectPayMethod = () => {
                 }
             }
         });
-        console.log("orderDetailList 배열. DB에 보내기 좋게 만든 배열", orderDetailList);
+        console.log("orderDetailList 배열. DB에 보내기 좋게 만든 배열", JSON.stringify(orderDetailList, null, 1));
     
         // 주문 상세 목록 반환
         return orderDetailList;

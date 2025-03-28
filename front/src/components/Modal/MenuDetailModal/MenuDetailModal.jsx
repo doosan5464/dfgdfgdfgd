@@ -15,7 +15,7 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
     const [drinkLarge, setDrinkLarge] = useState(null);
     const [addedCartState, setAddedCartState] = useRecoilState(addedCart);
 
-    const [isLarge, setIsLarge] = useState(null);
+    const [isLarge, setIsLarge] = useState(false);
 
     const { data: menuData, error, isLoading } = menuForUser(); 
     console.log("DB메뉴 : ", menuData); // 메뉴 데이터 확인
@@ -33,19 +33,35 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
     console.log("Default side:", defaultSide); // 기본 사이드 확인
     console.log("Default drink:", defaultDrink); // 기본 음료 확인
 
+
+    const handleTemp = () => {
+        setIsLarge(true);
+
+        if (menu.category === "음료") {
+            setDrinkLarge("L")
+        }
+        if (menu.category === "커피") {
+            setDrinkLarge("L")
+        }
+        if (menu.category === "사이드") {
+            setSideLarge("L")
+        }
+        return;
+    }
+
     // 단계
     const handleNext = () => {
         console.log("Current step:", step); // 현재 단계 확인
         console.log("카테고리 : ", menu.category);
         console.log("메뉴 : ", menu);
-
-        if (step === 1 && (menu.category === "음료" || menu.category === "커피")) {
+        
+        if (step === 1 && (menu.category === "음료" || menu.category === "커피" || menu.category === "사이드")) {
             setStep(10);
             return;
         }
 
         if (step === 1) {
-            if (isSet === false && (menu.category === "디저트" || menu.category === "사이드" || menu.category === "버거")) {
+            if (isSet === false && (menu.category === "디저트" || menu.category === "버거")) {
                 handleAddToCart(); 
             }
         }
@@ -76,21 +92,6 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
             console.log(`단품`);
         }
     };
-
-        // 세트 선택 시 기본값 설정
-        const handleIsLargeOnClick = (boolean) => {
-            console.log("Large chosen:", boolean); // 라지 선택 확인
-            setIsLarge(boolean);
-            if (boolean) {
-                // setSide(defaultSide);
-                // setDrink(defaultDrink);
-                console.log(`라지, 추가 금액: 800`);
-            } else {
-                setSide(null);
-                setDrink(null);
-                console.log(`미디엄`);
-            }
-        };
 
     const handleChangeSideOnClick = (selectedSide) => {
         console.log("Selected side:", selectedSide); // 선택한 사이드 확인
@@ -260,13 +261,13 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
                         <h3 css={s.modalBasich3}>사이즈 선택</h3>
                         <div css={s.temp}>
                             <div css={s.modalBuguerSetImage}>
-                                <div onClick={() => handleIsLargeOnClick(false)}> 미디엄
+                                <div> 미디엄
                                     <img src={menu.img} alt={menu.name} />
                                 </div>
                             </div>
-                            {menu.img2 !== null && ( // 버거일 때만 세트 옵션 렌더링
+                            {menu.img2 !== null && ( 
                                 <div css={s.modalBuguerSetImage}>
-                                    <div onClick={() => handleIsLargeOnClick(true)}> 라지
+                                    <div onClick={() => handleTemp(true)}> 라지
                                         <img src={menu.img2} alt={menu.name} />
                                     </div>
                                 </div>

@@ -76,30 +76,31 @@ function AdminProductManage() {
 
 	const handleInputValueOnChange = (e) => {
 		const { name, value, type, checked } = e.target;
-
+	
 		if (type === "checkbox") {
-		setFormData((prev) => ({
-			...prev,
-			[name]: checked ? 1 : 0,
-		}));
-		return;
+			setFormData((prev) => ({
+				...prev,
+				[name]: checked ? 1 : 0,
+			}));
+			return;
 		}
-
+	
 		if (name === "M" || name === "L") {
+			setFormData((prev) => {
+				const updatedPrices = prev.prices.map((p) =>
+					p.size === name ? { ...p, price: value } : p
+				);
+				return { ...prev, prices: updatedPrices };
+			});
+			return;
+		}
+	
 		setFormData((prev) => ({
 			...prev,
-			prices: prev.prices.map((p) =>
-			p.size === name ? { ...p, price: value } : p
-			),
-		}));
-		return;
-		}
-
-		setFormData((prev) => ({
-		...prev,
-		[name]: value,
+			[name]: value,
 		}));
 	};
+	
 
 	// 추가 버튼
 	const handleSubmitMenuOnClick = async () => {
@@ -110,8 +111,9 @@ function AdminProductManage() {
 			setSelectedMenu(null); // 드롭다운 해제
 			return;
 		}
-
+	
 		try {
+			// 메뉴 추가
 			await addMenuMutation.mutateAsync(formData);
 			alert("✅ 메뉴가 성공적으로 추가되었습니다.");
 			setFormData(INITIAL_FORM_DATA);
@@ -125,6 +127,7 @@ function AdminProductManage() {
 	// 수정 버튼
 	const handleUpdateMenuOnClick = async () => {
 		try {
+			// 메뉴 수정 (가격 포함)
 			await updateMenuMutation.mutateAsync({
 				menuId: selectedMenu,
 				formData: formData,

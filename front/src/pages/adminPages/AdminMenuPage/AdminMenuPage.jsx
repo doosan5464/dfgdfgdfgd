@@ -10,13 +10,12 @@ import ReactModal from 'react-modal';
 import AdminMenuInfoModal from '../../../components/Modal/AdminMenuInfoModal/AdminMenuInfoModal';
 
 function AdminMenuPage(props) {
-    const [ searchParams, setSearchParams ] = useSearchParams();
-    
-    const page = parseInt(searchParams.get("page") || "1"); //현재 페이지번호 파라미터
+    const [ searchParams, setSearchParams ] = useSearchParams(); //url파라미터
+    const [ category, setCategory ] = useState(searchParams.get("category") || "전체"); //카테고리 상태
     const [ totalPages, setTotalPages ] = useState(1); //총페이지 수 상태
-    const [ category, setCategory ] = useState(searchParams.get("category") || "전체"); //카테고리 상태 및 파라미터
     const [ pageNumbers, setPageNumbers ] = useState([]); //페이지 번호 목록 상태
-
+    const page = parseInt(searchParams.get("page") || "1"); //현재 페이지번호
+    
     const allMenuList = useAllMenuList(); //모든 메뉴 불러오기
     const { data: searchMenuList, isLoading: isMenuLoading } = allMenuList; //모든 메뉴 배열에 담기
     
@@ -86,7 +85,7 @@ function AdminMenuPage(props) {
         const choiceCategory = option.target.value;
         setCategory(choiceCategory); //상태 업데이트
         searchParams.set("category", option.target.value); //파라미터 값 변경
-        searchParams.set("page", 1);
+        searchParams.set("page", 1); //1페이지로 파라미터 값 변경
         setSearchParams(searchParams); //파라미터 업데이트
     }
 

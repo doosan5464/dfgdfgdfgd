@@ -32,10 +32,10 @@ function ImageModal({ isOpen, onClose, menus = [], imageType, onSelect }) {
 		setCurrentPage(1);
 	}, [selectedCategory, imageType, menus, customImages]);
 
-	const imagesPerPage = 20;
-	const totalPages = Math.ceil(filteredImages.length / imagesPerPage);
+	const imagesPerPage = 19; // ⭐️ 20 → 19로 변경
+	const totalPages = Math.ceil((images.length + 1) / imagesPerPage); // +1은 추가박스 포함
 	const startIndex = (currentPage - 1) * imagesPerPage;
-	const currentImages = filteredImages.slice(startIndex, startIndex + imagesPerPage);
+	const currentImages = images.slice(startIndex, startIndex + imagesPerPage);
 
 	if (!isOpen) return null;
 
@@ -80,14 +80,12 @@ function ImageModal({ isOpen, onClose, menus = [], imageType, onSelect }) {
 				</div>
 
 				<div css={s.imageGrid}>
-					{/* + 이미지 추가 박스 */}
 					<div css={s.imageBox} onClick={handleAddImageClick}>
 						<div css={s.addImageBox}>
 							<IoIosAdd size={40} />
 							<p>이미지 추가</p>
 						</div>
 					</div>
-
 					{/* 기존 이미지 목록 */}
 					{currentImages.map((img, index) => (
 						<div key={index} css={s.imageBox}>

@@ -144,7 +144,12 @@
 
     <!-- 특정 메뉴 가격 조회 -->
     <select id="getMenuPrices" resultType="com.korit.mcdonaldkiosk.entity.MenuPrice">
-        SELECT * FROM menu_price_tb WHERE menu_id = #{menuId}
+        SELECT
+            *
+        FROM
+            menu_price_tb
+        WHERE
+            menu_id = #{menuId}
     </select>
 
     <!-- 메뉴 추가 -->
@@ -156,45 +161,56 @@
             menu_sequence,
             single_img,
             set_img,
-            is_exposure
-        ) VALUES (
+            is_exposure )
+        VALUES (
             #{menuName},
             #{menuCategory},
             #{menuSequence},
             #{singleImg},
             #{setImg},
-            #{isExposure}
-        );
+            #{isExposure} );
     </insert>
 
-    <!-- 가격 재삽입 -->
-    <insert id="insertMenuPrices">
+    <!-- 가격 삽입 - 세트할인가 적용 -->
+    <insert id="insertMenuPrice" parameterType="com.korit.mcdonaldkiosk.entity.MenuPrice">
         INSERT INTO menu_price_tb (
             menu_id,
             size,
             menu_price,
-            discount_price
-        )
+            discount_price )
         VALUES
         <foreach collection="menuPrices" item="price" separator=",">
-            (
-                #{menuId},
-                #{price.size},
-                #{price.menuPrice},
-                #{price.discountPrice}
-            )
+            (#{menuId},
+            #{price.size},
+            #{price.menuPrice},
+            CASE WHEN
+                (SELECT menu_category FROM menu_tb
+            WHERE
+                menu_id = #{menuId}) IN ('버거', '맥모닝', '디저트')
+            THEN
+                #{price.menuPrice}  -- 할인 없이 menu_price와 동일
+            ELSE
+                ROUND(#{price.menuPrice} * 0.7, -2)  -- 30% 할인 후 100의 자리에서 반올림한 값
+            END)
         </foreach>
     </insert>
 
+
     <!-- 기존 가격 삭제 -->
     <delete id="deleteMenuPrices" parameterType="int">
-        DELETE FROM menu_price_tb
-        WHERE menu_id = #{menuId}
+        DELETE
+        FROM
+            menu_price_tb
+        WHERE
+            menu_id = #{menuId}
     </delete>
 
     <!-- 메뉴 삭제 -->
     <delete id="deleteMenu">
-        DELETE FROM menu_tb WHERE menu_id = #{menuId}
+        DELETE FROM
+            menu_tb
+        WHERE
+            menu_id = #{menuId}
     </delete>
 
     <!--  페이지네이션 이미지 + 메뉴명  -->

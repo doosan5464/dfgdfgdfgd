@@ -30,7 +30,7 @@ public interface AdminMenuMapper {
     // 메뉴 등록
     int insertMenu(Menu menu);
     // 가격 등록
-    int insertMenuPrices(@Param("menuId") int menuId, @Param("menuPrices") List<MenuPrice> menuPrices);
+    int insertMenuPrice(@Param("menuId") int menuId, @Param("menuPrices") List<MenuPrice> menuPrices);
     // 기존 가격 삭제
     int deleteMenuPrices(int menuId);
     // 메뉴 삭제

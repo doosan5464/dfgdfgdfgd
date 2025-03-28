@@ -48,7 +48,7 @@ public class AdminMenuRepository {
         try {
             adminMenuMapper.insertMenu(menu);
             if (!menuPrices.isEmpty()) {
-                adminMenuMapper.insertMenuPrices(menu.getMenuId(), menuPrices);
+                adminMenuMapper.insertMenuPrice(menu.getMenuId(), menuPrices);
             }
             return Optional.of(true);
         } catch (Exception e) {
@@ -73,7 +73,7 @@ public class AdminMenuRepository {
             adminMenuMapper.updateMenu(menu);
             adminMenuMapper.deleteMenuPrices(menu.getMenuId());
             if (!menuPrices.isEmpty()) {
-                adminMenuMapper.insertMenuPrices(menu.getMenuId(), menuPrices);
+                adminMenuMapper.insertMenuPrice(menu.getMenuId(), menuPrices);
             }
             return Optional.of(true);
         } catch (Exception e) {
