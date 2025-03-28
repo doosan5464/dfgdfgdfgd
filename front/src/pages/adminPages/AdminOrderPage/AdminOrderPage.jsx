@@ -150,7 +150,13 @@ function AdminOrderPage(props) {
                     filter: { //결제 내역 필터링
                         storeId: import.meta.env.VITE_PORTONE_STOREID,
                         isTest: true,
-                    }
+                        timestampType: "CREATED_AT",
+                        from: `${dataFilter}T00:00:00Z`,
+                        untill: `${dateFilter}T23:59:59Z`,
+                        //timestampType: "CREATED_AT",
+                        //start: "2024-09-28T00:00:00+09:00",//`${dataFilter}T00:00:00Z`,
+                        //end: "2025-03-26T08:58:33+09:00"//`${dateFilter}T23:59:59Z`,
+}
                 }),
             }
         });

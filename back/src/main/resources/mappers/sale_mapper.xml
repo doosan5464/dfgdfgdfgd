@@ -35,26 +35,23 @@
 
     <select id="findSales" resultMap="MenuSalesResultMap">
         SELECT
-        ott.menu_id,
+        ott.order_id,
         ott.order_year,
         ott.order_month,
-        SUM(ott.menu_count) AS total_count,
-        SUM(ott.menu_count * mpt.menu_price) AS sales
+        SUM(ott.menu_count) AS total_count
         FROM
         (SELECT
         DATE_FORMAT(order_time, "%Y") AS order_year,
         DATE_FORMAT(order_time, "%m") AS order_month,
-        menu_id,
+        ot.order_id,
         menu_count
         FROM
         order_tb ot
         LEFT OUTER JOIN order_detail_tb olt ON olt.order_id = ot.order_id) ott
-        LEFT OUTER JOIN menu_tb mt ON mt.menu_id = ott.menu_id
-        LEFT OUTER JOIN menu_price_tb mpt ON mpt.menu_id = mt.menu_id
         GROUP BY
         ott.order_year,
         ott.order_month,
-        ott.menu_id
+        ott.order_id
         ORDER BY
         ott.order_year,
         ott.order_month;

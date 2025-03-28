@@ -11,6 +11,8 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
     const [isSet, setIsSet] = useState(null);
     const [side, setSide] = useState(null);
     const [drink, setDrink] = useState(null);
+    const [sideLarge, setSideLarge] = useState(null);
+    const [drinkLarge, setDrinkLarge] = useState(null);
     const [addedCartState, setAddedCartState] = useRecoilState(addedCart);
 
     const [isLarge, setIsLarge] = useState(null);
@@ -130,7 +132,9 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
             orderId: newOrderId,  // 새로운 orderId를 할당
             detailMenu: menu.name,
             detailSide: isSet ? side : null,
+            sideSize: sideLarge ? "L" : "M",
             detailDrink: isSet ? drink : null,
+            drinkSize: drinkLarge ? "L" : "M",
             detailPrice: basePrice + sidePrice + drinkPrice,
             quantity: 1,
             isSet: isSet

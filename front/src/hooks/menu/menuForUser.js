@@ -19,31 +19,61 @@ export default menuForUser;
 
 /*
 [
-333Item 24: {
-  "menuId": 24,
-  "menuName": "베이컨 토마토 에그 머핀",
-  "menuCategory": "맥모닝",
-  "menuSequence": 5,
-  "singleImg": "https://www.mcdonalds.co.kr/upload/product/pcList/1646207398160.png",
-  "setImg": "https://www.mcdonalds.co.kr/upload/product/pcList/1677677491958.png",
-  "isExposure": 1,
-  "menuPrice": [
-    {
-      "menuPriceId": 0,
-      "menuId": 24,
-      "size": "L",
-      "menuPrice": 5700,
-      "discountPrice": 0
-    },
-    {
-      "menuPriceId": 0,
-      "menuId": 24,
-      "size": "M",
-      "menuPrice": 3700,
-      "discountPrice": 0
-    }
-  ]
-}
+DB메뉴 :  [
+  {
+    "menuId": 1,
+    "menuName": "빅맥",
+    "menuCategory": "버거",
+    "menuSequence": 1,
+    "singleImg": "https://www.mcdonalds.co.kr/upload/product/pcList/1583727841393.png",
+    "setImg": "https://www.mcdonalds.co.kr/upload/product/pcList/1723562054997.png",
+    "isExposure": 0,
+    "menuPrice": [
+      {
+        "menuPriceId": 1,
+        "menuId": 1,
+        "size": "M",
+        "menuPrice": 5500,
+        "discountPrice": 5500
+      }
+    ]
+  },
+  {
+    "menuId": 2,
+    "menuName": "맥스파이시 상하이 버거",
+    "menuCategory": "버거",
+    "menuSequence": 2,
+    "singleImg": "https://www.mcdonalds.co.kr/upload/product/pcList/1717486365975.png",
+    "setImg": "https://www.mcdonalds.co.kr/upload/product/pcList/1723562636476.png",
+    "isExposure": 0,
+    "menuPrice": [
+      {
+        "menuPriceId": 2,
+        "menuId": 2,
+        "size": "M",
+        "menuPrice": 5500,
+        "discountPrice": 5500
+      }
+    ]
+  },
+  {
+    "menuId": 3,
+    "menuName": "1955 버거",
+    "menuCategory": "버거",
+    "menuSequence": 3,
+    "singleImg": "https://www.mcdonalds.co.kr/upload/product/pcList/1599119588089.png",
+    "setImg": "https://www.mcdonalds.co.kr/upload/product/pcList/1723564242231.png",
+    "isExposure": 0,
+    "menuPrice": [
+      {
+        "menuPriceId": 3,
+        "menuId": 3,
+        "size": "M",
+        "menuPrice": 6400,
+        "discountPrice": 6400
+      }
+    ]
+  },
   ...
 ]
 */

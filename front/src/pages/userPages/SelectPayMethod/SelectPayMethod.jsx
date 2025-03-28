@@ -6,6 +6,7 @@ import { v4 as uuid } from 'uuid'; // UUID 라이브러리
 /**@jsxImportSource @emotion/react */
 import * as s from './style';
 import { useNavigate } from 'react-router-dom';
+import menuForUser from '../../../hooks/menu/menuForUser';
 
 /*
 
@@ -24,7 +25,11 @@ order_id, menu_price_id, menu_count, is_set
 
 */
 
-const KakaoPay = () => {
+const SelectPayMethod = () => {
+
+    const { data: menuData, error, isLoading } = menuForUser(); 
+    // console.log("DB메뉴 : ", JSON.stringify(menuData, null, 2));
+
     const navi = useNavigate();
 
     const handleOnClickNext = () => {
@@ -43,7 +48,7 @@ const KakaoPay = () => {
 
     const productName = addedCartState
     .map((temp) => 
-        [`${temp.detailMenu}, ${temp.detailSide}, ${temp.detailDrink}`]
+        [`${temp.detailMenu}`]
             .filter(Boolean) // `null`, `undefined`, `""` 같은 값 제거
             .join(", ") // 공백 하나로 이어붙이기
     )
@@ -58,6 +63,125 @@ const KakaoPay = () => {
         price: item.detailPrice,
         quantity: item.quantity,
     }));
+
+
+    // ✅ 장바구니 데이터를 order_detail_tb용으로 가공 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    const buildOrderDetailList = async () => {
+        // 메뉴 데이터가 없거나 비어 있으면 빈 배열 반환
+        if (!menuData || menuData.length === 0) return [];
+    
+        const orderDetailList = [];
+    
+        // 장바구니에 있는 각 아이템에 대해 반복
+        await addedCartState.forEach((item) => {
+            const { isSet, detailMenu, detailSide, detailDrink, sideSize, drinkSize, quantity } = item;
+    
+
+            // 1. 메인 메뉴 추가: 장바구니 아이템에서 메인 메뉴 찾기
+            const mainMenu = menuData.find((menu) =>
+                menu.menuName === detailMenu // 메뉴 이름이 일치하는지 확인
+            );
+            console.log("mainMenu : ", mainMenu);
+    
+            // 메인 메뉴가 존재하면 해당 메뉴 정보를 추가
+            if (mainMenu) {
+                let priceInfo = null;
+
+                // 가격 정보 가져오기
+                if (mainMenu.menuCategory === "버거") {
+                    priceInfo = mainMenu.menuPrice[0];
+                    console.log("버거일때 priceInfo:", priceInfo);
+                }
+                if (mainMenu.menuCategory === "디저트") {
+                    priceInfo = mainMenu.menuPrice[0];
+                    console.log("디저트일때 priceInfo:", priceInfo);
+                }
+                if (mainMenu.menuCategory === "사이드") {
+                    priceInfo = mainMenu.menuPrice.find(price => price.size === sideSize);
+                    console.log("사이드일때 priceInfo:", priceInfo);
+                }
+                if (mainMenu.menuCategory === "음료") {
+                    priceInfo = mainMenu.menuPrice.find(price => price.size === drinkSize);
+                    console.log("음료일때 priceInfo:", priceInfo);
+                }
+                if (mainMenu.menuCategory === "커피") {
+                    priceInfo = mainMenu.menuPrice.find(price => price.size === drinkSize);
+                    console.log("커피일때 priceInfo:", priceInfo);
+                }
+                
+                if (priceInfo) {
+                    orderDetailList.push({
+                        order_id: products[0].orderId, // 주문 임시 번호
+                        menu_price_id: priceInfo.menuPriceId, // 가격 ID
+                        menu_count: quantity, // 수량
+                        is_set: isSet, // 세트 여부
+                    });
+                    console.log("메인 메뉴 추가 후 orderDetailList : ", orderDetailList);
+                }
+            } else {
+                console.warn(`메인 메뉴 매칭 실패: ${detailMenu}, size: ${size}, isSet: ${isSet}`);
+            }
+    
+            // 2. 사이드 메뉴 추가: 사이드가 있을 경우, 사이드 메뉴를 개별 아이템으로 추가
+            if (detailSide) {
+                const sideMenu = menuData.find((menu) =>
+                    menu.menuName === detailSide && // 사이드 메뉴 이름이 일치하는지 확인
+                    menu.menuPrice.some(price => price.size === sideSize) // 사이드의 사이즈가 일치하는지 확인, .some() : 배열의 각 요소에 대해 주어진 조건을 만족하는 적어도 하나의 요소가 있으면 true를 반환하고, 그렇지 않으면 false를 반환
+
+                );
+                console.log("sideMenu : ", sideMenu);
+    
+                // 사이드 메뉴가 존재하면 해당 메뉴 정보를 추가
+                if (sideMenu) {
+                    const priceInfo = sideMenu.menuPrice.find(price => price.size === sideSize);
+                    if (priceInfo) {
+                        orderDetailList.push({
+                            order_id: products[0].orderId, // 주문 임시 번호
+                            menu_price_id: priceInfo.menuPriceId, // 가격 ID
+                            menu_count: quantity, // 수량
+                            is_set: false, // 사이드는 세트 메뉴가 아니므로 false
+                        });
+                    }
+                    console.log("사이드 메뉴 추가 후 orderDetailList : ", orderDetailList);
+                } else {
+                    console.warn(`사이드 메뉴 매칭 실패: ${detailSide}, size: ${sideSize}`);
+                }
+            }
+    
+            // 3. 음료 메뉴 추가: 음료가 있을 경우, 음료 메뉴를 개별 아이템으로 추가
+            if (detailDrink) {
+                const drinkMenu = menuData.find((menu) =>
+                    menu.menuName === detailDrink && // 음료 메뉴 이름이 일치하는지 확인
+                    menu.menuPrice.some(price => price.size === drinkSize) // 음료의 사이즈가 일치하는지 확인
+
+                );
+                console.log("drinkMenu : ", drinkMenu);
+    
+                // 음료 메뉴가 존재하면 해당 메뉴 정보를 추가
+                if (drinkMenu) {
+                    const priceInfo = drinkMenu.menuPrice.find(price => price.size === drinkSize);
+                    if (priceInfo) {
+                        orderDetailList.push({
+                            order_id: products[0].orderId, // 주문 임시 번호
+                            menu_price_id: priceInfo.menuPriceId, // 가격 ID
+                            menu_count: quantity, // 수량
+                            is_set: false, // 음료는 세트 메뉴가 아니므로 false
+                        });
+                    }
+                    console.log("음료 메뉴 추가 후 orderDetailList : ", orderDetailList);
+                } else {
+                    console.warn(`음료 메뉴 매칭 실패: ${detailDrink}, size: ${drinkSize}`);
+                }
+            }
+        });
+        console.log("orderDetailList 배열. DB에 보내기 좋게 만든 배열", orderDetailList);
+    
+        // 주문 상세 목록 반환
+        return orderDetailList;
+    };
+    
+    
+    
 
     // 결제 요청 함수
     const handlePaymentOnClick = async () => {
@@ -87,22 +211,22 @@ const KakaoPay = () => {
             console.log("보내기전 주문번호 : ", products);
             console.log("보내기전 임시 주문번호 : ", products[0].orderId);
 
+            // 여기서 order_detail_tb에 보내야 함 (장바구니 초기화 하기 전에) @@@@@@@@@@@@@@@@@@@@@@@
+            buildOrderDetailList();
+            
+            // 장바구니 상태 초기화
+            // const resetCart = useResetRecoilState(addedCart);
+            
+            // 장바구니 완전 초기화
+            // resetCart();
+
             navi("/savePoint", {
                 state: {
                     point: point,
                     orderId: products[0].orderId,
                 }
             }); // state로 넘김
-
-            // 여기서 order_detail_tb에 보내야 함 (장바구니 초기화 하기 전에) @@@@@@@@@@@@@@@@@@@@@@@
-
-
-            // 장바구니 상태 초기화
-            // const resetCart = useResetRecoilState(addedCart);
-
-            // 장바구니 완전 초기화
-            // resetCart();
-
+            
         } catch (error) {
             console.log(error); // 결제 요청 중 에러 발생 시 출력
         }
@@ -125,4 +249,4 @@ const KakaoPay = () => {
     );
 };
 
-export default KakaoPay;
+export default SelectPayMethod;
