@@ -6,10 +6,10 @@ import * as s from "./style";
 function ImageModal({ isOpen, onClose, menus = [], imageType, onSelect }) {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [selectedCategory, setSelectedCategory] = useState("전체");
-	const [filteredImages, setFilteredImages] = useState([]);
+	const [customImages, setCustomImages] = useState([]);
 	const [selectedUrl, setSelectedUrl] = useState(null);
-	const [customImages, setCustomImages] = useState([]); // ✅ 사용자 추가 이미지
 
+	// 전체 이미지 리스트
 	const images = [
 		...menus
 			.filter((menu) => menu[imageType])
@@ -21,21 +21,23 @@ function ImageModal({ isOpen, onClose, menus = [], imageType, onSelect }) {
 		...customImages,
 	];
 
+	// 카테고리 옵션
 	const categoryOptions = ["전체", ...new Set(images.map((img) => img.category || "직접 추가"))];
 
-	useEffect(() => {
-		const filtered = selectedCategory === "전체"
-			? images
-			: images.filter((img) => img.category === selectedCategory);
+	// 카테고리 필터
+	const filteredImages = selectedCategory === "전체"
+		? images
+		: images.filter((img) => img.category === selectedCategory);
 
-		setFilteredImages(filtered);
-		setCurrentPage(1);
-	}, [selectedCategory, imageType, menus, customImages]);
-
-	const imagesPerPage = 19; // ⭐️ 20 → 19로 변경
-	const totalPages = Math.ceil((images.length + 1) / imagesPerPage); // +1은 추가박스 포함
+	// 페이지네이션
+	const imagesPerPage = 19;
+	const totalPages = Math.ceil((filteredImages.length + 1) / imagesPerPage); // +1: 추가 박스
 	const startIndex = (currentPage - 1) * imagesPerPage;
-	const currentImages = images.slice(startIndex, startIndex + imagesPerPage);
+	const currentImages = filteredImages.slice(startIndex, startIndex + imagesPerPage);
+
+	useEffect(() => {
+		setCurrentPage(1); // 카테고리 바뀌면 1페이지로 초기화
+	}, [selectedCategory]);
 
 	if (!isOpen) return null;
 
@@ -48,7 +50,6 @@ function ImageModal({ isOpen, onClose, menus = [], imageType, onSelect }) {
 	const handleAddImageClick = () => {
 		const url = prompt("추가할 이미지의 URL을 입력하세요:");
 		if (!url) return;
-
 		const name = prompt("이 이미지에 표시할 이름을 입력하세요:");
 		if (!name) return;
 
@@ -57,7 +58,6 @@ function ImageModal({ isOpen, onClose, menus = [], imageType, onSelect }) {
 			name,
 			category: "직접 추가",
 		};
-
 		setCustomImages((prev) => [...prev, newImg]);
 	};
 
@@ -86,7 +86,7 @@ function ImageModal({ isOpen, onClose, menus = [], imageType, onSelect }) {
 							<p>이미지 추가</p>
 						</div>
 					</div>
-					{/* 기존 이미지 목록 */}
+
 					{currentImages.map((img, index) => (
 						<div key={index} css={s.imageBox}>
 							<img
