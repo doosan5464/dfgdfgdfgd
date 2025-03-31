@@ -2,10 +2,8 @@
 import * as s from './style';
 import React, { useState, useEffect } from "react";
 import { useRecoilState } from "recoil";
-
 import { useNavigate } from 'react-router-dom';
 import { selectedLanguageState } from '../../../atoms/selectedLanguage/selectedLanguage';
-
 
 function SelectMenu(props) {
     const navi = useNavigate();
@@ -26,9 +24,7 @@ function SelectMenu(props) {
         }, 5000); // 5초마다 변경
 
         return () => clearInterval(interval); // 언마운트 시 정리
-    }, []);
-    
-
+    }, [images.length]);
 
     const handleLanguageClick = (language) => {
         if (selectedLanguage !== language) { // 이미 선택된 언어를 클릭했을 때 아무 것도 하지 않도록 처리
@@ -55,15 +51,17 @@ function SelectMenu(props) {
         navi("/order");
     }
 
-
-
-
-
-
     return (
         <div css={s.container}>
             <header css={s.smImage}>
-                <img src={images[imageIndex]} alt="키오스크 화면" css={s.imageStyle} />
+                {images.map((image, index) => (
+                    <img
+                        key={index}
+                        src={image}
+                        alt="키오스크 화면"
+                        css={[s.imageStyle, { opacity: index === imageIndex ? 1 : 0, zIndex: index === imageIndex ? 1 : 0 }]}
+                    />
+                ))}
             </header>
             <main css={s.smChoice}>
                 <h1>{languageTexts[selectedLanguage].selectLanguage}</h1>

@@ -72,6 +72,8 @@ const SavePoint = () => {
         }
     };
 
+    console.log(location.state?.orderId)
+
     const handleSkip = () => {
         setStatus(0);
 

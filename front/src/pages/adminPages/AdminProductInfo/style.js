@@ -22,6 +22,8 @@ export const dropdown = css`
 // 상품 정보 컨테이너
 export const productContainer = css`
     display: flex;
+    // flex-direction: column;
+    // align-items: center;
     gap: 1.5rem;
 `;
 
@@ -30,6 +32,7 @@ export const imageCon = css`
     display: flex;
     flex-direction: column;
 `;
+
 
 export const imageBox = css`
     width: 30rem;
@@ -54,7 +57,6 @@ export const inputGroup = css`
     justify-content: center;
     gap: 3rem;
     width: 80rem;
-    
 
     & > div {
         width: 70rem;
@@ -77,6 +79,38 @@ export const input = css`
     border: 1px solid #ccc;
     border-radius: 6px;
     box-sizing: border-box;
+`;
+
+// 영양정보 테이블
+export const table = css`
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+`;
+
+export const caption = css`
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+`;
+
+export const th = css`
+    border: 1px solid #ccc;
+    padding: 1rem;
+    background-color: #f5f5f5;
+    text-align: center;
+    font-size: 1.6rem
+`;
+
+export const td = css`
+    border: 1px solid #ccc;
+    padding: 1rem;
+    text-align: center;
+    font-size: 1.3rem
+`;
+
+export const evenRow = css`
+    background-color: #fafafa;
 `;
 
 // 버튼 그룹

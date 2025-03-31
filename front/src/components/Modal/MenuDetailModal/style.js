@@ -59,7 +59,7 @@ export const modalBuguerSetImage = css`
         width: 100%;
         height: 12.8rem;
         border: 1px solid black;
-        border-radius: 10px;
+        border-radius: 0.5rem;
         box-shadow: 0.2rem 0.2rem 0.2rem rgba(0,0,0,0.25); 
 
         font-size: 11px;

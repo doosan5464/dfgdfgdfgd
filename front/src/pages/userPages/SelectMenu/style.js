@@ -14,14 +14,17 @@ export const smImage = css`
     height: 37%;
     overflow: hidden;
     justify-content: center;
+    position: relative;
 `;
 
 export const imageStyle = css`
-    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover; 
-    transition: opacity 1s ease-in-out;
+    object-fit: cover;
+    transition: opacity 1s ease-in-out;  /* 슬라이딩 효과를 부드럽게 적용 */
 `;
 
 export const smChoice = css`
@@ -64,7 +67,6 @@ export const smHow = css`
     width: 100%;
     height: 15rem;
     justify-content: space-evenly;
-
 
     & > span {
         display: flex;

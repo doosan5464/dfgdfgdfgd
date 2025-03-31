@@ -107,6 +107,11 @@ public class PointRepository {
         return userId != null ? userId : 0; // null이면 0 반환
     }
 
+    public Point findPointByPhoneNumber(String phoneNumber) {
+        Point point = pointMapper.findPointByPhoneNumber(phoneNumber);
+        return point;
+    }
+
     // 새로운 유저 생성 (user_tb에 저장)
     public void createNewUser(String phoneNumber) {
         pointMapper.createNewUser(phoneNumber);

@@ -43,6 +43,11 @@ public class AdminMenuService {
         return adminMenuRepository.getMenuById(menuId).orElse(null);
     }
 
+    // 메뉴 가격 조회
+    public List<MenuPrice> getMenuPrices(int menuId) {
+        return adminMenuRepository.getMenuPrices(menuId).orElse(List.of());
+    }
+
     // 메뉴 추가
     @Transactional(rollbackFor = Exception.class)
     public boolean addMenu(Menu menu, List<MenuPrice> menuPrices) {
@@ -58,7 +63,6 @@ public class AdminMenuService {
     public boolean updateMenu(Menu menu, List<MenuPrice> menuPrices) {
         return adminMenuRepository.updateMenu(menu, menuPrices).orElse(false);
     }
-
 
     public List<Menu> getAllMenuImages() {
         return adminMenuRepository.getAllMenuImages();

@@ -1,64 +1,58 @@
+import React, { useEffect, useState } from 'react';
 /**@jsxImportSource @emotion/react */
-import { useNavigate } from 'react-router-dom';
-import BurgerMenu from './menu/BurgerMenu';
-import DrinkMenu from './menu/DrinkMenu';
-// import HappySnackMenu from './menu/HappySnackMenu';
-// import RecommendMenu from './menu/RecommendMenu';
-import SideMenu from './menu/SideMenu';
 import * as s from './style';
-import React, { useState, useEffect } from 'react';
-import CoffeeMenu from './menu/CoffeeMenu';
 import CallManagerModal from '../../../components/Modal/CallManagerModal/CallManagerModal';
 import MenuDetailModal from '../../../components/Modal/MenuDetailModal/MenuDetailModal';
 import MenuModifyModal from '../../../components/Modal/MenuModifyModal/MenuModifyModal';
-import DessertMenu from './menu/DessertMenu';
 import { addedCart } from '../../../atoms/addedCart/addedCart';
 import { useRecoilState } from 'recoil';
+import MenuCategory from './menu/MenuCategory';
+import { disabledCategoriesState } from '../../../atoms/disabledCategories/disabledCategories';
+import { orderedCategoriesState } from '../../../atoms/orderedCategoriesState/orderedCategoriesState';
+import { useNavigate } from 'react-router-dom';
 
-// 메뉴가격ID, 세트여부, 개수(), 포인트 사용 여부, 10000 (결제 + 마일리지)
 function OrderPage(props) {
     const navi = useNavigate();
-
-    // 선택된 카테고리 상태 추가
-    const [selectedCategory, setSelectedCategory] = useState("버거");
-
-    // 장바구니
+    const [selectedCategory, setSelectedCategory] = useState(null);
     const [addedCartState, setAddedCartState] = useRecoilState(addedCart);
-
-    // 세트메뉴의 사이드와 음료 수정 모달
     const [editingItem, setEditingItem] = useState(null);
+    const [selectedMenu, setSelectedMenu] = useState(null);
+
+    const [categories] = useRecoilState(orderedCategoriesState); // 기존 useState 제거
+    const [disabledCategories] = useRecoilState(disabledCategoriesState); // atom 사용
+
+    useEffect(() => {
+        if (categories.length > 0) {
+            // 카테고리 로드 후 첫 번째 활성화된 카테고리로 초기값 설정
+            const firstAvailableCategory = categories.find(category => !disabledCategories.includes(category));
+            setSelectedCategory(firstAvailableCategory || categories[0]);
+        }
+    }, [categories, disabledCategories]);
 
     const handleMenuCategoryOnClick = (category) => {
         if (selectedCategory !== category) {
             setSelectedCategory(category);
         }
-    }
-    
+    };
+
     const handleBackMenuOnClick = () => {
         navi("/menu");
-    }
-    const handlePaymentOnClick = () => {
-        navi("/prePayment")
-    }
+    };
 
-    // 선택된 메뉴 정보를 저장할 상태
-    const [selectedMenu, setSelectedMenu] = useState(null);
+    const handlePaymentOnClick = () => {
+        navi("/prePayment");
+    };
 
     const handleMenuItemClick = (menu) => {
-        setSelectedMenu(menu); // 메뉴 클릭 시 모달에 정보를 전달
-    }
+        setSelectedMenu(menu);
+    };
 
     const handleCloseMenuDetailModal = () => {
-        setSelectedMenu(null); // 모달 닫기
-    }
+        setSelectedMenu(null);
+    };
 
-    // 삭제할 아이템의 index로 .filter()를 사용하여 해당 index가 아닌 요소만 남김
     const handleRemoveFromCart = (index) => {
-        setAddedCartState(prevCart => {
-            const updatedCart = prevCart.filter((_, i) => i !== index);
-            console.log("Updated Cart after Removal:", updatedCart);
-            return updatedCart;
-        });
+        setAddedCartState(prevCart => prevCart.filter((_, i) => i !== index));
     };
 
     const handleModifyFromCart = (index) => {
@@ -66,39 +60,23 @@ function OrderPage(props) {
     };
 
     const handleSaveModifiedItem = (updatedItem) => {
-        setAddedCartState(prevCart => 
-            prevCart.map((item, i) => (i === updatedItem.index ? updatedItem : item))
-        );
+        setAddedCartState(prevCart => prevCart.map((item, i) => (i === updatedItem.index ? updatedItem : item)));
         setEditingItem(null);
     };
 
-    // quantity 를 1씩 증가
     const handleUpFromCart = (index) => {
-        setAddedCartState(prevCart => {
-            const updatedCart = prevCart.map((item, i) =>
-                i === index ? { ...item, quantity: item.quantity + 1 } : item
-            );
-            console.log("Updated Cart after Increment:", updatedCart[0]);
-            return updatedCart;
-        });
+        setAddedCartState(prevCart => prevCart.map((item, i) =>
+            i === index ? { ...item, quantity: item.quantity + 1 } : item
+        ));
     };
 
-    // quantity 를 1씩 감소 (최소값 1 유지)
     const handleDownFromCart = (index) => {
-        setAddedCartState(prevCart => {
-            const updatedCart = prevCart.map((item, i) =>
-                i === index && item.quantity > 1
-                    ? { ...item, quantity: item.quantity - 1 }
-                    : item
-            );
-            console.log("Updated Cart after Decrement:", updatedCart[0]);
-            return updatedCart;
-        });
+        setAddedCartState(prevCart => prevCart.map((item, i) =>
+            i === index && item.quantity > 1
+                ? { ...item, quantity: item.quantity - 1 }
+                : item
+        ));
     };
-
-    // menu_id -> 갯수만 있으면 백엔드에서 계산해서 db에 넣는다
-    // 장바구니 결제전에 이 2가지로 계싼
-    
 
     return (
         <div css={s.container}>
@@ -114,25 +92,16 @@ function OrderPage(props) {
 
             <main css={s.body}>
                 <div css={s.category}>
-                    {/* <div onClick={() => handleMenuCategoryOnClick("추천메뉴")}>🔥 추천메뉴</div> */}
-                    <div onClick={() => handleMenuCategoryOnClick("버거")}>🍔 버거</div>
-                    {/* <div onClick={() => handleMenuCategoryOnClick("해피스낵")}>🍟 해피스낵</div> */}
-                    <div onClick={() => handleMenuCategoryOnClick("사이드")}>🍗 사이드</div>
-                    <div onClick={() => handleMenuCategoryOnClick("음료")}>🥤 음료</div>
-                    <div onClick={() => handleMenuCategoryOnClick("커피")}>☕ 커피</div>
-                    <div onClick={() => handleMenuCategoryOnClick("디저트")}>🍦 디저트</div>
-                    <div>테스트 2</div>
-                    <div>테스트 3</div>
+                    {categories
+                        .filter(category => !disabledCategories.includes(category)) // 비활성화된 카테고리는 필터링
+                        .map(category => (
+                            <div key={category} onClick={() => handleMenuCategoryOnClick(category)}>
+                                {category}
+                            </div>
+                        ))}
                 </div>
                 <div css={s.menu}>
-                    {/* 선택된 카테고리에 따라 메뉴를 렌더링하고, 각 메뉴 항목 클릭 시 handleMenuItemClick 호출 */}
-                    {/* {selectedCategory === "추천메뉴" && <RecommendMenu onMenuItemClick={handleMenuItemClick} />} */}
-                    {selectedCategory === "버거" && <BurgerMenu onMenuItemClick={handleMenuItemClick} />}
-                    {/* {selectedCategory === "해피스낵" && <HappySnackMenu onMenuItemClick={handleMenuItemClick} />} */}
-                    {selectedCategory === "사이드" && <SideMenu onMenuItemClick={handleMenuItemClick} />}
-                    {selectedCategory === "음료" && <DrinkMenu onMenuItemClick={handleMenuItemClick} />}
-                    {selectedCategory === "커피" && <CoffeeMenu onMenuItemClick={handleMenuItemClick} />}
-                    {selectedCategory === "디저트" && <DessertMenu onMenuItemClick={handleMenuItemClick} />}
+                    <MenuCategory selectedCategory={selectedCategory} onMenuItemClick={handleMenuItemClick} />
                 </div>
             </main>
 
@@ -153,13 +122,10 @@ function OrderPage(props) {
                                     </div>
                                     <div>
                                         <span>
-                                        <div></div>
-                                        {/* 수정 버튼은 isSet이 true일 때만*/}
-                                        {(item.isSet) && (
-                                            <button onClick={() => handleModifyFromCart(index)}>수정</button>
-                                        )}
+                                            {(item.isSet) && (
+                                                <button onClick={() => handleModifyFromCart(index)}>수정</button>
+                                            )}
                                             <button onClick={() => handleRemoveFromCart(index)}>삭제</button>
-                                            
                                         </span>
                                         <div>
                                             <button onClick={() => handleUpFromCart(index)}>▲</button>
@@ -167,7 +133,7 @@ function OrderPage(props) {
                                         </div>
                                     </div>
                                 </div>
-                            ))}
+                            ))} 
                         </ul>
                     ) : (
                         <p>장바구니에 아무것도 없습니다.</p>
@@ -179,7 +145,6 @@ function OrderPage(props) {
                 </span>
             </footer>
 
-            {/* 선택된 메뉴가 있을 경우 모달을 띄운다 */}
             {selectedMenu && <MenuDetailModal menu={selectedMenu} onClose={handleCloseMenuDetailModal} />}
             {editingItem && <MenuModifyModal menu={editingItem} onClose={() => setEditingItem(null)} onSave={handleSaveModifiedItem} />}
         </div>

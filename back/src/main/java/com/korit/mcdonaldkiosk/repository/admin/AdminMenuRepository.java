@@ -39,11 +39,19 @@ public class AdminMenuRepository {
         return foundMenus.isEmpty() ? Optional.empty() : Optional.of(foundMenus);
     }
 
+
     // 특정 메뉴 정보 조회
     public Optional<Menu> getMenuById(int menuId) {
         return Optional.ofNullable(adminMenuMapper.selectMenuById(menuId));
     }
 
+    // 가격 정보 조회
+    public Optional<List<MenuPrice>> getMenuPrices(int menuId) {
+        List<MenuPrice> prices = adminMenuMapper.getMenuPrices(menuId);
+        return prices.isEmpty() ? Optional.empty() : Optional.of(prices);
+    }
+
+    // 메뉴 추가
     public Optional<Boolean> addMenu(Menu menu, List<MenuPrice> menuPrices) {
         try {
             adminMenuMapper.insertMenu(menu);
@@ -57,6 +65,7 @@ public class AdminMenuRepository {
         }
     }
 
+    // 메뉴 삭제
     public Optional<Boolean> deleteMenu(int menuId) {
         try {
             adminMenuMapper.deleteMenuPrices(menuId);
@@ -68,6 +77,7 @@ public class AdminMenuRepository {
         }
     }
 
+    // 메뉴 수정
     public Optional<Boolean> updateMenu(Menu menu, List<MenuPrice> menuPrices) {
         try {
             adminMenuMapper.updateMenu(menu);

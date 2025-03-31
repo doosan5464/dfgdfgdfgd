@@ -1,7 +1,5 @@
-import { QueryClient, useQueryClient } from '@tanstack/react-query';
-import React, { useEffect } from 'react';
-import { Route, Routes, useNavigate } from 'react-router-dom';
-
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
 import MainSidebar from '../../components/common/MainSidebar/MainSidebar';
 import MainContainer from '../../components/common/MainContainer/MainContainer';
 import AdminMenuPage from '../../pages/adminPages/AdminMenuPage/AdminMenuPage';
@@ -13,39 +11,30 @@ import AdminSalesPage from '../../pages/adminPages/AdminSalesPage/AdminSalesPage
 import AdminProductManage from '../../pages/adminPages/AdminProductManage/AdminProductManage';
 import AdminMyPage from '../../pages/adminPages/AdminMyPage/AdminMyPage';
 import AdminMainPage from '../../pages/adminPages/AdminMainPage/AdminMainPage';
+import AdminProductInfo from '../../pages/adminPages/AdminProductInfo/AdminProductInfo';
+import AdminCategoryPage from '../../pages/AdminCategoryPage/AdminCategoryPage';
 
 function AdminMainRoute(props) {
-    //로그인 구현 후 사용
-    // const navigate = useNavigate();
-    // const queryClient = useQueryClient();
-    // const queryState = queryClient.getQueryState(["userMeQuery"]);
-
-    //f로그아웃 상태로 접근 시 로그인 페이지로
-    // useEffect (() => {
-    //     if(queryState.status === "error") {
-    //         navigate("/auth/login");
-    //     }
-    // }, [queryState]);
-
     return (
-        //queryState.status === "success" &&
         <>
             <MainSidebar />
             <MainContainer>
-                <Routes>
-                    <Route path='/menu' element={<AdminMenuPage />} /> 
-                    <Route path='/' element={<AdminMainPage />} /> 
-                    <Route path='/product' element={<AdminProductPage />} /> 
-                    <Route path='/product/manage' element={<AdminProductManage />} /> 
-                    <Route path='/option' element={<AdminOptionPage />} /> 
-                    <Route path="/sale/*" element={<AdminSalesPage />} />
-                    <Route path='/order' element={<AdminOrderPage />} />
-                    <Route path='/mypage' element={<AdminMyPage />} />
-                    <Route path='/account' element={<AdminAccountPage />} /> 
-                </Routes>
+                    <Routes>
+                        <Route path='/menu' element={<AdminMenuPage />} />
+                        <Route path='/' element={<AdminMainPage />} />
+                        <Route path='/product' element={<AdminProductPage />} />
+                        <Route path='/product/manage' element={<AdminProductManage />} />
+                        <Route path='/product/information' element={<AdminProductInfo />} />
+                        <Route path='/product/category' element={<AdminCategoryPage />} />
+                        <Route path='/option' element={<AdminOptionPage />} />
+                        <Route path="/sale/*" element={<AdminSalesPage />} />
+                        <Route path='/order' element={<AdminOrderPage />} />
+                        <Route path='/mypage' element={<AdminMyPage />} />
+                        <Route path='/account' element={<AdminAccountPage />} />
+                    </Routes>
             </MainContainer>
         </>
-    )
+    );
 }
 
 export default AdminMainRoute;

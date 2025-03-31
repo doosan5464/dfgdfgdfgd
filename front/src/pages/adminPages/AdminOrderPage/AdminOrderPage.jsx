@@ -6,18 +6,24 @@ import React, { useEffect, useState } from 'react';
 import { GoChevronLeft, GoChevronRight } from 'react-icons/go';
 import { IoRefreshOutline } from 'react-icons/io5';
 import { MdNavigateBefore, MdNavigateNext, MdOutlineRefresh } from 'react-icons/md';
+import ReactModal from 'react-modal';
 import { data, useSearchParams } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
+import AdminPayMoal from '../../../components/Modal/AdminPayModal/AdminPayMoal';
 
 //결제 조회 페이지
 function AdminOrderPage(props) {
-    const [ payments, setPayments ] = useState([]); //결제 내역 상태
-
     const [ searchParams, setSearchParams ] = useSearchParams(); //url파라미터
+    
+    const [ payments, setPayments ] = useState([]); //결제 내역 상태
+    const [ refreshify, setRefreshify ] = useState(1); //페이지 새로고침 상태
     const [ totalCount, setTotalCount ] = useState(0); //결제 내역 갯수 상태
     const [ totalPages, setTotalPages ] = useState(1); //총 페이지 수 상태
     const [ pageNumbers, setPageNumbers ] = useState([]); //페이지 번호 목록 상태
     const page = parseInt(searchParams.get("page") || "1"); //현재 페이지 번호
+
+    const [ payModalOpen, setPayModalOpen ] = useState(false); //모달 열림 상태
+    const [ payModalDate, setPayModalDate ] = useState(null); //모달에 전달할 데이터
 
     const handlePageNumbersOnClick = (pageNumber) => { //클릭된 페이지 번호로 파라미터 적용
         searchParams.set("page", pageNumber);
@@ -212,7 +218,7 @@ function AdminOrderPage(props) {
                     }),
                 }
             });
-            //console.log(paymentsResponse);
+            console.log(paymentsResponse);
             setTotalCount(paymentsResponse.data.page.totalCount); // 총페이지 수 받기
             
             //결제 내역 값 세팅
@@ -223,43 +229,56 @@ function AdminOrderPage(props) {
                 orderId: item.customer.name,
                 orderName: item.orderName,
                 totalAmount: item.amount.total,
-            })));
+                time: new Date(new Date(item.requestedAt).getTime() + 9 * 60 * 60 * 1000).toISOString().slice(11, 19),
+                cancelReason: item?.cancellations?.[0].reason ?? null, //.cancellations[0].reason
+            }))); //한국 표준 시로 변환
             //console.log(payments);
         }
         fetchPayments();
-    }, [page, selectedDate, totalCount]);
+    }, [page, selectedDate, totalCount, refreshify]);
 
+    
+    const handleRefreshifyButtonOnClick = () => {
+        setRefreshify(refreshify === 1 ? 0 : 1); //버튼 누를 떄마다 상태값을 바꿔서 useEffect가동
+    }
 
-    console.log(payments);
+    const handleCancelButtonOnClick = (payData) => {
+        setPayModalDate(payData);
+        setPayModalOpen(true);        
+    }
+    //console.log(payModalDate);
+    //console.log(payments);
+
     // 결제 취소
     // post
     // /payments/{paymentId}/cancel
-    const handleCandleClick = async (uuid) => {
-        console.log(uuid)
-        const foundorder = payments.find(o => o.uuid === uuid); //uuid로 찾기
-        try {
-            const jwtResponse = await axios.post("https://api.portone.io/login/api-secret", {
-                "apiSecret": import.meta.env.VITE_PORTONE_API_KEY,
-            });
-            const accessToken = jwtResponse.data.accessToken;
+    // const handleCancelClick = async (uuid, payments) => {
+    //     console.log(uuid)
+    //     const foundorder = payments.find(o => o.uuid === uuid); //uuid로 찾기
+    //     try {
+    //         const jwtResponse = await axios.post("https://api.portone.io/login/api-secret", {
+    //             "apiSecret": import.meta.env.VITE_PORTONE_API_KEY,
+    //         });
+    //         const accessToken = jwtResponse.data.accessToken;
 
-            await axios.post(
-                `https://api.portone.io/payments/${uuid}/cancel`, 
-                {
-                    storeId: import.meta.env.VITE_PORTONE_STOREID,
-                    reason: "취소사유",
-                }, 
-                {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    }
-                }
-            );
-            alert("취소완료")
-        }  catch(error) {
-            console.log(error);
-        }
-    }
+    //         await axios.post(
+    //             `https://api.portone.io/payments/${uuid}/cancel`, 
+    //             {
+    //                 storeId: import.meta.env.VITE_PORTONE_STOREID,
+    //                 reason: "취소사유",
+    //             }, 
+    //             {
+    //                 headers: {
+    //                     Authorization: `Bearer ${accessToken}`,
+    //                 }
+    //             }
+    //         );
+    //         alert("취소완료")
+    //     }  catch(error) {
+    //         console.log(error);
+    //     }
+    // }
+
 
     return (
         <div css={s.container}>
@@ -275,7 +294,9 @@ function AdminOrderPage(props) {
                         onChange={handleSelectDateOnChange}
                         />
                     </div>
-                    <button><MdOutlineRefresh size={24} fill="#444444" /></button>
+                    <button onClick={handleRefreshifyButtonOnClick}>
+                        <MdOutlineRefresh size={24} fill="#444444" />
+                    </button>
                 </div>
             </div>  
 
@@ -284,25 +305,48 @@ function AdminOrderPage(props) {
                     <span className="orderid">주문번호</span>
                     <span className="ordername">주문명</span>
                     <span className="totalamount">총액</span>
-                    <span className="mid">MID</span>
+                    <span className="time">결제시간</span>
                     <span className="status">결제상태</span>
                 </div>
-                {
+                { //취소사유 옆에 창으로 띄우기
                     payments.map(p =>
-                        <div css={s.listbody}>
+                        <div key={p.uuid} css={s.listbody}>
                             <span className="orderid">{p.orderId}</span>
                             <span className="ordername">{p.orderName}</span>
                             <span className="totalamount">{p.totalAmount}</span>
-                            <span className="mid">{p.mid}</span>
+                            <span className="time">{p.time}</span>
                             <span className="status">
-                                <button css={s.statusbutton(p.status)} onClick={() => handleCandleClick(p.uuid)}>
+                                <button css={s.statusbutton(p.status)} onClick={() => handleCancelButtonOnClick(p)}>
                                     {PAYSTATUS[p.status]}
                                 </button>
+                                <span css={s.cancelreason}><span>취소사유 : {p.cancelReason}</span></span>
                             </span>
                         </div>
                     )
                 }
             </div>
+
+            <ReactModal
+                isOpen={payModalOpen}
+                onRequestClose={() => setPayModalOpen(false)}
+                style={{
+                    overlay: {
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        backgroundColor: "#00000044"
+                    },
+                    content: {
+                        potition: "static",
+                        boxSizing: "border-box",
+                        borderRadius: "1.5rem",
+                        height: "60rem",
+                        width: "100rem",
+                    }
+                }}
+            >
+                <AdminPayMoal setOpen={setPayModalOpen} payData={payModalDate}/>
+            </ReactModal>
 
             <div css={s.footer}>
                 <button disabled={page === 1} onClick={() => handlePageNumbersOnClick(page - 1)}>

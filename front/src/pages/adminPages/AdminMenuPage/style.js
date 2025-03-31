@@ -18,7 +18,7 @@ export const header = css`
         align-items: center;
         flex-grow: 4;
         min-width: 12rem;
-        font-size: 3rem;
+        font-size: 4rem;
         font-weight: 600;
     }
     & > div {

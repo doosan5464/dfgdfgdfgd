@@ -2,6 +2,7 @@ package com.korit.mcdonaldkiosk.controller.admin;
 
 import com.korit.mcdonaldkiosk.dto.request.ReqExposureDto;
 import com.korit.mcdonaldkiosk.dto.request.ReqMenuDto;
+import com.korit.mcdonaldkiosk.dto.request.ReqMenuImageDto;
 import com.korit.mcdonaldkiosk.entity.Menu;
 import com.korit.mcdonaldkiosk.entity.MenuPrice;
 import com.korit.mcdonaldkiosk.entity.MenuWithAllInfo;
@@ -46,7 +47,7 @@ public class AdminMenuController {
     public ResponseEntity<?> changeExposure(
             @RequestBody ReqExposureDto request
     ) {
-        //받은값 int로 변환
+        // 받은값 int로 변환
         int menuId = request.getMenuId();
         int isExposure = request.getIsExposure();
         adminMenuService.changeIsExposure(menuId, isExposure);
@@ -59,11 +60,13 @@ public class AdminMenuController {
         return ResponseEntity.ok().body(adminMenuService.getAllMenus());
     }
 
-
     // 특정 메뉴의 가격 정보 조회
     @GetMapping("/menus/{menuId}")
     public ResponseEntity<?> getMenuDetail(@PathVariable int menuId) {
-        return ResponseEntity.ok().body(adminMenuService.getMenuById(menuId));
+        Menu menu = adminMenuService.getMenuById(menuId);
+        List<MenuPrice> prices = adminMenuService.getMenuPrices(menuId);
+        menu.setMenuPrice(prices);
+        return ResponseEntity.ok().body(menu);
     }
 
     // 메뉴 추가 (가격 포함)
@@ -123,6 +126,22 @@ public class AdminMenuController {
                 .toList();
 
         return ResponseEntity.ok().body(adminMenuService.updateMenu(menu, menuPrices));
+    }
+
+    // 이미지 추가
+    @PostMapping("/menus/images")
+    public ResponseEntity<?> addMenuImage(@RequestBody ReqMenuImageDto dto) {
+        Menu menu = Menu.builder()
+                .menuName(dto.getMenuName())
+                .singleImg(dto.getImageType().equals("singleImg") ? dto.getImageUrl() : null)
+                .setImg(dto.getImageType().equals("setImg") ? dto.getImageUrl() : null)
+                .menuCategory("직접 추가")
+                .menuSequence(999)
+                .isExposure(0)
+                .build();
+
+        adminMenuService.addMenu(menu, List.of()); // 가격은 없음
+        return ResponseEntity.ok().build();
     }
 
 }

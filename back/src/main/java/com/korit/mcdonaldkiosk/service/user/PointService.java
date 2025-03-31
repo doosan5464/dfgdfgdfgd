@@ -1,10 +1,13 @@
 package com.korit.mcdonaldkiosk.service.user;
 
 import com.korit.mcdonaldkiosk.dto.request.ReqPointDto;
+import com.korit.mcdonaldkiosk.entity.Point;
 import com.korit.mcdonaldkiosk.repository.user.PointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class PointService {
@@ -48,5 +51,9 @@ public class PointService {
             System.out.println("Subtracting points...");
             pointRepository.subtractPoints(reqPointDto.getPhoneNumber(), reqPointDto.getPoint());
         }
+    }
+
+    public Optional<Point> getPointByPhoneNumber(String phoneNumber) {
+        return Optional.ofNullable(pointRepository.findPointByPhoneNumber(phoneNumber));
     }
 }

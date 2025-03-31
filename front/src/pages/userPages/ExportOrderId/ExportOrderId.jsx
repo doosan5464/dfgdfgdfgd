@@ -2,16 +2,24 @@ import React from 'react';
 /**@jsxImportSource @emotion/react */
 import * as s from './style';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { addedCart } from '../../../atoms/addedCart/addedCart';  // Recoil 상태 import
 
 function ExportOrderId(props) {
     const navi = useNavigate();
-
     const location = useLocation();
-    console.log("주문번호는? : ", location.state?.orderId);  // 넘긴 orderId를 확인
+    const [, setAddedCartState] = useRecoilState(addedCart);  // Recoil 상태 업데이트용
+
+    console.log(location);
+    console.log("주문번호는? : ", location);  // 넘긴 orderId를 확인
 
     const handleGoFirst = () => {
+        // Recoil 상태를 비워줍니다 (장바구니 비우기)
+        setAddedCartState([]);  // 장바구니 비우기
+
+        // 메뉴 페이지로 이동
         navi("/menu");
-    }
+    };
 
     return (
         <div css={s.container}>

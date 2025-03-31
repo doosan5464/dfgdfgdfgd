@@ -8,7 +8,7 @@ import menuForUser from '../../../hooks/menu/menuForUser';
 
 const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage에서 전달받은 선택한 메뉴 상태
     const [step, setStep] = useState(1);
-    const [isSet, setIsSet] = useState(null);
+    const [isSet, setIsSet] = useState(false);
     const [side, setSide] = useState(null);
     const [drink, setDrink] = useState(null);
     const [sideLarge, setSideLarge] = useState(null);
@@ -61,7 +61,7 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
         }
 
         if (step === 1) {
-            if (isSet === false && (menu.category === "디저트" || menu.category === "버거")) {
+            if (isSet === false && (menu.category === "디저트" || menu.category === "버거" || menu.category === "맥모닝")) {
                 handleAddToCart(); 
             }
         }
@@ -182,7 +182,7 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
                                     <img src={menu.img} alt={menu.name} />
                                 </div>
                             </div>
-                            {menu.category === "버거" && ( // 버거일 때만 세트 옵션 렌더링
+                            {menu.category === "버거" && menu.img2 != null && ( // 버거일 때만 세트 옵션 렌더링
                                 <div css={s.modalBuguerSetImage}>
                                     <div onClick={() => handleIsSetOnClick(true)}>{menu.name} 세트
                                         <img src={menu.img2} alt={menu.name} />
@@ -197,7 +197,7 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
                     </div>
                 )}
 
-                {step === 2 && (
+                {step === 2 && isSet == true && (
                     <div>
                         <h3 css={s.modalBasich3}>사이드 선택</h3>
                         <div css={s.mapParent}>

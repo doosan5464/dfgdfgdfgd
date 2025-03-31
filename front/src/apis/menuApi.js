@@ -99,10 +99,10 @@ export const updateMenuApi = async (menuId, formData) => {
     .filter((p) => p.price && Number(p.price) > 0)
     .map((p) => ({
         size: p.size,
-        price: Number(p.price),
+        menuPrice: Number(p.price),
         ...(p.discountPrice && Number(p.discountPrice) > 0
         ? { discountPrice: Number(p.discountPrice) }
-        : {}), // ❗빈 값이면 아예 속성 자체를 안 보냄
+        : {}), // 빈 값이면 아예 속성 자체를 안 보냄
     }));
 
     
@@ -140,4 +140,28 @@ export const deleteMenuApi = async (menuId) => {
     });
 
     return response.data;
+};
+
+// 메뉴 이미지
+export const addMenuImageApi = async (imageUrl, menuName, imageType) => {
+    const token = localStorage.getItem("AccessToken");
+    if (!token) throw new Error("❌ 인증 정보 없음! 다시 로그인해주세요.");
+
+    const payload = {
+        imageUrl,
+        menuName,
+        imageType,
+    };
+
+    try {
+        await api.post("/api/admin/menus/images", payload, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+    } catch (error) {
+        console.error("❌ [addMenuImageApi] 이미지 추가 실패:", error);
+        throw error;
+    }
 };
