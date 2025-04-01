@@ -10,6 +10,7 @@ import ReactModal from 'react-modal';
 import { data, useSearchParams } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import AdminPayMoal from '../../../components/Modal/AdminPayModal/AdminPayMoal';
+import AdminHeader from '../../../components/common/AdminHeader/AdminHeader';
 
 //결제 조회 페이지
 function AdminOrderPage(props) {
@@ -30,7 +31,7 @@ function AdminOrderPage(props) {
         setSearchParams(searchParams);
     }
 
-    //오늘 날짜 계산
+    //오늘 날짜 계산 로직
     const today = () => { 
         const date = new Date();
         const year = date.getFullYear();
@@ -43,8 +44,8 @@ function AdminOrderPage(props) {
 
     //달력에 선택된 값으로 변경
     const handleSelectDateOnChange = (e) => { 
-        searchParams.set("page", 1); //1페이지로 파라미터 값 변경
-        setSearchParams(searchParams); //파라미터 업데이터
+        searchParams.set("page", 1); //날짜 변경 시 1페이지로 파라미터 값 변경
+        setSearchParams(searchParams); //파라미터 업데이트
         setSelectedDate(e.target.value); //달력값 상태 업데이트
     }
 
@@ -67,11 +68,7 @@ function AdminOrderPage(props) {
         } 
     }, [totalCount, page]);
 
-
-
-
-
-    //status의 값을 보고 메세지 띄우기
+    //status의 값을 보고 띄울 메세지
     const PAYSTATUS = { 
         "PAID": "결제완료",
         "FAILED": "결제실패",
@@ -79,7 +76,7 @@ function AdminOrderPage(props) {
         "READY": "결제 중"
     }
 
-    //상품목록 더미데이터
+    //상품목록 더미데이터 (삭제예정)
     const orders = [
         {
             orderId: 1024,
@@ -148,9 +145,7 @@ function AdminOrderPage(props) {
     ]
     //console.log(foundorder);
 
-    //중간 단계 => db의 자료에 맞게 결제 후 리스트 띄우기 
-    //주문 번호 중에 하나 선택 => 주문 번호 안의 물품을 products에 map하기
-    // 물품구입 - payone으로 보내기
+    // 물품구입 - payone으로 보내기 (삭제 예정)
     const handlePaymentClick = async (orderId) => {
         const foundorder = orders.find(o => o.orderId === orderId); //주문번호로 찾기
         const nameOfProducts = foundorder.products.map(product => 
@@ -181,7 +176,7 @@ function AdminOrderPage(props) {
                         };
                     }),
             });
-            console.log(paymentResponse);
+            //console.log(paymentResponse);
         }  catch(error) {
             console.log(error);
         }
@@ -238,53 +233,24 @@ function AdminOrderPage(props) {
     }, [page, selectedDate, totalCount, refreshify]);
 
     
+    //새로고침 로직
     const handleRefreshifyButtonOnClick = () => {
         setRefreshify(refreshify === 1 ? 0 : 1); //버튼 누를 떄마다 상태값을 바꿔서 useEffect가동
     }
 
+    //결제 취소 버튼 로직
     const handleCancelButtonOnClick = (payData) => {
-        setPayModalDate(payData);
-        setPayModalOpen(true);        
+        setPayModalDate(payData); //결제 데이터 모달로 넘겨주기
+        setPayModalOpen(payData.status === "PAID" ? true : false); //결제 완료일때만 모달 동작하기        
     }
     //console.log(payModalDate);
     //console.log(payments);
 
-    // 결제 취소
-    // post
-    // /payments/{paymentId}/cancel
-    // const handleCancelClick = async (uuid, payments) => {
-    //     console.log(uuid)
-    //     const foundorder = payments.find(o => o.uuid === uuid); //uuid로 찾기
-    //     try {
-    //         const jwtResponse = await axios.post("https://api.portone.io/login/api-secret", {
-    //             "apiSecret": import.meta.env.VITE_PORTONE_API_KEY,
-    //         });
-    //         const accessToken = jwtResponse.data.accessToken;
-
-    //         await axios.post(
-    //             `https://api.portone.io/payments/${uuid}/cancel`, 
-    //             {
-    //                 storeId: import.meta.env.VITE_PORTONE_STOREID,
-    //                 reason: "취소사유",
-    //             }, 
-    //             {
-    //                 headers: {
-    //                     Authorization: `Bearer ${accessToken}`,
-    //                 }
-    //             }
-    //         );
-    //         alert("취소완료")
-    //     }  catch(error) {
-    //         console.log(error);
-    //     }
-    // }
-
 
     return (
-        <div css={s.container}>
-            <div css={s.upside}>
-                <span>결제 내역</span>
-                <div>
+        <>
+            <AdminHeader title={"결제 내역"} rightElement={
+                <div css={s.datePicker}>
                     <label htmlFor="date" />
                     <div css={s.calandar}>
                         <input type="date"
@@ -298,7 +264,7 @@ function AdminOrderPage(props) {
                         <MdOutlineRefresh size={24} fill="#444444" />
                     </button>
                 </div>
-            </div>  
+            } />
 
             <div css={s.listcontainer}>
                 <div css={s.listhead}>
@@ -308,18 +274,19 @@ function AdminOrderPage(props) {
                     <span className="time">결제시간</span>
                     <span className="status">결제상태</span>
                 </div>
-                { //취소사유 옆에 창으로 띄우기
+                {
                     payments.map(p =>
                         <div key={p.uuid} css={s.listbody}>
                             <span className="orderid">{p.orderId}</span>
                             <span className="ordername">{p.orderName}</span>
                             <span className="totalamount">{p.totalAmount}</span>
                             <span className="time">{p.time}</span>
-                            <span className="status">
+                            <span className="status" css={s.cancelreasons(p.status)}>
                                 <button css={s.statusbutton(p.status)} onClick={() => handleCancelButtonOnClick(p)}>
                                     {PAYSTATUS[p.status]}
                                 </button>
-                                <span css={s.cancelreason}><span>취소사유 : {p.cancelReason}</span></span>
+                                <span>취소사유 : &nbsp;&nbsp; {p.cancelReason}</span>
+                                {/* &nbsp;로 띄어쓰기 */}
                             </span>
                         </div>
                     )
@@ -337,7 +304,7 @@ function AdminOrderPage(props) {
                         backgroundColor: "#00000044"
                     },
                     content: {
-                        potition: "static",
+                        position: "static",
                         boxSizing: "border-box",
                         borderRadius: "1.5rem",
                         height: "60rem",
@@ -365,8 +332,7 @@ function AdminOrderPage(props) {
             </div>
         
             <div>
-                ===더미데이터용===
-                {/* <button onClick={handleSearchClick}>조회</button> */}
+                ===더미데이터용(삭제예정)===
                 {
                     orders.map(o => 
                         <div key={o.orderId}>
@@ -381,7 +347,7 @@ function AdminOrderPage(props) {
                     )
                 }
                 </div>
-        </div>
+        </>
     );
 }
 

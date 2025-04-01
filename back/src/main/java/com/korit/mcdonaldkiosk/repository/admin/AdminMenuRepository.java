@@ -40,7 +40,7 @@ public class AdminMenuRepository {
     }
 
 
-    // 특정 메뉴 정보 조회
+    // 특정 메뉴 조회
     public Optional<Menu> getMenuById(int menuId) {
         return Optional.ofNullable(adminMenuMapper.selectMenuById(menuId));
     }

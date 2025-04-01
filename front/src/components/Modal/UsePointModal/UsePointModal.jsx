@@ -1,4 +1,4 @@
-/**@jsxImportSource @emotion/react */
+/** @jsxImportSource @emotion/react */
 import * as s from './style';
 import React, { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
@@ -50,24 +50,30 @@ function UsePointModal({ phoneNumber, closeModal }) {
 
     // 포인트 사용 처리
     const handleUsePoint = async () => {
+        // 포인트가 100의 배수가 아니면 알림 띄우기
+        if (usePoint % 100 !== 0) {
+            alert("포인트는 100단위로만 사용 가능합니다.");
+            return;
+        }
+
         if (usePoint < 2000) {
             alert("최소 사용 포인트는 2000점입니다.");
             return; // 최소 사용 포인트 2000 미만일 경우 사용 불가
         }
 
-        if (usePoint > 0 && usePoint <= point) {
-            try {
-                await usePointmutation({
-                    phoneNumber: phoneNumber,
-                    calcul: 0,  // 포인트 적립
-                    point: usePoint,
-                });
+        
+
+        if (usePoint > 0 && usePoint <= point) {       
                 alert(`포인트 ${usePoint}점 사용되었습니다.`);
                 closeModal(); // 모달 닫기
-                navigate("/payment")
-            } catch (error) {
-                alert("포인트 사용 처리 실패");
-            }
+                navigate("/payment", { 
+                    state: { 
+                        usePoint: usePoint,
+                        phoneNumber: phoneNumber
+                    }
+                 });
+                 console.log(phoneNumber)
+                 console.log(usePoint)
         } else {
             alert("사용할 포인트가 유효하지 않습니다.");
         }

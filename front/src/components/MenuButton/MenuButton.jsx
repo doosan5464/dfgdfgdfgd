@@ -6,7 +6,7 @@ function MenuButton({ img, menuName, price, onClick }) {
     const displayPrice = price && price.length > 0 ? price[0].menuPrice : '가격 정보 없음';  // 첫 번째 항목의 menuPrice를 사용
 
     return (
-        <div css={s.menuLayout}>
+        <div>
             <button css={s.menu} onClick={onClick}>
                 <div css={s.imglayout}>
                     <img src={img} alt="" />

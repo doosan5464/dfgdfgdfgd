@@ -1,12 +1,10 @@
-// getMenuHooks.js
-import { useQuery } from '@tanstack/react-query'; // react-query v5는 @tanstack/react-query로 패키지명이 변경됨
-import { adminFetchMenuApi, fetchAllMenuImages, fetchMenuDetailApi } from '../../apis/menuApi';  // menuApi에서 요청 함수 가져오기
+import { useQuery } from "@tanstack/react-query";
+import { adminFetchMenuApi, fetchAllMenuImages, fetchMenuDetailApi } from "../../apis/menuApi";
 
-// 메뉴 데이터를 가져오는 커스텀 훅
+// 전체 메뉴 목록 가져오기
 const useMenuData = () => {
-    // useQuery 훅을 사용하여 서버에서 메뉴 데이터를 가져옴
     const { data, error, isLoading } = useQuery({
-        queryKey: ['menuData'], // queryKey를 배열로 수정
+        queryKey: ["menuData"],
         queryFn: async () => {
             try {
                 const response = await adminFetchMenuApi();
@@ -15,23 +13,20 @@ const useMenuData = () => {
                 return [];
             }
         },
-        staleTime: 5 * 60 * 1000,  // 5분 캐싱
+        staleTime: 1000 * 60 * 5,
     });
 
-    // data, error, isLoading 값을 반환
     return { data, error, isLoading };
 };
 
-// 특정 메뉴 가져오는 Hook
+// 특정 메뉴 상세 정보 가져오기
 export const useMenuDetail = (menuId) => {
     const { data, error } = useQuery({
-        queryKey: ['menuDetail', menuId],
+        queryKey: ["menuDetail", menuId],
         queryFn: async () => {
             if (!menuId) return null;
-
             try {
-                const response = await fetchMenuDetailApi(menuId); // response 변수에 할당
-
+                const response = await fetchMenuDetailApi(menuId);
                 return response || null;
             } catch (err) {
                 return null;
@@ -43,7 +38,7 @@ export const useMenuDetail = (menuId) => {
     return { data, error };
 };
 
-// 페이지네이션용
+// 이미지 모달용 메뉴 이미지 가져오기
 export const useMenuImageList = () => {
     return useQuery({
         queryKey: ["menuImageList"],

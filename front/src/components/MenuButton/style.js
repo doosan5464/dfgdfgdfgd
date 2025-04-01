@@ -1,13 +1,5 @@
 import { css } from "@emotion/react";
 
-export const menuLayout = css`
-    height: 100%;
-    /* & > button:nth-of-type(1) {
-        margin-right: 15px;
-        margin-bottom: 15px;
-    } */
-`;
-
 export const menu = css`
     box-sizing: border-box;
     display: flex;
@@ -20,7 +12,7 @@ export const menu = css`
     background-color: white;
     border: 1px solid #dbdbdb;
     cursor: pointer;
-    box-shadow: 10px 10px 5px #bdc7ca;
+    box-shadow: 0 0 5px #bdc7ca;
 
     &:active {
         background-color: #f9d017;

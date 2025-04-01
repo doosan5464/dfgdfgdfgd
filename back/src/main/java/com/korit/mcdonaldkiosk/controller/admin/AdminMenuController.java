@@ -64,9 +64,11 @@ public class AdminMenuController {
     @GetMapping("/menus/{menuId}")
     public ResponseEntity<?> getMenuDetail(@PathVariable int menuId) {
         Menu menu = adminMenuService.getMenuById(menuId);
-        List<MenuPrice> prices = adminMenuService.getMenuPrices(menuId);
-        menu.setMenuPrice(prices);
-        return ResponseEntity.ok().body(menu);
+        if (menu != null) {
+            return ResponseEntity.ok(menu);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     // 메뉴 추가 (가격 포함)

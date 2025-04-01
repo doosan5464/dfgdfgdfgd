@@ -5,11 +5,13 @@ export const layout = css`
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    box-sizing: border-box;
     align-items: center;
     width: 100%;
     height: 100%;
     padding: 2rem;
     padding-top: 4rem;
+    white-space: nowrap;
 `;
 
 // 헤더 스타일
@@ -49,6 +51,7 @@ export const categoryBox = css`
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     font-size: 1.6rem;
     font-weight: bold;
+
     
     &:hover {
         transform: translateY(-5px);

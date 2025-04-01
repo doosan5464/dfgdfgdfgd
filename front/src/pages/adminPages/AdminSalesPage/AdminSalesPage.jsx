@@ -12,6 +12,7 @@ import { InputLabel, MenuItem, Select } from '@mui/material';
 import { useRecoilState } from 'recoil';
 import { salesModeState } from '../../../atoms/salesModeState/salesModeState';
 import { useMutation } from '@tanstack/react-query';
+import AdminHeader from '../../../components/common/AdminHeader/AdminHeader';
 
 function AdminSalesPage(props) {
     const [sales, setSales] = useState([]); // 매출 데이터
@@ -191,13 +192,11 @@ function AdminSalesPage(props) {
     };
 
     return (
-        <div css={s.layout}>
-            <div css={s.header}>
-                <div css={s.title}>매출 조회</div>
-            </div>
+        <>
+            <AdminHeader title={"매출관리"} />
             <div css={s.salesCharts}>
                 <div css={s.toggleSwitch}>
-                    <div>
+                    <div css={s.salesChartTitle}>
                         <div>총 매출</div>
                         <ToggleSwitch
                             width={50}
@@ -213,6 +212,10 @@ function AdminSalesPage(props) {
                         value={year} // 상태 값 전달
                         onChange={handleYearOptionsOnChange} // 연도 변경 처리
                         label="연도"
+                        style={{
+                            width: "14rem",
+                            fontSize: "1.4rem"
+                        }}
                     >
                         {/* placeholder처럼 사용할 MenuItem */}
                         <MenuItem value="">
@@ -274,7 +277,7 @@ function AdminSalesPage(props) {
                     element={<AdminSaleByMenu menuList={menuList} />}
                 />
             </Routes>
-        </div>
+        </>
     );
 }
 

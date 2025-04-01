@@ -15,6 +15,21 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
     const [drinkLarge, setDrinkLarge] = useState(null);
     const [addedCartState, setAddedCartState] = useRecoilState(addedCart);
 
+    const [ radioChecked, setRadioChecked ] = useState({
+        set: "1",
+        side: "0",
+        drink: "0",
+        size: "1",
+    }) 
+
+    const handleRadioOnChange = (e) => {
+        setRadioChecked(prev => ({...prev, [e.target.name]: e.target.value}));
+    }
+
+    useEffect(() => {
+        console.log(radioChecked);
+    }, [radioChecked])
+
     const [isLarge, setIsLarge] = useState(false);
 
     const { data: menuData, error, isLoading } = menuForUser(); 
@@ -177,16 +192,24 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
                     <div>
                         <h3 css={s.modalBasich3}>세트(사이즈) 선택</h3>
                         <div css={s.temp}>
-                            <div css={s.modalBuguerSetImage}>
-                                <div onClick={() => handleIsSetOnClick(false)}>{menu.name}
+                            <div css={s.modalBuguerSetImage(radioChecked.set === "1")}>
+                                <label onClick={() => handleIsSetOnClick(false)}>
+                                    <input type="radio" name='set' onChange={handleRadioOnChange} value={1}/>
                                     <img src={menu.img} alt={menu.name} />
-                                </div>
+                                    <div>
+                                        {menu.name}
+                                    </div>
+                                </label>
                             </div>
                             {menu.category === "버거" && menu.img2 != null && ( // 버거일 때만 세트 옵션 렌더링
-                                <div css={s.modalBuguerSetImage}>
-                                    <div onClick={() => handleIsSetOnClick(true)}>{menu.name} 세트
+                                <div css={s.modalBuguerSetImage(radioChecked.set === "2")}>
+                                    <label onClick={() => handleIsSetOnClick(true)}>
+                                        <input type="radio" name='set' onChange={handleRadioOnChange} value={2}/>
                                         <img src={menu.img2} alt={menu.name} />
-                                    </div>
+                                        <div>
+                                            {menu.name} 세트
+                                        </div>
+                                    </label>
                                 </div>
                             )}
                         </div>
@@ -203,8 +226,9 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
                         <div css={s.mapParent}>
                             {filteredSides?.map((side, index) => (
                                 <div css={s.childrenDiv} key={`${side.menuName}-${index}`}>
-                                    <div css={s.modalSideSetImage}>
-                                        <div onClick={() => handleChangeSideOnClick(side.menuName)}>
+                                    <div css={s.modalSideSetImage(radioChecked.side === index.toString())}>
+                                        <label onClick={() => handleChangeSideOnClick(side.menuName)}>
+                                            <input type="radio" name='side' onChange={handleRadioOnChange} value={index}/>
                                             <img src={side.singleImg} alt={side.menuName} />
                                             <div>
                                                 <p>{side.menuName}</p>
@@ -214,7 +238,7 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
                                                     : `+${Math.max(side.menuPrice[0].discountPrice - filteredSides?.find(side => side.menuName === defaultSide)?.menuPrice[0]?.discountPrice, 0)}원`}
                                                 </p>
                                             </div>
-                                        </div>
+                                        </label>
                                     </div>
                                 </div>
                             ))}
@@ -232,8 +256,9 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
                         <div css={s.mapParent}>
                             {filteredDrinks?.map((drink, index) => (
                                 <div css={s.childrenDiv} key={`${drink.menuName}-${index}`}>
-                                    <div css={s.modalSideSetImage}>
-                                        <div onClick={() => handleChangeDrinkOnClick(drink.menuName)}>
+                                    <div css={s.modalSideSetImage(radioChecked.drink === index.toString())}>
+                                        <label onClick={() => handleChangeDrinkOnClick(drink.menuName)}>
+                                        <input type="radio" name='drink' onChange={handleRadioOnChange} value={index}/>
                                             <img src={drink.singleImg} alt={drink.menuName} />
                                             <div>
                                                 <p>{drink.menuName}</p>
@@ -243,14 +268,14 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
                                                         : `+${Math.max(drink.menuPrice[0].discountPrice - filteredDrinks?.find(drink => drink.menuName === defaultDrink)?.menuPrice[0]?.discountPrice, 0)}원`}
                                                 </p>
                                             </div>
-                                        </div>
+                                        </label>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                        <div css={s.cartParent}>
-                            <button onClick={handleAddToCart} css={s.cart}>카트에 담기</button>
-                            <button onClick={onClose} css={s.closeTemp}>닫기</button>
+                        <div css={s.nextAndClose}>
+                            <span onClick={handleAddToCart} css={s.cart}>카트에 담기</span>
+                            <span onClick={onClose} css={s.closeTemp}>닫기</span>
                         </div>
                     </div>
                 )}
@@ -260,21 +285,29 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
                     <div>
                         <h3 css={s.modalBasich3}>사이즈 선택</h3>
                         <div css={s.temp}>
-                            <div css={s.modalBuguerSetImage}>
-                                <div> 미디엄
+                            <div css={s.modalBuguerSetImage(radioChecked.size === "1")}>
+                                <label onClick={() => handleTemp(true)}>
+                                    <input type="radio" name='size' onChange={handleRadioOnChange} value={1}/>
                                     <img src={menu.img} alt={menu.name} />
-                                </div>
+                                    <div>
+                                        미디엄
+                                    </div>
+                                </label>
                             </div>
                             {menu.img2 !== null && ( 
-                                <div css={s.modalBuguerSetImage}>
-                                    <div onClick={() => handleTemp(true)}> 라지
+                                <div css={s.modalBuguerSetImage(radioChecked.size === "2")}>
+                                    <label onClick={() => handleTemp(true)}>
+                                        <input type="radio" name='size' onChange={handleRadioOnChange} value={2}/>
                                         <img src={menu.img2} alt={menu.name} />
-                                    </div>
+                                        <div>
+                                            라지
+                                        </div>
+                                    </label>
                                 </div>
                             )}
                         </div>
                         <div css={s.nextAndClose}>
-                            <span onClick={handleNext}>다음</span>
+                            <span onClick={handleNext}>카트에 담기</span>
                             <span onClick={onClose}>닫기</span>
                         </div>
                     </div>

@@ -1,7 +1,7 @@
 package com.korit.mcdonaldkiosk.repository.user;
 
-import com.korit.mcdonaldkiosk.entity.Order;
-import com.korit.mcdonaldkiosk.entity.OrderDetail;
+import com.korit.mcdonaldkiosk.dto.request.ReqOrderDetailDto;
+import com.korit.mcdonaldkiosk.dto.request.ReqOrderDto;
 import com.korit.mcdonaldkiosk.mapper.OrderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -14,13 +14,18 @@ public class OrderRepository {
     @Autowired
     private OrderMapper orderMapper;
 
-    // 주문 리스트 추가
-    public void addOrder(Order order){
+    // 주문 추가
+    public void addOrder(ReqOrderDto order) {
         orderMapper.addOrderList(order);
-    };
+    }
 
-    // 주문 상세 정보 추가
-    public  void addOrderDetails(List<OrderDetail> orderDetails){
+    // 주문 상세 항목 추가
+    public void addOrderDetails(List<ReqOrderDetailDto> orderDetails) {
         orderMapper.addOrders(orderDetails);
-    };
+    }
+
+    // 가장 최근에 추가된 주문의 orderId 조회
+    public int getLatestOrderId() {
+        return orderMapper.getLatestOrderId();
+    }
 }

@@ -81,22 +81,27 @@ export const input = css`
 
 // 버튼 그룹
 export const buttonGroup = css`
-    margin-top: 1rem;
+    width: 91%;
+    margin-top: 5rem;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+
+    & > button:nth-of-type(2) {
+        margin: 0 2rem;
+    }
 `;
 
 export const button = css`
     padding: 0.5rem 1rem;
-    margin-left: 2rem;
     color: black;
     border: 1px solid #000;
     border-radius: 6px;
     font-weight: bold;
     cursor: pointer;
     flex-grow: 1;
+    height: 4rem;
 
     &:hover {
-    background: #e5e7eb;
+        background: #e5e7eb;
 }
 `;

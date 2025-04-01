@@ -45,6 +45,11 @@ export const upside = css`
     }
 `;
 
+export const datePicker = css`
+    display: flex;
+    align-items: center;
+`
+
 export const calandar = css`
     margin-right: 2rem;
     padding: 0.5rem;
@@ -62,6 +67,9 @@ export const listcontainer = css`
     flex-direction: column;
     justify-content: center;
     width: 100%;
+    border-radius: 1rem;
+    box-shadow: 0 0 0.3rem 0.2rem #00000022;
+    overflow: hidden;
 
     & div {
         display: flex;
@@ -75,27 +83,76 @@ export const listcontainer = css`
         width: 7rem;
         flex-grow: 1;
         white-space: nowrap;
+        text-align: center;
+    }
+
+    & div .orderid {
         overflow: hidden;
         text-overflow: ellipsis;
-        text-align: center;
     }
 
     & div .ordername {
         flex-grow: 3;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    & div .totalamount {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    & div .time {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    & div .status {
+        position: relative;
+
+        & > span {
+            display: none;
+            position: absolute;
+            border-radius: 1rem;
+            width: max-content;
+            font-size: 1.6rem;
+            background-color: #ffffffee;
+            transform: translate(-100%, -50%);
+            top: 50%;
+            left: -10%;
+        }
     }
 `;
 
 export const listhead = css`
+    box-sizing: border-box;
     margin-bottom: .2rem;
     border-bottom: .1rem solid #333333;
-    padding: .2rem 0;
     font-size: 1.5rem;
+    padding: 0.6rem 0;
     font-weight: bold;
+    background-color: #004417;
+    & * {
+        color: #fafafa;
+        cursor: default;
+    }
 `;
 
 export const listbody = css`
-    border-bottom: 0.1rem dashed #333333;
+    border-bottom: 0.1rem solid #dbdbdb;
     font-size: 1.5rem;
+    cursor: default;
+`;
+
+
+export const cancelreasons = (status) => css`
+    & > button {
+        width: 9rem;
+    }
+    & button:hover + span {
+        display: 
+            ${status === "CANCELLED" ? "block" : "none"};
+    }
 `;
 
 
@@ -108,7 +165,7 @@ export const statusbutton = (status) => css`
     color: #222222;
     background-color:
         ${status === "PAID" ? "#f1d21dff"
-        : status === "FAILED" ? "#868686"
+        : status === "FAILED" ? "#868686d2"
         : status === "CANCELLED" ? "#fd3f3f" : "#3fb7fd"};
     font-weight: 800;
     
@@ -118,22 +175,9 @@ export const statusbutton = (status) => css`
         cursor:
             ${status === "PAID" ? "pointer" : "default"};
     }
+
 `;
 
-export const cancelreason = css`
-    position: relative;
-
-    &:hover > span {
-        display: block;
-    }
-
-    & > span { //수정하기
-        position: absolute;
-        transform: translateX(-50%);
-        left: 50%;
-
-    }
-`;
 
 
 export const footer = css`

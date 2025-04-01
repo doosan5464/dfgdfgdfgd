@@ -3,9 +3,8 @@ import { css } from "@emotion/react";
 export const container = css`
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
-    box-sizing: border-box;
-    padding: 3rem;
-    height: 100%;
-    overflow-y: scroll;
+    width: 65rem;
+    height: 90rem;
+    border: 0.1rem solid #dbdbdb;
+    overflow: hidden;
 `;

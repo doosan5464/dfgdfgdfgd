@@ -16,7 +16,6 @@ export const fetchMenuData = async () => {
     return sortedData;
 };
 
-
 // 관리자용 전체 메뉴 목록 가져오기
 export const adminFetchMenuApi = async () => {
     try {
@@ -28,7 +27,6 @@ export const adminFetchMenuApi = async () => {
     }
 };
 
-
 // 특정 메뉴 상세 정보 가져오기
 export const fetchMenuDetailApi = async (menuId) => {
     if (!menuId) {
@@ -38,6 +36,7 @@ export const fetchMenuDetailApi = async (menuId) => {
 
     try {
         const response = await api.get(`/api/admin/menus/${menuId}`);
+        console.log(`🔥 [fetchMenuDetail] 선택한 메뉴(${menuId}) 응답:`, response.data);
         return response.data;
     } catch (error) {
         console.error("❌ [fetchMenuDetail] API 요청 실패:", error);
@@ -45,25 +44,19 @@ export const fetchMenuDetailApi = async (menuId) => {
     }
 };
 
-// 페이지네이션용 이미지 + 메뉴명 가지고오기
-export const fetchAllMenuImages = async () => {
-    const response = await api.get("/api/admin/menus/images");
-    return response.data;
-};
-
 // 메뉴 추가
 export const addMenuApi = async (formData) => {
     const token = localStorage.getItem("AccessToken");
-    if (!token) throw new Error("❌ 인증 정보 없음! 다시 로그인해주세요.");
-  
+    if (!token) throw new Error("❌ 인증 정보 없음!");
+
     const validPrices = formData.prices
-    .filter((p) => p.price && Number(p.price) > 0)
-    .map((p) => ({
-        size: p.size,
-        menuPrice: Number(p.price),
-        discountPrice: p.discountPrice ? Number(p.discountPrice) : Number(p.price),
-    }));
-  
+        .filter((p) => p.price && Number(p.price) > 0)
+        .map((p) => ({
+            size: p.size,
+            menuPrice: Number(p.price),
+            discountPrice: p.discountPrice ? Number(p.discountPrice) : Number(p.price),
+        }));
+
     const payload = {
         menuName: formData.menuName,
         menuCategory: formData.menuCategory,
@@ -81,10 +74,9 @@ export const addMenuApi = async (formData) => {
                 "Content-Type": "application/json",
             },
         });
-        console.log("✅ [addMenuApi] 메뉴 추가 성공:", response.data);
         return response.data;
     } catch (error) {
-        console.error("❌ [addMenuApi] 메뉴 추가 실패:", error);
+        console.error("❌ [addMenuApi] 실패:", error);
         throw error;
     }
 };
@@ -92,20 +84,16 @@ export const addMenuApi = async (formData) => {
 // 메뉴 수정
 export const updateMenuApi = async (menuId, formData) => {
     const token = localStorage.getItem("AccessToken");
-    if (!token) throw new Error("❌ 인증 정보 없음! 다시 로그인해주세요.");
+    if (!token) throw new Error("❌ 인증 정보 없음!");
 
-    // 수정도 동일하게 유효한 가격만 필터링
     const validPrices = formData.prices
-    .filter((p) => p.price && Number(p.price) > 0)
-    .map((p) => ({
-        size: p.size,
-        menuPrice: Number(p.price),
-        ...(p.discountPrice && Number(p.discountPrice) > 0
-        ? { discountPrice: Number(p.discountPrice) }
-        : {}), // 빈 값이면 아예 속성 자체를 안 보냄
-    }));
+        .filter((p) => p.price && Number(p.price) > 0)
+        .map((p) => ({
+            size: p.size,
+            menuPrice: Number(p.price),
+            discountPrice: p.discountPrice ? Number(p.discountPrice) : Number(p.price),
+        }));
 
-    
     const payload = {
         menuName: formData.menuName,
         menuCategory: formData.menuCategory,
@@ -114,18 +102,18 @@ export const updateMenuApi = async (menuId, formData) => {
         setImg: formData.setImg,
         isExposure: formData.isExposure,
         prices: validPrices,
-    }
+    };
+
     try {
         const response = await api.put(`/api/admin/menus/${menuId}`, payload, {
             headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
             },
         });
-        console.log("✅ [updateMenuApi] 메뉴 수정 성공:", response.data);
         return response.data;
     } catch (error) {
-        console.error("❌ [updateMenuApi] 메뉴 수정 실패:", error);
+        console.error("❌ [updateMenuApi] 실패:", error);
         throw error;
     }
 };
@@ -133,35 +121,16 @@ export const updateMenuApi = async (menuId, formData) => {
 // 메뉴 삭제
 export const deleteMenuApi = async (menuId) => {
     const token = localStorage.getItem("AccessToken");
-    if (!token) throw new Error("❌ 인증 정보 없음! 다시 로그인해주세요.");
+    if (!token) throw new Error("❌ 인증 정보 없음!");
 
     const response = await api.delete(`/api/admin/menus/${menuId}`, {
         headers: { Authorization: `Bearer ${token}` },
     });
-
     return response.data;
 };
 
-// 메뉴 이미지
-export const addMenuImageApi = async (imageUrl, menuName, imageType) => {
-    const token = localStorage.getItem("AccessToken");
-    if (!token) throw new Error("❌ 인증 정보 없음! 다시 로그인해주세요.");
-
-    const payload = {
-        imageUrl,
-        menuName,
-        imageType,
-    };
-
-    try {
-        await api.post("/api/admin/menus/images", payload, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-    } catch (error) {
-        console.error("❌ [addMenuImageApi] 이미지 추가 실패:", error);
-        throw error;
-    }
+// 페이지네이션용 이미지 목록
+export const fetchAllMenuImages = async () => {
+    const response = await api.get("/api/admin/menus/images");
+    return response.data;
 };

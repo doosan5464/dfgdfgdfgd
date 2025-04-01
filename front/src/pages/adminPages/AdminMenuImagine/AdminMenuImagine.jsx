@@ -44,19 +44,24 @@ function ImageModal({ isOpen, onClose, menus = [], imageType, onSelect, isAdding
     const handleAddImageClick = async () => {
         const url = prompt("추가할 이미지의 URL을 입력하세요:");
         if (!url) return;
-        const name = prompt("이 이미지의 이름 (상품명) 을 입력하세요:");
-        if (!name) return;
-
+    
+        let name = "";
+    
+        // 단품(M)일 때만 상품명 입력 받기
+        if (imageType === "singleImg") {
+            name = prompt("이 이미지의 이름 (상품명) 을 입력하세요:");
+            if (!name) return;
+        }
+    
         const newImg = {
             url,
             name,
             category: "직접 추가",
-            fromDb: false, // 새로 추가된 이미지
+            fromDb: false,
         };
-
-        // 추가 이미지 목록에 반영만 하고, DB 저장은 메뉴 추가 시점에 함
+    
         setCustomImages((prev) => [...prev, newImg]);
-        onSelect(url, name); // 상품명 자동 입력
+        onSelect(url, name); // name은 빈 문자열일 수 있음
         onClose();
     };
 

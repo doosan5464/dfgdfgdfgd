@@ -11,11 +11,13 @@ import SelectPayMethod from '../../pages/userPages/SelectPayMethod/SelectPayMeth
 import SavePoint from '../../pages/userPages/SavePoint/SavePoint';
 import ExportOrderId from '../../pages/userPages/ExportOrderId/ExportOrderId';
 import UsePoint from '../../pages/userPages/UsePoint/UsePoint';
+import UserMainContainer from '../../components/common/UserMainContainer/UserMainContainer';
 
 function UserRoute(props) {
     const selectedLanguage = useRecoilValue(selectedLanguageState); // 전역 상태 가져오기
 
     return (
+        <UserMainContainer>
             <Routes>
                 <Route path="/exportOrderId/*" element={<ExportOrderId />} /> 
                 <Route path="/savePoint/*" element={<SavePoint />} /> 
@@ -27,6 +29,7 @@ function UserRoute(props) {
                 <Route path="/usePoint/*" element={<UsePoint />} />
                 <Route path="/*" element={<NotFoundPage />} />
             </Routes>
+        </UserMainContainer>
     );
 }
 

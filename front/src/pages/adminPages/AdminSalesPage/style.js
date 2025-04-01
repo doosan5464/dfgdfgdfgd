@@ -1,12 +1,13 @@
 import { css } from "@emotion/react";
 
 export const layout = css`
-    z-index: 99;
-    width: 100%;
-    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    z-index: 99;
+    width: 100%;
+    max-width: 140rem;
+    height: 100%;
     overflow: auto;
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -41,18 +42,29 @@ export const salesCharts = css`
 `;
 
 export const toggleSwitch = css`
-    width: 90%;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 2rem;
+`;
 
-    & > div {
+export const salesChartTitle = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: default;
+
+    & > label {
         display: flex;
-        justify-content: center;
         align-items: center;
+        margin-top: 0.5rem;
+        margin-right: 1rem;
+        height: 100%;
     }
-    & > div > div {
-        margin: 0 10px;
+    & > div {
+        margin-right: 1rem;
+        height: 100%;
         font-size: 25px;
         font-weight: 600;
     }
@@ -63,30 +75,34 @@ export const chartBox = css`
     background-color: white;
     border: 1px solid #dbdbdb;
     border-radius: 15px;
-    width: 90%;
+    width: 99%;
     height: 300px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 7px 7px 5px #bdc7ca;
+    box-shadow: 0px 0px 5px #bdc7ca;
+
+    & * {
+        box-sizing: border-box;
+    }
 `;
 
 export const line = css`
-    width: 90%;
-    margin-top: 30px;
+    width: 100%;
+    margin: 30px 0;
     box-sizing: border-box;
     border-top: 2px solid #22222255;
 `;
 
 export const menuList = css`
-    height: 30%;
     box-sizing: border-box;
     display: flex;
     align-items: flex-start;
-    justify-content: flex-start;
-    flex-direction: row;
+    justify-content: center;
     flex-wrap: wrap;
-    padding-left: 80px;
-    margin-top: 40px;
-    gap: 20px;
+    margin: 0 auto;
+    gap: 2rem;
+    & * {
+        box-sizing: border-box;
+    }
 `;

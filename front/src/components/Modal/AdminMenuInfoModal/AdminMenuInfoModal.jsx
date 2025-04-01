@@ -13,7 +13,7 @@ function AdminMenuInfoModal({ menuId }) {
 
     const updateIsExposureMutation = useUpdateIsPosureMutation(); //노출여부 뮤태이션
 
-        //노출여부 변경 및 목록 다시 불러오기
+    //노출여부 변경 및 목록 다시 불러오기
     const handleChangeIsExposureOnClick = async (menuId, isExposure) => {
         await updateIsExposureMutation.mutateAsync({ "menuId": menuId, "isExposure": isExposure });
         getInfoMenuById.refetch();
@@ -29,7 +29,7 @@ function AdminMenuInfoModal({ menuId }) {
         }
     
     //삭제ㄴㄴㄴ
-    //AdminProductManage수정할거 - 나중에 메뉴 상세정보 변경에도 사용해야댐.
+    //AdminProductManage에 사용됨 - 나중에 메뉴 상세정보 변경에도 사용해야댐.
     // const [ searchParams, setSearchParams ] = useSearchParams();
     // const [selectedMenu, setSelectedMenu] = useState(!!searchParams.get("menuId") ? parseInt(searchParams.get("menuId")) : 1);
     //

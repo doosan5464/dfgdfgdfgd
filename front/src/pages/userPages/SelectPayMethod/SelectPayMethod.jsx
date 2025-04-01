@@ -1,52 +1,41 @@
 import React, { useEffect, useState } from 'react';
-import { useRecoilState, useResetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { addedCart } from '../../../atoms/addedCart/addedCart';
 import * as PortOne from "@portone/browser-sdk/v2"; // PortOne 결제 SDK
 import { v4 as uuid } from 'uuid'; // UUID 라이브러리
 /**@jsxImportSource @emotion/react */
 import * as s from './style';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import menuForUser from '../../../hooks/menu/menuForUser';
+import { usePointApi } from '../../../apis/pointApi';
+import { usePointMutation } from '../../../mutations/useProcessPointMutation';
 
 /*
-
-해야 할 것
-여기서 결제하고 장바구니를 비운다
-
-여기서 계산한 총 결제금액과
-menuName과 일치하는 menuPrice를 DB에서 가져온다
-
-이 둘과 
-
-isSet을 검사하는 로직을 추가해서
-
-order_id, menu_price_id, menu_count, is_set
-를 DB에 POST로 보내야 한다
-
+  해야 할 것
+  - 결제 후 장바구니를 비운다
+  - 총 결제 금액과 menuName과 일치하는 menuPrice를 DB에서 가져온다
+  - isSet을 검사하는 로직을 추가해서
+  - order_id, menu_price_id, menu_count, is_set를 DB에 POST로 보내야 한다
 */
 
 const SelectPayMethod = () => {
-
-    const { data: menuData, error, isLoading } = menuForUser(); 
-    // console.log("DB메뉴 : ", JSON.stringify(menuData, null, 2));
-
-    const [ orderId, setOrderId ] = useState(0);
-
+    const { data: menuData, error, isLoading } = menuForUser();
+    const [orderId, setOrderId] = useState(0);
     const navi = useNavigate();
+    
+    // usePointMutation 훅을 아래 위치에서 호출
+    const { mutateAsync: usePoints } = usePointMutation(); // 이 라인을 이동시켜서 제대로 훅을 사용할 수 있도록 처리
 
-    const handleOnClickNext = () => {
-        navi("/payment")
-    }
+    const location = useLocation();
+    const [usePoint, setUsePoint] = useState(location.state?.usePoint || 0);
+    const [phoneNumber, setPhoneNumber] = useState(location.state?.phoneNumber || "");
 
+    console.log(location.state)
     // 장바구니 상태 관리
     const [addedCartState] = useRecoilState(addedCart);
 
     // 장바구니의 가격 합산
     const totalPrice = addedCartState.reduce((sum, item) => sum + (item.detailPrice) * item.quantity, 0); // 모든 상품 가격 합산
-
-    console.log("장바구니 목록 : ", addedCartState);
-    
-    console.log("DB에 보낼 총 가격 : ", totalPrice);
 
     const productName = addedCartState
     .map((temp) => 
@@ -58,7 +47,6 @@ const SelectPayMethod = () => {
 
 
     const [orderNumber, setOrderNumber] = useState(() => {
-        // localStorage에서 orderId 값을 읽고, 없으면 1000으로 시작
         const savedOrderId = localStorage.getItem('orderId');
         return savedOrderId ? parseInt(savedOrderId, 10) : 1000;
     });
@@ -69,7 +57,7 @@ const SelectPayMethod = () => {
         localStorage.setItem('orderId', newOrderId);  // 증가된 번호 저장
         setOrderNumber(newOrderId);  // 상태 업데이트
     };
-    
+
     // 지금은 임시로 주문번호를 쓰는데, 관리자 메뉴쪽에서 주문번호를 관리하는 페이지를 만들어서, 1000 9001 9001 9002 9003 / 9001 9066
     const products = addedCartState.map((item) => ({
         orderNumber, // 1000부터 시작, 1씩 증가
@@ -80,24 +68,19 @@ const SelectPayMethod = () => {
         quantity: item.quantity,
     }));
 
-
-    // ✅ 장바구니 데이터를 order_detail_tb용으로 가공 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    // ✅ 장바구니 데이터를 order_detail_tb용으로 가공
     const buildOrderDetailList = async () => {
-        // 메뉴 데이터가 없거나 비어 있으면 빈 배열 반환
         if (!menuData || menuData.length === 0) return [];
-    
+
         const orderDetailList = [];
-    
-        // 장바구니에 있는 각 아이템에 대해 반복
+
         await addedCartState.forEach((item) => {
             const { isSet, detailMenu, detailSide, detailDrink, sideSize, drinkSize, quantity } = item;
-    
-            // 메인 메뉴 추가: 장바구니 아이템에서 메인 메뉴 찾기
+
             const mainMenu = menuData.find((menu) =>
                 menu.menuName === detailMenu
             );
-    
-            // 메인 메뉴가 존재하면 해당 메뉴 정보를 추가
+
             if (mainMenu) {
                 let priceInfo = null;
                 if (mainMenu.menuCategory === "버거") {
@@ -115,7 +98,7 @@ const SelectPayMethod = () => {
                 if (mainMenu.menuCategory === "커피") {
                     priceInfo = mainMenu.menuPrice.find(price => price.size === drinkSize);
                 }
-    
+
                 if (priceInfo) {
                     orderDetailList.push({
                         order_id: products[0].orderNumber, // 주문 임시 번호
@@ -125,14 +108,14 @@ const SelectPayMethod = () => {
                     });
                 }
             }
-    
-            // 사이드 메뉴 추가: 사이드가 있을 경우, 사이드 메뉴를 개별 아이템으로 추가
+
+            // 사이드 메뉴 추가
             if (detailSide) {
                 const sideMenu = menuData.find((menu) =>
                     menu.menuName === detailSide &&
                     menu.menuPrice.some(price => price.size === sideSize)
                 );
-    
+
                 if (sideMenu) {
                     const priceInfo = sideMenu.menuPrice.find(price => price.size === sideSize);
                     if (priceInfo) {
@@ -145,19 +128,19 @@ const SelectPayMethod = () => {
                     }
                 }
             }
-    
-            // 음료 메뉴 추가: 음료가 있을 경우, 음료 메뉴를 개별 아이템으로 추가
+
+            // 음료 메뉴 추가
             if (detailDrink) {
                 const drinkMenu = menuData.find((menu) =>
                     menu.menuName === detailDrink &&
                     menu.menuPrice.some(price => price.size === drinkSize)
                 );
-    
+
                 if (drinkMenu) {
                     const priceInfo = drinkMenu.menuPrice.find(price => price.size === drinkSize);
                     if (priceInfo) {
                         orderDetailList.push({
-                            order_id: products[0].orderId, // 주문 임시 번호
+                            order_id: products[0].orderNumber, // 주문 임시 번호
                             menu_price_id: priceInfo.menuPriceId, // 가격 ID
                             menu_count: quantity, // 수량
                             is_set: false, // 음료는 세트 메뉴가 아니므로 false
@@ -166,64 +149,81 @@ const SelectPayMethod = () => {
                 }
             }
         });
-    
-        // 주문 상세 목록 반환
+
         return orderDetailList;
     };
-    
+
     const handlePaymentOnClick = async () => {
         try {
-            const orderDetailList = await buildOrderDetailList(); // 주문 상세 목록 준비
-            const orderIdFromList = orderDetailList[0]?.order_id; // 첫 번째 아이템에서 order_id 추출
-            incrementOrderId();  // 주문 번호 증가
-    
-            // orderId가 없으면 결제를 진행할 수 없으므로 경고
+            const orderDetailList = await buildOrderDetailList();
+            const orderIdFromList = orderDetailList[0]?.order_id;
+            incrementOrderId();  
+
             if (!orderIdFromList) {
                 console.error("주문 ID가 없습니다.");
-                return;  // 결제 진행을 막음
+                return;  
             }
-    
+
+            const paymentAmount = totalPrice - usePoint;  
+            const finalAmount = paymentAmount < 0 ? 0 : paymentAmount;
+
             const paymentResponse = await PortOne.requestPayment({
                 storeId: import.meta.env.VITE_PORTONE_STOREID,
                 paymentId: uuid(),
                 orderName: productName,
-                totalAmount: totalPrice,
+                totalAmount: finalAmount,
                 currency: "CURRENCY_KRW",
                 payMethod: "EASY_PAY",
-                channelKey: "channel-key-539cbacf-386c-4d05-bdbb-c36b01075c32",
+                channelKey: "channel-key-39a34f05-a2cb-44f1-a0ca-0798cf19bca2",
                 products: products.map(product => ({
-                    id: product.orderNumber.toString(),  // orderNumber를 사용
+                    id: product.orderNumber.toString(),
                     name: [product.productName, product.side, product.drink].filter(Boolean).join(", "),
                     amount: product.price,
                     quantity: product.quantity,
                 })),
             });
-    
-            const point = Math.floor(totalPrice * 0.05);  // 5% 포인트 계산
-    
+
+            const point = Math.floor(totalPrice * 0.05);
+
+            // 이 자리에서 order_tb 에 POST 
+            console.log("order_tb에 보낼 2개, orderTempId :", products[0].orderNumber, "totalPrice :", totalPrice);
+
+            // 이 자리에서 
+            console.log("order_detail_tb에 보낼 형식 : ", JSON.stringify(orderDetailList, null, 1));
+
             navi("/savePoint", {
                 state: {
                     point: point,
-                    orderId: orderIdFromList, // 상태가 아닌 직접 가져온 값을 넘깁니다.
+                    orderId: orderIdFromList, 
                 }
             });
+
+            try {
+                await usePoints({
+                    phoneNumber: phoneNumber,
+                    calcul: 0,  
+                    point: usePoint,
+                });
+                alert(`포인트 ${usePoint}점이 사용되었습니다!`);
+            } catch (error) {
+                alert("포인트 적립 중 오류가 발생했습니다.");
+            }
         } catch (error) {
             console.error("결제 오류 발생:", error);
         }
     };
-    
-    
 
+    console.log(phoneNumber)
+    console.log(usePoint)
     return (
         <div css={s.container}>
             <div css={s.header}>
-                {/* 결제 요청 버튼 */}
                 <div onClick={handlePaymentOnClick}>
                     <img src="https://miro.medium.com/v2/resize:fit:680/0*ztVd5YkRc7IiSxXu.png" alt="카카오페이" />
                 </div>
             </div>
             <div css={s.footer}>
-                <div onClick={handleOnClickNext}>이전 단계</div>
+                <div onClick={() => navi("/previousPage")}>이전 단계</div>
             </div>
         </div>
     );

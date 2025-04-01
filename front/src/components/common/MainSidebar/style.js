@@ -4,10 +4,11 @@ import { css } from "@emotion/react";
 export const container = css`
     display: flex;
     flex-direction: column;
-    border-right: 0.2rem solid #71b855;
+    border-right: 0.2rem solid #dbdbdb;
+    border-top-right-radius: 2rem;
+    border-bottom-right-radius: 2rem;
     width: 25rem;
     height: 100%;
-    background-color: #dddddd;
 `;
 
 export const header = css`
@@ -17,6 +18,7 @@ export const header = css`
     padding: 3rem;
     font-size: 3rem;
     font-weight: 800;
+    white-space: nowrap;
 `;
 
 export const headerLink = css`
@@ -30,38 +32,45 @@ export const body = css`
     justify-content: space-around;
     width: 100%;
     height: 100%;
+
+    button:nth-last-of-type(1) {
+        margin-top: 33rem;
+    }
 `;
 
-export const emptybutton = css`
+export const menuButton = (isActive) => css`
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 1rem 2rem 1.5rem 2rem;
+    border-radius: 1rem;
     border: none;
     padding: 0.5rem 2rem;
-    background-color: transparent;
+    background-color: #fafafa;
     width: 20rem;
     height: 5rem;
     font-size: 1.6rem;
     font-weight: 800;
     cursor: pointer;
+    box-shadow: ${isActive ? "0 0 0.3rem 0.2rem #005a0575" : "0 0 0.3rem 0.1rem #00000022"};
+
+    &:hover {
+        box-shadow: 0 0 0.5rem 0.3rem #005a0575;
+    }
 `;
 
 export const buttonstyle = css`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 1rem 0 1.5rem 0;
-    border-radius: 0.5rem;
-    border: 0.2rem solid #9cb163;
+    margin: 1rem 2rem 1.5rem 2rem;
+    border-radius: 1rem;
+    border: 0.2rem solid #dbdbdb;
 
-    background-color: #eeeeee;
+    background-color: #fafafa;
 
     &:hover {
         background-color: #00000011;
-    }
-
-    &:active {
-        background-color: #00000033;
     }
 `;
 

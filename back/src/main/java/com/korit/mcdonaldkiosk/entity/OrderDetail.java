@@ -10,17 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class OrderDetail {
-    private int orderDetailId;
-    private Integer orderId;
-    private int menuPriceId;
-    private int menuCount;
-    private int isSet;
-    private int menuPrice;
-    private int discountPrice;
+    private int orderDetailId;  // 주문 상세 ID
+    private int orderId;        // 주문 ID
+    private int menuPriceId;    // 메뉴 가격 ID
+    private int menuCount;      // 메뉴 수량
+    private int isSet;          // 세트 여부 (0: false, 1: true)
 }
-
-//세일즈
-/*
-    메뉴 선택 -> 갯수및 옵션이 디테일에 저장 -> 모든 선택된게 오더에 저장 ->
-
- */

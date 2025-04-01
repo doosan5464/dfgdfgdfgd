@@ -40,7 +40,7 @@ function AdminMainPage() {
                     ))}
                 </div>
 
-                <div css={s.sectionContainer}>
+                {/* <div css={s.sectionContainer}>
                     <div css={s.noticeSection}>
                         <h2>공지사항</h2>
                         <ul>
@@ -58,7 +58,7 @@ function AdminMainPage() {
                             <li>고객 만족도 조사 시작</li>
                         </ul>
                     </div>
-                </div>
+                </div> */}
             </div>
         </div>
     );

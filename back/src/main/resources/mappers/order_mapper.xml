@@ -4,44 +4,28 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.korit.mcdonaldkiosk.mapper.OrderMapper">
 
-    <!-- 주문 리스트를 추가하는 쿼리 -->
-    <insert id="addOrderList"
-            useGeneratedKeys="true"
-            keyProperty="orderId"
-            parameterType="com.korit.mcdonaldkiosk.entity.Order">
-        insert into order_tb
-        values (default,now(), 0)
+    <!-- 주문 추가 -->
+    <insert id="addOrderList" parameterType="com.korit.mcdonaldkiosk.entity.Order" keyProperty="orderId" useGeneratedKeys="true">
+        INSERT INTO order_tb (order_temp_id, order_time, total_price)
+        VALUES (#{orderTempId}, now(), #{totalPrice});
     </insert>
 
-    <update id="updateTotalSales">
-        UPDATE order_tb
-        SET total_sales =
-        (
-        SELECT SUM(menu_price)
+    <!-- 가장 최근에 추가된 orderId 조회 -->
+    <select id="getLatestOrderId" resultType="int">
+        SELECT order_id
+        FROM order_tb
+        ORDER BY order_time DESC
+        LIMIT 1
+    </select>
 
-        FROM order_detail_tb
-        WHERE order_id = #{orderId}
-        )
-        WHERE order_id = #{orderId}
-    </update>
-
-    <insert id="addOrders">
-        insert into order_detail_tb (order_id, menu_price_id, menu_count, is_set, menu_price)
-        values
-        <foreach collection="orders" item="order" separator=",">
-            (
-            #{order.orderId},
-            #{order.menuPriceId},
-            #{order.menuCount},
-            #{order.isSet},
-            CASE
-            WHEN #{order.isSet} = 0 THEN #{order.menuPrice} * #{order.menuCount}
-            WHEN #{order.isSet} = 1 THEN #{order.discountPrice} * #{order.menuCount}
-            ELSE 0
-            END
-            )
+    <!-- 주문 상세 항목 추가 -->
+    <insert id="addOrders" parameterType="java.util.List">
+        INSERT INTO order_detail_tb (order_id, menu_price_id, menu_count, is_set)
+        VALUES
+        <foreach collection="list" item="orderDetail" separator=",">
+            (#{orderDetail.orderId}, #{orderDetail.menuPriceId}, #{orderDetail.menuCount}, #{orderDetail.isSet})
         </foreach>
     </insert>
 
-
 </mapper>
+

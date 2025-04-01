@@ -2,7 +2,11 @@
 import { useEffect, useState } from "react";
 import * as s from "./style";
 import { Checkbox } from "@mui/material";
-import { useAddMenuMutation, useDeleteMenuMutation, useUpdateMenuMutation } from "../../../mutations/menuMutation";
+import {
+    useAddMenuMutation,
+    useDeleteMenuMutation,
+    useUpdateMenuMutation,
+} from "../../../mutations/menuMutation";
 import useMenuData, { useMenuDetail } from "../../../hooks/menu/getMenuHooks";
 import ImageModal from "../AdminMenuImagine/AdminMenuImagine";
 
@@ -34,13 +38,13 @@ function AdminProductManage() {
     const updateMenuMutation = useUpdateMenuMutation();
 
     useEffect(() => {
-        if (!selectedMenu && menus.length > 0 && menus[0]?.menuId) {
-            setSelectedMenu(menus[0].menuId);
+        if (menus.length > 0 && !isAdding) {
+            setSelectedMenu((prev) => prev ?? menus[0].menuId);
         }
-    }, [menus]);
+    }, [menus, isAdding]);
 
     useEffect(() => {
-        if (!menuDetail || typeof menuDetail !== "object" || isAdding) return;
+        if (!menuDetail || isAdding) return;
     
         const defaultPrices = [
             { size: "M", price: "", discountPrice: "" },
@@ -48,15 +52,15 @@ function AdminProductManage() {
         ];
     
         const prices = Array.isArray(menuDetail.menuPrice)
-            ? defaultPrices.map((defaultPrice) => {
-                const found = menuDetail.menuPrice.find((p) => p.size === defaultPrice.size);
+            ? defaultPrices.map((d) => {
+                const found = menuDetail.menuPrice.find((p) => p.size === d.size);
                 return found
                     ? {
                         size: found.size,
                         price: found.menuPrice || "",
                         discountPrice: found.discountPrice || "",
                     }
-                    : defaultPrice;
+                : d;
             })
             : defaultPrices;
     
@@ -67,7 +71,7 @@ function AdminProductManage() {
             isExposure: menuDetail.isExposure ?? 1,
             singleImg: menuDetail.singleImg || null,
             setImg: menuDetail.setImg || null,
-            prices: prices,
+            prices,
         });
     }, [menuDetail, isAdding]);
 
@@ -78,11 +82,21 @@ function AdminProductManage() {
     };
 
     const handleSelectImageOnSelect = (imgUrl, imgName) => {
-        setFormData((prev) => ({
-            ...prev,
-            [selectedImageType]: imgUrl,
-            menuName: prev.menuName || imgName,
-        }));
+        setFormData((prev) => {
+            if (selectedImageType === "singleImg" && !prev.menuName) {
+                return {
+                    ...prev,
+                    singleImg: imgUrl,
+                    menuName: imgName, // 단품은 이름 자동 입력
+                };
+            } else if (selectedImageType === "setImg") {
+                return {
+                    ...prev,
+                    setImg: imgUrl, // 세트는 이름 입력 안 함
+                };
+            }
+            return prev;
+        });
         setModalOpen(false);
     };
 
@@ -137,7 +151,7 @@ function AdminProductManage() {
         try {
             await updateMenuMutation.mutateAsync({
                 menuId: selectedMenu,
-                formData: formData,
+                formData,
             });
             alert("✅ 메뉴가 성공적으로 수정되었습니다.");
             setIsEditing(false);
@@ -168,13 +182,11 @@ function AdminProductManage() {
                 >
                     <option value="">메뉴를 선택해주세요</option>
                     {!isLoading && menus.length > 0 ? (
-                        menus
-                            .filter((menu) => menu && menu.menuId)
-                            .map((menu) => (
-                                <option key={menu.menuId} value={menu.menuId}>
-                                    {menu.menuName}
-                                </option>
-                            ))
+                        menus.map((menu) => (
+                            <option key={menu.menuId} value={menu.menuId}>
+                                {menu.menuName}
+                            </option>
+                        ))
                     ) : (
                         <option disabled>메뉴가 없습니다</option>
                     )}
@@ -208,7 +220,6 @@ function AdminProductManage() {
                     isAdding={isAdding}
                 />
 
-                {/* 입력 */}
                 <div css={s.inputGroup}>
                     <div>
                         <label css={s.label}>상품명</label>
@@ -285,7 +296,6 @@ function AdminProductManage() {
                 >
                     {isAdding ? "확인" : "메뉴 추가"}
                 </button>
-
                 <button
                     onClick={() => {
                         if (isEditing && !isAdding) {
@@ -299,7 +309,6 @@ function AdminProductManage() {
                 >
                     {isEditing && !isAdding ? "확인" : "편집"}
                 </button>
-
                 <button
                     onClick={handleDeleteMenuOnClick}
                     css={s.button}

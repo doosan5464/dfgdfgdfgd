@@ -1,25 +1,23 @@
 import { css } from "@emotion/react";
 
-export const container = css`
-    display: flex;
-    flex-direction: column;
-    width: 40rem;
-    height: 71.1rem;
-    border: 0.2rem solid black;
-    background-color: #EEEEEE;
-    justify-content: center;
-    align-items: center;
-`;
-
 export const header = css`
     display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 1rem 3rem;
     width: 100%;
     height: 10rem;
+    border-bottom: 0.1rem solid #dbdbdb;
+    border-bottom-left-radius: 0.8rem;
+    border-bottom-right-radius: 0.8rem;
+    box-shadow: 0 0.1rem 0.3rem 0.1rem #00000017;
     
 
     & > img {
         display: flex;
-        height: 100%;
+        justify-content: center;
+        align-items: center;
+        height: 80%;
         width: auto;
     }
 
@@ -32,6 +30,7 @@ export const header = css`
         font-size: 2rem;
         font-weight: 550;
         margin: 0; 
+        cursor: default;
     }
 `;
 
@@ -40,7 +39,6 @@ export const pay = css`
     flex-direction: column;
     width: 100%;
     height: 80%;
-    border-top: 0.2rem solid black;
     
     & > div {
         display: flex;
@@ -91,32 +89,38 @@ export const xUpDown = css`
 
 export const footer = css`
     display: flex;
+    flex-direction: column;
+    justify-content: center;
     height: 30%;
     width: 100%;
-    border-top: solid black 1.6px;
-    background-color:rgb(248, 210, 106);
+    border-top: 0.1rem solid #dbdbdb;
+    border-top-left-radius: 0.8rem;
+    border-top-right-radius: 0.8rem;
+    box-shadow: 0 0.1rem 0.3rem 0.1rem #00000017;
+    background-color: #fafafa;
 
     & > div {
         display: flex;
-        flex-direction: column;
         height: 100%;
-        width: 50%;
         justify-content: center;
         align-items: center;
         
         & > p {
-            font-size: 1.5rem;
+            margin: 0;
+            font-size: 2rem;
+            cursor: default;
         }
 
         & > div {
             display: flex;
             width: 45%;
-            height: 30%;
+            height: 7rem;
             margin: 1rem;
             border-radius: 1rem;
             justify-content: center;
             align-items: center;
-            background-color: rgb(219, 68, 85);;
+            background-color: #1c7a2c;
+            font-size: 1.6rem;
             color: white;
             
             

@@ -5,9 +5,10 @@ import React, { useEffect, useState } from 'react';
 import { MenuItem, Select } from '@mui/material';
 import { useSearchParams } from 'react-router-dom';
 import { useAllMenuList, useGetCategories } from '../../../queries/AdminQuery/AdminMenuBoardQuery';
-import { useUpdateIsPosureMutation } from '../../../mutations/adminMutaion';
+// import { useUpdateIsPosureMutation } from '../../../mutations/adminMutaion';
 import ReactModal from 'react-modal';
 import AdminMenuInfoModal from '../../../components/Modal/AdminMenuInfoModal/AdminMenuInfoModal';
+import AdminHeader from '../../../components/common/AdminHeader/AdminHeader';
 
 function AdminMenuPage(props) {
     const [ searchParams, setSearchParams ] = useSearchParams(); //url파라미터
@@ -30,6 +31,13 @@ function AdminMenuPage(props) {
         category === "전체" || menu.menuCategory === category
     );
 
+    //모달 닫힐 때 새로고침
+    useEffect(() => {
+        if(!infoModalOpen) {
+            allMenuList.refetch();
+        }
+    }, [infoModalOpen]);
+
     //필요한 목록 불러오기
     const renderMenuList = () => {
 
@@ -43,32 +51,31 @@ function AdminMenuPage(props) {
             <li key={menu.menuId} onClick={() => handleInfoModalOnClick(menu.menuId)}>
                 <div css={s.numBox}>{menu.menuId}</div>
                 <div css={s.nameBox}>{menu.menuName}</div>
-                <div css={s.priceBox}>{menu.menuPrice[0].menuPrice}</div>
-                {/* <div css={s.exBox}>
+                <div css={s.priceBox}>{menu.menuPrice[0].menuPrice} 원</div>
+                <div css={s.exBox}>
                     <input 
                         type='checkbox' 
                         checked={menu.isExposure === 1}
-                        onChange={() => {
-                            const newCheckedState = menu.isExposure === 1 ? 0 : 1;
-                            handleChangeIsExposureOnClick(menu.menuId, newCheckedState);
-                        }}
+                        readOnly //체크박스 동작 막기
                     />
-                </div> */}
+                </div>
             </li>
         ));
     };
 
-        //메뉴 클릭 시 모달 작동
-        const handleInfoModalOnClick = (menuId) => {
-            setInfoModalDate(menuId); //모달에 데이터 전달
-            setInfoModalOpen(true); //모달 열기
-        }
-
-    // //노출여부 변경 및 목록 다시 불러오기
+    //노출여부 변경 및 목록 다시 불러오기
     // const handleChangeIsExposureOnClick = async (menuId, isExposure) => {
     //     await updateIsExposureMutation.mutateAsync({ "menuId": menuId, "isExposure": isExposure });
     //     allMenuList.refetch();
     // }
+
+    //메뉴 클릭 시 모달 작동
+    const handleInfoModalOnClick = (menuId) => {
+        setInfoModalDate(menuId); //모달에 데이터 전달
+        setInfoModalOpen(true); //모달 열기
+    }
+
+
 
     //카테고리 설정
     const { data: getCategory } = useGetCategories();//카테고리 백에서 불러오기
@@ -115,9 +122,8 @@ function AdminMenuPage(props) {
     //console.log(searchMenuList);
     
     return (
-        <div css={s.container}>
-            <div css={s.header}>
-                <span>메뉴관리</span>
+        <>
+            <AdminHeader title={"메뉴관리"} rightElement={
                 <div>
                     <Select 
                         options={selectCategories}
@@ -126,7 +132,7 @@ function AdminMenuPage(props) {
                             minHeight: '4rem',
                             fontSize: '1.4rem',
                             fontWeight: '600',
-                          }}
+                        }}
                         value={category}
                         onChange={handleSelectCategoryOnChange}
                     >
@@ -138,23 +144,22 @@ function AdminMenuPage(props) {
                                 width: '12rem',
                                 minHeight: '3rem',
                                 fontSize: '1.4rem', 
-                              }}
-                              >
+                            }}
+                            >
                             {categoryOption.label}
                         </MenuItem>
                         ))}
                     </Select>
                 </div>
-            </div>
+            } />
 
             <div>
-                <div css={s.title}>{category !== '전체' ? `${category} 리스트` : "전체 리스트"}</div>
                 <ul css={s.menuListContainer}>
                     <li>
                         <div css={s.numBox}>NO.</div>
                         <div css={s.nameBox}>Name</div>
                         <div css={s.priceBox}>Price</div>
-                        {/* <div css={s.exBox}>On/Off</div> */}
+                        <div css={s.exBox}>On/Off</div>
                     </li>
                     { renderMenuList() }
                 </ul>
@@ -196,7 +201,7 @@ function AdminMenuPage(props) {
                     <GoChevronRight />
                 </button>
             </div>
-        </div>
+        </>
     );
 }
 

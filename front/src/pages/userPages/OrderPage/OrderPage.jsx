@@ -79,7 +79,7 @@ function OrderPage(props) {
     };
 
     return (
-        <div css={s.container}>
+        <>
             <header css={s.logoAnd2button}>
                 <div css={s.mcdonaldLogo}>
                     <img src="https://pngimg.com/uploads/mcdonalds/mcdonalds_PNG17.png" alt="" />
@@ -110,29 +110,27 @@ function OrderPage(props) {
                     {addedCartState.length > 0 ? (
                         <ul>
                             {addedCartState.map((item, index) => (
-                                <div css={s.xUpDown} key={index}>
-                                    <div>
-                                        <li>
-                                            {item.detailMenu} 
-                                            <span style={{ marginLeft: "auto" }}>
-                                                {item.isSet && " 세트"}
-                                            </span>
-                                            - {item.detailPrice}원 × {item.quantity}
-                                        </li>   
-                                    </div>
-                                    <div>
-                                        <span>
-                                            {(item.isSet) && (
-                                                <button onClick={() => handleModifyFromCart(index)}>수정</button>
-                                            )}
-                                            <button onClick={() => handleRemoveFromCart(index)}>삭제</button>
+                                <li key={index}>
+                                    <div css={s.cartList}>
+                                        {index + 1}. {item.detailMenu} 
+                                        <span style={{ marginLeft: "auto" }}>
+                                            {item.isSet && " 세트"}
                                         </span>
+                                        - {item.detailPrice}원 x {item.quantity}
+                                    </div>
+                                    <div css={s.cartListButtons}>
                                         <div>
                                             <button onClick={() => handleUpFromCart(index)}>▲</button>
                                             <button onClick={() => handleDownFromCart(index)}>▼</button>
                                         </div>
+                                        <span>
+                                            {(item.isSet) && (
+                                                <button css={s.edit} onClick={() => handleModifyFromCart(index)}>수정</button>
+                                            )}
+                                            <button onClick={() => handleRemoveFromCart(index)}>삭제</button>
+                                        </span>
                                     </div>
-                                </div>
+                                </li>
                             ))} 
                         </ul>
                     ) : (
@@ -147,7 +145,7 @@ function OrderPage(props) {
 
             {selectedMenu && <MenuDetailModal menu={selectedMenu} onClose={handleCloseMenuDetailModal} />}
             {editingItem && <MenuModifyModal menu={editingItem} onClose={() => setEditingItem(null)} onSave={handleSaveModifiedItem} />}
-        </div>
+        </>
     );
 }
 

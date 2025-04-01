@@ -1,23 +1,14 @@
 import { css } from "@emotion/react";
 
-// 전체 배경 스타일
-export const background = css`
-    display: flex;
-    width: 40rem;
-    height: 71.1rem;
-    border: 0.2rem solid black;
-    background-color: #EEEEEE;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.5rem;
-    font-weight: 550;
-`;
-
 // 컨테이너 스타일 (전화번호 입력 영역)
 export const container = css`
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    width: 30rem;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
     padding: 2rem;
     border-radius: 1rem;
     background-color: white;

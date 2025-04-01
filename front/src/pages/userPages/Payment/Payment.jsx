@@ -1,13 +1,22 @@
 /**@jsxImportSource @emotion/react */
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import * as s from './style';
+import { useState } from 'react';
 
 
 function Payment(props) {
     const navi = useNavigate();
+    const location = useLocation();
+
+    const [usePoint, setUsePoint] = useState(location.state?.usePoint || 0);
+    const [phoneNumber, setPhoneNumber] = useState(location.state?.phoneNumber || "");
 
     const handleEasyPay = () => {
-        navi("/selectPayMethod");
+        navi("/selectPayMethod", { state: { 
+                        usePoint: usePoint,
+                        phoneNumber: phoneNumber
+                    }
+                 });
     }
 
     const handleBack = () => {
@@ -15,7 +24,7 @@ function Payment(props) {
     }
 
     return (
-        <div css={s.container}>
+        <>
             <header>
 
             </header>
@@ -47,7 +56,7 @@ function Payment(props) {
             <footer css={s.footer} onClick={handleBack}>
                 이전 단계
             </footer>
-        </div>
+        </>
     );
 }
 

@@ -32,8 +32,8 @@
         <result property="isExposure" column="is_exposure" />
         <result property="menuPrice" column="menu_price" />
         <result property="size" column="size" />
-        <result property="weightG" column="weight_g" />
-        <result property="volumeMl" column="volume_ml" />
+        <result property="weightG" column="weight" />
+        <result property="volumeMl" column="volume" />
         <result property="calories" column="calories" />
         <result property="sugars" column="sugars" />
         <result property="protein" column="protein" />
@@ -56,8 +56,8 @@
             mpt.menu_price,
 
             mit.size,
-            mit.weight_g,
-            mit.volume_ml,
+            mit.weight,
+            mit.volume,
             mit.calories,
             mit.sugars,
             mit.protein,

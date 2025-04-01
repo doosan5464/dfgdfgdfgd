@@ -22,7 +22,7 @@ function ExportOrderId(props) {
     };
 
     return (
-        <div css={s.container}>
+        <>
             <div css={s.head}>대기번호</div>
             <div css={s.num}>
                 {location.state?.orderId}
@@ -32,7 +32,7 @@ function ExportOrderId(props) {
                 <div onClick={handleGoFirst}>예</div>
                 <div onClick={handleGoFirst}>아니오</div>
             </div>
-        </div>
+        </>
     );
 }
 

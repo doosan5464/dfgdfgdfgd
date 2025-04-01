@@ -1,17 +1,21 @@
 package com.korit.mcdonaldkiosk.mapper;
 
-import com.korit.mcdonaldkiosk.entity.Order;
-import com.korit.mcdonaldkiosk.entity.OrderDetail;
+import com.korit.mcdonaldkiosk.dto.request.ReqOrderDetailDto;
+import com.korit.mcdonaldkiosk.dto.request.ReqOrderDto;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 @Mapper
 public interface OrderMapper {
-    void addOrderList(Order order);
 
-    void addOrders(@Param("orders") List<OrderDetail> orders);
+    // 주문 추가
+    void addOrderList(ReqOrderDto order);
 
-    int updateTotalSales(int orderId);
+    // 주문 상세 항목 추가
+    void addOrders(List<ReqOrderDetailDto> orderDetails);
+
+    // 가장 최근에 추가된 주문의 orderId 조회
+    int getLatestOrderId();  // 가장 최근 주문의 orderId를 반환하는 메서드
+
 }

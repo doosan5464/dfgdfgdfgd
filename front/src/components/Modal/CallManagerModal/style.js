@@ -1,5 +1,22 @@
 import { css } from "@emotion/react";
 
+export const buttonText = css`
+    display: flex;
+    border-radius: 1rem;
+    width: 10rem;
+    height: 4.5rem;
+    justify-content: center;
+    align-items: center;
+    background-color: #1c7a2c;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.1s ease-in-out;
+
+    &:hover {
+        box-shadow: 0 0 0.3rem 0.1rem #1c7a2c88;
+    }
+`;
+
 export const modalContainer = css`
     position: fixed;
     top: 0;

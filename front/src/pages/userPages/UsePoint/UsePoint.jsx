@@ -55,7 +55,7 @@ const UsePoint = () => {
     };
 
     return (
-        <div css={s.background}>
+        <>
             <div css={s.container}>
                 <p>전화번호를 입력하고 포인트 조회하기</p>
                 <input
@@ -84,7 +84,7 @@ const UsePoint = () => {
 
             {/* 모달 조건부 렌더링 */}
             {isModalOpen && <UsePointModal phoneNumber={input} closeModal={() => setIsModalOpen(false)} />}
-        </div>
+        </>
     );
 };
 

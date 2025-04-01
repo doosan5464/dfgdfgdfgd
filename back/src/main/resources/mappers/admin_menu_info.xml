@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.korit.mcdonaldkiosk.mapper.AdminMenuInfoMapper">
+    <resultMap id="adminMenuInfoResultMap" type="com.korit.mcdonaldkiosk.entity.MenuInfo">
+        <id property="menuInfoId" column="menu_info_id" />
+        <result property="menuId" column="menu_id" />
+        <result property="size" column="size" />
+        <result property="weight" column="weight" />
+        <result property="volume" column="volume" />
+        <result property="calories" column="calories" />
+        <result property="sugars" column="sugars" />
+        <result property="protein" column="protein" />
+        <result property="saturatedFat" column="saturated_fat" />
+        <result property="sodium" column="sodium" />
+        <result property="caffeine" column="caffeine" />
+        <result property="menuOrigin" column="menu_origin" />
+    </resultMap>
+
+    <!--  메뉴 영양 정보 및 원산지 단건 조회  -->
+    <select id="getMenuInfoById" resultType="com.korit.mcdonaldkiosk.entity.MenuInfo">
+        select
+            menu_info_id,
+            menu_id,
+            size,
+            weight,
+            volume,
+            calories,
+            sugars,
+            protein,
+            saturated_fat,
+            sodium,
+            caffeine,
+            menu_origin
+        from
+            menu_info_tb
+        where
+            menu_id = #{menuId}
+    </select>
+</mapper>

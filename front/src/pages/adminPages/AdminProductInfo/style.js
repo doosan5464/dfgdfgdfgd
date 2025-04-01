@@ -83,9 +83,13 @@ export const input = css`
 
 // 영양정보 테이블
 export const table = css`
-    width: 100%;
+    width: 90%;
     border-collapse: collapse;
     margin-top: 20px;
+
+    & tr {
+        height: 8rem
+    }
 `;
 
 export const caption = css`
@@ -115,14 +119,19 @@ export const evenRow = css`
 
 // 버튼 그룹
 export const buttonGroup = css`
-    margin-top: 1rem;
+    width: 90%;
+    margin-top: 5rem;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
+    
+    & > button:nth-of-type(2) {
+        margin-left: 2rem;
+    }
 `;
 
 export const button = css`
     padding: 0.5rem 1rem;
-    margin-left: 2rem;
+    height: 4rem;
     color: black;
     border: 1px solid #000;
     border-radius: 6px;
@@ -131,6 +140,6 @@ export const button = css`
     flex-grow: 1;
 
     &:hover {
-    background: #e5e7eb;
-}
+        background: #e5e7eb;
+    }
 `;

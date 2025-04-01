@@ -17,7 +17,7 @@ function CallManagerModal() {
 
     return (
         <div>
-            <div onClick={openModal}>직원호출</div>
+            <div css={s.buttonText} onClick={openModal}>직원호출</div>
             {isModalOpen && (
                 <div css={s.modalContainer}>
                     <div css={s.modalContent}>
