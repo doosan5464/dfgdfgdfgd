@@ -5,25 +5,30 @@
 <mapper namespace="com.korit.mcdonaldkiosk.mapper.OrderMapper">
 
     <!-- 주문 추가 -->
-    <insert id="addOrderList" parameterType="com.korit.mcdonaldkiosk.entity.Order" keyProperty="orderId" useGeneratedKeys="true">
+    <insert id="addOrderList" parameterType="com.korit.mcdonaldkiosk.dto.request.ReqOrderDto"
+            keyProperty="orderId" useGeneratedKeys="true">
         INSERT INTO order_tb (order_temp_id, order_time, total_price)
         VALUES (#{orderTempId}, now(), #{totalPrice});
     </insert>
 
-    <!-- 가장 최근에 추가된 orderId 조회 -->
-    <select id="getLatestOrderId" resultType="int">
+    <!-- 최신 orderId를 가져오면서 락을 거는 쿼리 -->
+    <select id="getLatestOrderIdForLock" resultType="int">
         SELECT order_id
         FROM order_tb
-        ORDER BY order_time DESC
+        ORDER BY order_id DESC
         LIMIT 1
+        FOR UPDATE;  <!-- FOR UPDATE로 락을 걸어서 동시성 문제 해결 -->
     </select>
 
     <!-- 주문 상세 항목 추가 -->
-    <insert id="addOrders" parameterType="java.util.List">
+    <insert id="addOrders" parameterType="java.util.List"
+            keyProperty="orderDetailId" useGeneratedKeys="true">
         INSERT INTO order_detail_tb (order_id, menu_price_id, menu_count, is_set)
         VALUES
-        <foreach collection="list" item="orderDetail" separator=",">
-            (#{orderDetail.orderId}, #{orderDetail.menuPriceId}, #{orderDetail.menuCount}, #{orderDetail.isSet})
+        <foreach collection="list" item="orderDetail" separator="," >
+            <if test="orderDetail.orderId != null and orderDetail.menuPriceId != null and orderDetail.menuCount != null and orderDetail.isSet != null">
+                (#{orderDetail.orderId}, #{orderDetail.menuPriceId}, #{orderDetail.menuCount}, #{orderDetail.isSet})
+            </if>
         </foreach>
     </insert>
 

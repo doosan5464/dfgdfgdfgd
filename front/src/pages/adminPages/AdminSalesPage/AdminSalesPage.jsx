@@ -37,7 +37,6 @@ function AdminSalesPage(props) {
         onSuccess: (response) => {
             const portOne = response.data.items; // 또는 response.items
     
-            console.log(portOne)
             // 'CANCELLED'와 'FAILED' 상태인 항목을 제외
             const filteredPortOne = portOne.filter(item => item.status !== 'CANCELLED' && item.status !== 'FAILED' && item.status !== 'READY');
     
@@ -111,11 +110,16 @@ function AdminSalesPage(props) {
             setSales(validSalesData);
     
             // 고유 연도 목록 추출하여 yearOptions에 설정
-            const yearOptions = validSalesData.map(data => ({
-                label: data.year, 
-                value: data.year
+            const yearOptions = validSalesData.map(data => data.year);
+
+            // Set을 사용하여 중복된 연도 제거
+            const uniqueYearOptions = [...new Set(yearOptions)].map(year => ({
+                label: year,
+                value: year
             }));
-            setYearOptions(yearOptions);
+
+            setYearOptions(uniqueYearOptions);
+
     
             // 첫 번째 연도를 기본값으로 설정
             if (yearOptions.length > 0) {
@@ -128,36 +132,34 @@ function AdminSalesPage(props) {
         },
     });
     
-
+    // // 매출 데이터를 API에서 받아오고 연도 옵션 설정
+    // const salesMutation = useMutation({
+    //     mutationKey: ["getSales"],
+    //     mutationFn: getSalesRequest,
+    //     retry: 0,
+    //     refetchOnWindowFocus: false,
+    //     onSuccess: (response) => {
+    //         // 응답이 배열인 경우 year 값 추출
+    //         if (Array.isArray(response) && response.length > 0) {
+    //             const salesData = response; // 매출 데이터
+    //             setSales(salesData);
     
-    // 매출 데이터를 API에서 받아오고 연도 옵션 설정
-    const salesMutation = useMutation({
-        mutationKey: ["getSales"],
-        mutationFn: getSalesRequest,
-        retry: 0,
-        refetchOnWindowFocus: false,
-        onSuccess: (response) => {
-            // 응답이 배열인 경우 year 값 추출
-            if (Array.isArray(response) && response.length > 0) {
-                const salesData = response; // 매출 데이터
-                setSales(salesData);
+    //             // 고유 연도 목록 추출하여 yearOptions에 설정
+    //             const years = salesData.map((data) => ({label: data.year, value: data.year}));
+    //             setYearOptions(years);
     
-                // 고유 연도 목록 추출하여 yearOptions에 설정
-                const years = salesData.map((data) => ({label: data.year, value: data.year}));
-                setYearOptions(years);
-    
-                // 첫 번째 연도를 기본값으로 설정
-                if (years.length > 0) {
-                    // year.value가 설정된 값이 yearOptions에 포함되지 않으면 빈 값으로 초기화
-                    const selectedYear = years[0].value;
-                    setYear(selectedYear);
-                }
-            }
-        },
-        onError: (error) => {
-            console.log("salesQuery", error);
-        },
-    });
+    //             // 첫 번째 연도를 기본값으로 설정
+    //             if (years.length > 0) {
+    //                 // year.value가 설정된 값이 yearOptions에 포함되지 않으면 빈 값으로 초기화
+    //                 const selectedYear = years[0].value;
+    //                 setYear(selectedYear);
+    //             }
+    //         }
+    //     },
+    //     onError: (error) => {
+    //         console.log("salesQuery", error);
+    //     },
+    // });
 
     useEffect(() => {
         console.log("Updated yearOptions: ", yearOptions);
@@ -187,8 +189,8 @@ function AdminSalesPage(props) {
 
     // year.value가 yearOptions에 포함되지 않으면 빈 문자열로 설정
     const handleYearOptionsOnChange = (e) => {
-        // yearOptions에 포함되는 값만 허용, 아니면 빈 문자열로 설정
-        setYear(e.target.value);
+        const selectedYear = e.target.value;
+        setYear(selectedYear);
     };
 
     return (
@@ -209,27 +211,26 @@ function AdminSalesPage(props) {
                         <div>총 주문 수</div>
                     </div>
                     <Select
-                        value={year} // 상태 값 전달
-                        onChange={handleYearOptionsOnChange} // 연도 변경 처리
+                        value={year || "연도 선택"}  // year가 빈 값일 때 기본값으로 "연도 선택"을 설정
+                        onChange={handleYearOptionsOnChange}  // 연도 변경 시 처리
                         label="연도"
                         style={{
                             width: "14rem",
                             fontSize: "1.4rem"
                         }}
-                    >
-                        {/* placeholder처럼 사용할 MenuItem */}
-                        <MenuItem value="">
-                            <em>연도 선택</em>
+                        >
+                        {/* 연도 선택을 위한 기본 항목, value가 '연도 선택' */}
+                        <MenuItem value="연도 선택">
+                            <em>연도 선택</em>  {/* 기본값으로 '연도 선택' 텍스트 표시 */}
                         </MenuItem>
-                        {
-                            yearOptions.map((yearOption) => (
-                                <MenuItem key={yearOption.value} value={yearOption.value}>
-                                    {yearOption.label}
-                                </MenuItem>
-                            ))
-                        }
-                    </Select>
 
+                        {/* 연도 목록 표시 */}
+                        {yearOptions.map((yearOption) => (
+                            <MenuItem key={yearOption.value} value={yearOption.value}>
+                            {yearOption.label}  {/* 실제 연도 데이터 표시 */}
+                            </MenuItem>
+                        ))}
+                    </Select>
                 </div>
                 <div css={s.chartBox}>
                     {!salesMode ? (

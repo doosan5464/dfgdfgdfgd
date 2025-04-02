@@ -85,24 +85,30 @@ const SavePoint = () => {
     };
 
     return (
-        <div css={s.background}>
+        <>
             <div css={s.container}>
                 <p>적립할 번호를 입력해주세요</p>
-                <input type="text" value={input} readOnly css={s.input} />
+                <input
+                    type="text"
+                    value={input}
+                    readOnly
+                    css={s.input}
+                    placeholder="전화번호 입력"
+                />
                 <div css={s.keypad}>
                     {["1", "2", "3", "4", "5", "6", "7", "8", "9", "×", "0", "확인"].map((key) => (
                         <button 
                             key={key} 
                             onClick={() => handleButtonClick(key)} 
                             css={s.button} 
-                        >
+                            >
                             {key}
                         </button>
                     ))}
                 </div>
                 <button css={s.footer} onClick={handleSkip}>넘어가기</button>
             </div>
-        </div>
+        </>           
     );
 };
 

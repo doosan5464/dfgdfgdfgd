@@ -10,9 +10,6 @@ function ExportOrderId(props) {
     const location = useLocation();
     const [, setAddedCartState] = useRecoilState(addedCart);  // Recoil 상태 업데이트용
 
-    console.log(location);
-    console.log("주문번호는? : ", location);  // 넘긴 orderId를 확인
-
     const handleGoFirst = () => {
         // Recoil 상태를 비워줍니다 (장바구니 비우기)
         setAddedCartState([]);  // 장바구니 비우기

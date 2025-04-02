@@ -12,7 +12,8 @@ function ValidInput({
     regexp = null, 
     errorMessage = "",
     inputValidError = null,
-    setInputValidError = null
+    setInputValidError = null,
+    onKeyDown = null,
 }) {
     
     const handleOnBlur = () => {
@@ -33,7 +34,8 @@ function ValidInput({
                 name={name}
                 placeholder={placeholder}
                 value={value}
-                onChange={onChange} 
+                onChange={onChange}
+                onKeyDown={onKeyDown}
                 onFocus={onFocus}
                 onBlur={handleOnBlur}
             />

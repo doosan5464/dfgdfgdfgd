@@ -3,7 +3,7 @@ import axios from 'axios';
 import * as s from './style';
 import React, { useEffect, useState } from 'react';
 0
-function AdminPayMoal({ payData }) { //uuid 넘겨받기
+function AdminPayMoal({ setOpen, payData }) { //uuid 넘겨받기
 
     const [ isCancel, setIsCancel ] = useState(payData.status); //환불 여부 상태
     const [ pressTime, setPressTime ] = useState(null); //버튼 눌린 시간 상태
@@ -92,6 +92,7 @@ function AdminPayMoal({ payData }) { //uuid 넘겨받기
 
     return (
         <div css={s.container}>
+            <div css={s.closebutton} onClick={() => setOpen(false)}><button>❌</button></div>
             <div css={s.head}>
                 <div>
                     <div>주문번호</div>

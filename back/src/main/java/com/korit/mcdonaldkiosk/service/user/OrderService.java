@@ -25,4 +25,9 @@ public class OrderService {
 
         orderRepository.addOrderDetails(dto);
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    public int getOrderId() {
+        return orderRepository.getLatestOrderIdForLock();
+    }
 }

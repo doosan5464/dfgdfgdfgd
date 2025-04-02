@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {
     Bar,
     CartesianGrid,
@@ -20,11 +19,17 @@ function AdminSalesChart({
     barColor,
     lineColor,
 }) {
+    // sales 데이터를 월을 기준으로 정렬
+    const sortedSales = [...sales].sort((a, b) => {
+        const aDate = new Date(`${a[month]}-01`);  // 월을 'YYYY-MM-01' 형태로 변환
+        const bDate = new Date(`${b[month]}-01`);
+        return aDate - bDate;  // 날짜 순으로 정렬
+    });
+
     return (
         <ResponsiveContainer width="100%" height="90%">
-            <ComposedChart data={sales}>
-                <XAxis dataKey={month}
-                tick={{ fontSize: 11 }} />
+            <ComposedChart data={sortedSales}>
+                <XAxis dataKey={month} tick={{ fontSize: 11 }} />
                 
                 <YAxis
                     width={100}

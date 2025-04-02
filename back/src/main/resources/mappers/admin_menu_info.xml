@@ -18,8 +18,8 @@
         <result property="menuOrigin" column="menu_origin" />
     </resultMap>
 
-    <!--  메뉴 영양 정보 및 원산지 단건 조회  -->
-    <select id="getMenuInfoById" resultType="com.korit.mcdonaldkiosk.entity.MenuInfo">
+    <!--  메뉴 영양 정보 및 원산지 다건 조회  -->
+    <select id="getMenuInfoListByMenuId" resultMap="adminMenuInfoResultMap">
         select
             menu_info_id,
             menu_id,

@@ -5,51 +5,85 @@ export const container = css`
     flex-direction: column;
     justify-content: space-between;
     box-sizing: border-box;
-    padding: 2rem 0 2rem 0;
+    padding-bottom: 2rem;
     height: 100%;
     width: 100%;
 `;
 
+export const closebutton = css`
+    display: flex;
+    justify-content: end;
+
+    & button {
+        text-align: center;
+        box-sizing: border-box;
+        border-radius: 50%;
+        border: none;
+        padding: .4rem .6rem;
+        font-size: 2rem;
+        background-color: transparent;
+
+        &:hover {
+            color: #000000aa;
+        }
+
+        &:active {
+            color: #00000033;
+        }
+    }
+`;
+
 export const head = css`
     display: flex;
-    margin-left: 2rem;
+    justify-content: space-around;
+    margin-top: 2rem;
     font-size: 2.2rem;
 
-    & div {
-        margin: 0 8rem 0 0;
-        width: 100%;
+    & > div {
+        margin: 0 6rem 0 4rem;
+        box-sizing: border-box;
+        width: fit-content;
     }
 
-    & div div:nth-of-type(1) {
+    & > div > div {
+        padding: 0 10rem 0 1.5rem;
+    }
+
+    & > div div:nth-of-type(1) {
         border-bottom: .2rem dashed #00000044;
-        padding: 0 .5rem .5rem .5rem;
+        padding-bottom: .5rem;
         font-weight: 500;
     }
 
-    & div div:nth-of-type(2) {
-        padding: .5rem .5rem 0 .5rem;
+    & > div div:nth-of-type(2) {
+        box-sizing: border-box;
+        padding-bottom: .5rem;
     }
 `;
 
 export const body = css`
     display: flex;
-    margin: 5rem 10rem 0 0;
-    flex-grow: 1;
+    justify-content: space-around;
+    margin-top: 5rem;
 
-    & div {
-        margin: 0 10rem 0 0;
-        padding: 0 .5rem .5rem 1rem;
-        width: 100%;
+
+    & > div {
+        margin-right: 5rem;
     }
 
     & div div:nth-of-type(1) {
         border-bottom: .2rem dashed #00000044;
+        box-sizing: border-box;
+        padding: 0 20rem .5rem 1.5rem;
         font-size: 2.2rem;
         font-weight: 500;
+        width: fit-content;
     }
 
     & div div:nth-of-type(2) {
+        box-sizing: border-box;
         padding: 1.2rem 0.5rem 0 0.5rem;
+        width: 100%;
         font-size: 1.4rem;
         overflow: hidden;
         overflow-y: auto;
@@ -85,13 +119,14 @@ export const footer = css`
     & button {
         box-sizing: border-box;
         border-radius: .5rem;
+        box-sizing: border-box;
         padding: 1rem 2rem;
         font-size: 2rem;
         font-weight: 600;
         background-color: #fafd2d;
 
         &:hover {
-            background-color: #cccf22;
+            box-shadow: 0 0 .6rem .1rem #000000;
         }
 
         &:active {

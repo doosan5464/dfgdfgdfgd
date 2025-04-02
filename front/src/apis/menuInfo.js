@@ -1,14 +1,13 @@
 import { api } from "../configs/axiosConfig";
 
-// 메뉴 영양 정보 및 원산지 조회
-export const fetchMenuInfoApi = async (menuId) => {
-    if (!menuId) return null;
-
+// 메뉴 영양정보 리스트 조회 API
+export const fetchMenuInfoListApi = async (menuId) => {
+    if (!menuId) return [];
     try {
         const response = await api.get(`/api/admin/menuInfo/${menuId}`);
         return response.data;
     } catch (error) {
-        console.error("❌ [fetchMenuInfoApi] 요청 실패:", error);
+        console.error("❌ [fetchMenuInfoListApi] 요청 실패:", error);
         throw error;
     }
 };

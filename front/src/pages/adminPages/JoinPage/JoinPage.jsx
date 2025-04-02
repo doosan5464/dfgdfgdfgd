@@ -105,21 +105,21 @@ function JoinPage(props) {
             }
         }
     };
-    
-    
-    
-    
-    
-    
 
     const handleOAuth2LoginOnClick = (provider) => {
         window.location.href = `http://localhost:8080/oauth2/authorization/${provider}`;
     }
 
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleJoinOnClick(); // 버튼 클릭처럼 동작하게
+        } 
+    }
+
     return (
         <div css={s.container}>
             <div css={s.logoContainer}>
-                    <img src="https://blog.kakaocdn.net/dn/w1UK3/btqwTx0mNVX/ki6E4Mva5YavwrOFJQkCP1/img.jpg" alt="" />
+                    <img src="https://pngimg.com/uploads/mcdonalds/mcdonalds_PNG17.png" alt="" />
                 </div>
                 <div css={s.test1}>
                     <div css={s.formContainer}>
@@ -178,6 +178,7 @@ function JoinPage(props) {
                                 onChange={handleInputOnChange}
                                 inputValidError={inputValidError}
                                 setInputValidError={setInputValidError}
+                                onKeyDown={handleKeyDown}
                                 />
                         </div>
                     </div>

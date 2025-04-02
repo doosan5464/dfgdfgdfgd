@@ -2,7 +2,7 @@
 import * as s from './style';
 import { Link, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../../../mutations/authMutation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from 'sweetalert2';
 import { getTokenFromLocalStorage, setTokenLocalStorage } from '../../../configs/axiosConfig';
 import { QueryClient, useQueryClient } from '@tanstack/react-query';
@@ -80,12 +80,21 @@ function LoginPage(props) {
             }
         }
     };
-    
+
+    const handleKeyDown = (e, nextInputRef) => {
+        if (e.key === 'Enter') {
+            nextInputRef.current?.focus();  // 엔터 키가 눌렸을 때 포커스를 다음 입력 요소로 이동
+        }
+    };
+
+    const passwordInputRef = React.useRef(null);
+
+
 
     return (
         <div css={s.layout}>
             <div css={s.logoContainer}>
-                <img src="https://blog.kakaocdn.net/dn/w1UK3/btqwTx0mNVX/ki6E4Mva5YavwrOFJQkCP1/img.jpg" alt="" />
+                <img src="https://pngimg.com/uploads/mcdonalds/mcdonalds_PNG17.png" alt="" />
             </div>
             <div>
                 <h1 css={s.title}>McDonald Admin</h1>
@@ -94,13 +103,16 @@ function LoginPage(props) {
                         name="adminName"
                         value={inputValue.adminName}
                         onChange={handleInputOnChange}
+                        onKeyDown={(e) => handleKeyDown(e, passwordInputRef)}
                     />
                 </div>
                 <div css={s.groupBox}>
                     <input css={s.textInput} type="password" placeholder='비밀번호'
+                        ref={passwordInputRef}
                         name="adminPassword"
                         value={inputValue.adminPassword}
                         onChange={handleInputOnChange}
+                        onKeyDown={(e) => e.key === 'Enter' && handleLoginOnClick()}
                     />
                 </div>
                 <div css={s.footerbox}>

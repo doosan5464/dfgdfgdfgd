@@ -24,8 +24,8 @@ public class OrderRepository {
         orderMapper.addOrders(orderDetails);
     }
 
-    // 가장 최근에 추가된 주문의 orderId 조회
-    public int getLatestOrderId() {
-        return orderMapper.getLatestOrderId();
+    // 락을 걸고 가장 최근 주문의 orderId를 조회
+    public int getLatestOrderIdForLock() {
+        return orderMapper.getLatestOrderIdForLock();
     }
 }

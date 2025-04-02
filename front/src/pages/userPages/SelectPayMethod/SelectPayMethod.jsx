@@ -9,28 +9,26 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import menuForUser from '../../../hooks/menu/menuForUser';
 import { usePointApi } from '../../../apis/pointApi';
 import { usePointMutation } from '../../../mutations/useProcessPointMutation';
+import { useOrderId } from '../../../hooks/order/getOrderIdHook';
+import { postOrderDetailTb, postOrderTb } from '../../../mutations/order/orderMutation';
 
-/*
-  해야 할 것
-  - 결제 후 장바구니를 비운다
-  - 총 결제 금액과 menuName과 일치하는 menuPrice를 DB에서 가져온다
-  - isSet을 검사하는 로직을 추가해서
-  - order_id, menu_price_id, menu_count, is_set를 DB에 POST로 보내야 한다
-*/
 
-const SelectPayMethod = () => {
-    const { data: menuData, error, isLoading } = menuForUser();
-    const [orderId, setOrderId] = useState(0);
+const SelectPayMethod = () => {    
+    const location = useLocation();
     const navi = useNavigate();
+
+    const { data: menuData, error, isLoading } = menuForUser();
+    const { data: orderIdFromTb, errorFromTb, isLoading: isLoadingOrderId } = useOrderId(); // 수정된 훅 사용
     
     // usePointMutation 훅을 아래 위치에서 호출
     const { mutateAsync: usePoints } = usePointMutation(); // 이 라인을 이동시켜서 제대로 훅을 사용할 수 있도록 처리
-
-    const location = useLocation();
+    const { mutateAsync: postOrder } = postOrderTb();
+    const { mutateAsync: postOrderDetail } = postOrderDetailTb();
     const [usePoint, setUsePoint] = useState(location.state?.usePoint || 0);
     const [phoneNumber, setPhoneNumber] = useState(location.state?.phoneNumber || "");
+    const [addOrderId, setAddOrderId] = useState(0);
 
-    console.log(location.state)
+    
     // 장바구니 상태 관리
     const [addedCartState] = useRecoilState(addedCart);
 
@@ -45,11 +43,12 @@ const SelectPayMethod = () => {
     )
     .join(", "); // 여러 개의 상품명을 하나의 문자열로 변환 (그래야 카카오페이API에 포함시킬 수 있음)
 
-
     const [orderNumber, setOrderNumber] = useState(() => {
         const savedOrderId = localStorage.getItem('orderId');
         return savedOrderId ? parseInt(savedOrderId, 10) : 1000;
     });
+
+
     
     // 주문 번호를 증가시키고 localStorage에 저장
     const incrementOrderId = () => {
@@ -77,6 +76,9 @@ const SelectPayMethod = () => {
         await addedCartState.forEach((item) => {
             const { isSet, detailMenu, detailSide, detailDrink, sideSize, drinkSize, quantity } = item;
 
+            setAddOrderId(orderIdFromTb + 1);
+            console.log("아악");
+
             const mainMenu = menuData.find((menu) =>
                 menu.menuName === detailMenu
             );
@@ -87,6 +89,9 @@ const SelectPayMethod = () => {
                     priceInfo = mainMenu.menuPrice[0];
                 }
                 if (mainMenu.menuCategory === "디저트") {
+                    priceInfo = mainMenu.menuPrice[0];
+                }
+                if (mainMenu.menuCategory === "맥모닝") {
                     priceInfo = mainMenu.menuPrice[0];
                 }
                 if (mainMenu.menuCategory === "사이드") {
@@ -101,10 +106,10 @@ const SelectPayMethod = () => {
 
                 if (priceInfo) {
                     orderDetailList.push({
-                        order_id: products[0].orderNumber, // 주문 임시 번호
-                        menu_price_id: priceInfo.menuPriceId, // 가격 ID
-                        menu_count: quantity, // 수량
-                        is_set: isSet, // 세트 여부
+                        orderId: addOrderId, 
+                        menuPriceId: priceInfo.menuPriceId, // 가격 ID
+                        menuCount: quantity, // 수량
+                        isSet: isSet? 1 : 0, // 세트 여부
                     });
                 }
             }
@@ -120,10 +125,10 @@ const SelectPayMethod = () => {
                     const priceInfo = sideMenu.menuPrice.find(price => price.size === sideSize);
                     if (priceInfo) {
                         orderDetailList.push({
-                            order_id: products[0].orderNumber, // 주문 임시 번호
-                            menu_price_id: priceInfo.menuPriceId, // 가격 ID
-                            menu_count: quantity, // 수량
-                            is_set: false, // 사이드는 세트 메뉴가 아니므로 false
+                            orderId: addOrderId, 
+                            menuPriceId: priceInfo.menuPriceId, // 가격 ID
+                            menuCount: quantity, // 수량
+                            isSet: isSet? 1 : 0, // 사이드는 세트 메뉴가 아니므로 false
                         });
                     }
                 }
@@ -140,10 +145,10 @@ const SelectPayMethod = () => {
                     const priceInfo = drinkMenu.menuPrice.find(price => price.size === drinkSize);
                     if (priceInfo) {
                         orderDetailList.push({
-                            order_id: products[0].orderNumber, // 주문 임시 번호
-                            menu_price_id: priceInfo.menuPriceId, // 가격 ID
-                            menu_count: quantity, // 수량
-                            is_set: false, // 음료는 세트 메뉴가 아니므로 false
+                            orderId: addOrderId, 
+                            menuPriceId: priceInfo.menuPriceId, // 가격 ID
+                            menuCount: quantity, // 수량
+                            isSet: isSet? 1 : 0, // 음료는 세트 메뉴가 아니므로 false
                         });
                     }
                 }
@@ -156,7 +161,7 @@ const SelectPayMethod = () => {
     const handlePaymentOnClick = async () => {
         try {
             const orderDetailList = await buildOrderDetailList();
-            const orderIdFromList = orderDetailList[0]?.order_id;
+            const orderIdFromList = products[0].orderNumber;
             incrementOrderId();  
 
             if (!orderIdFromList) {
@@ -183,13 +188,17 @@ const SelectPayMethod = () => {
                 })),
             });
 
+            
+
             const point = Math.floor(totalPrice * 0.05);
 
-            // 이 자리에서 order_tb 에 POST 
-            console.log("order_tb에 보낼 2개, orderTempId :", products[0].orderNumber, "totalPrice :", totalPrice);
+            // ✅ order_tb 먼저 post (비동기 처리)
+            console.log("order_tb에 보낼 데이터:", products[0].orderNumber + 1, totalPrice);
+            await postOrder({ orderTempId: products[0].orderNumber + 1, totalPrice: totalPrice });
 
-            // 이 자리에서 
-            console.log("order_detail_tb에 보낼 형식 : ", JSON.stringify(orderDetailList, null, 1));
+            // ✅ order_detail_tb는 order_tb가 성공한 후 실행해야 함
+            console.log("order_detail_tb에 보낼 데이터:", orderDetailList);
+            await postOrderDetail(orderDetailList);
 
             navi("/savePoint", {
                 state: {
@@ -213,19 +222,48 @@ const SelectPayMethod = () => {
         }
     };
 
-    console.log(phoneNumber)
-    console.log(usePoint)
+    console.log("사용한 번호 :", phoneNumber)
+    console.log("사용한 마일리지 :", usePoint)
     return (
-        <div css={s.container}>
-            <div css={s.header}>
-                <div onClick={handlePaymentOnClick}>
-                    <img src="https://miro.medium.com/v2/resize:fit:680/0*ztVd5YkRc7IiSxXu.png" alt="카카오페이" />
+        <>
+            <header css={s.header}>
+                <img src="https://static.thenounproject.com/png/3573-200.png" alt="" />
+                <p>간 편 결 제</p>
+            </header>
+            <main css={s.main}>
+                <div css={s.method}>
+                    <div onClick={handlePaymentOnClick}>
+                        <img src="https://miro.medium.com/v2/resize:fit:680/0*ztVd5YkRc7IiSxXu.png" alt="카카오페이" />
+                    </div>
+                    <div>
+                        <img src="https://oopy.lazyrockets.com/api/v2/notion/image?src=https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fe4dc04f8-8180-4da2-b666-213378cb1138%2Ftoss_logo.png&blockId=18c0905d-e963-4698-b65f-d41c8e2bb396&width=256" alt="토스페이" />
+                    </div>
+                    <div>
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfwAG7A1D_N3jFcg7opYZcZ0gGWhF-zghxZg&s" alt="네이버페이" />
+                    </div>
+                    <div>
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpATk_8HhjpT1TfS0ARtf9LZhAThjlyyWQnf8dqVchZJs4_9o4DlbQU9t68Moz7MvF4hw&usqp=CAU" alt="삼성페이" />
+                    </div>
+                    <div>
+                        <img src="https://biz.chosun.com/resizer/v2/LTW4BB6XXNGKXBTQIW7P574G4M.png?auth=c37b922dc0270f26327e51389d834173d33f2862117b48c1b6836e4d311b7a1a&width=616" alt="애플페이" />
+                    </div>
+                    <div>
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ77aw2ADniWhJknNT14MbOr8_KbfO7KBQ9zA&s" alt="페이코" />
+                    </div>
+                    <div>
+                        <img src="https://www.zeropay.or.kr/images/sprite/zeropay_thumbnail.png" alt="제로페이" />
+                    </div>
+                    <div>
+                        <img src="https://play-lh.googleusercontent.com/QAtwQ3pzH4VOo3mPNuIvS83w9cgtTKcpsCZj3UPgU8tKRK4dS1DzlsZl3wDFTAaOQPI" alt="국민페이" />
+                    </div>
                 </div>
+            </main>
+            <div css={s.foot} onClick={() => navi("/payment")}>
+                <footer css={s.footer}>
+                    이전 단계
+                </footer>
             </div>
-            <div css={s.footer}>
-                <div onClick={() => navi("/previousPage")}>이전 단계</div>
-            </div>
-        </div>
+        </>
     );
 };
 

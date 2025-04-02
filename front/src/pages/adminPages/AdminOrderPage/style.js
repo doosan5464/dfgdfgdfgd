@@ -7,48 +7,33 @@ export const container = css`
     width: 100%;
 `;
 
-export const upside = css`
+export const datePicker = css`
     display: flex;
     justify-content: space-between;
     align-items: center;
 
-    & span {
-        margin: 1rem;
-        padding: 1rem 1rem 1.5rem 1rem;
-        //border-bottom: .3rem dashed #00000055;
-        font-size: 4rem;
-        font-weight: 600;
-    }
+    & button {
+        margin-right: 1rem;
+        box-shadow: 0 0 .4rem .1rem #000000;
+        box-sizing: border-box;
+        border-radius: 1rem;
+        border: none;
+        padding: .5rem;
+        height: fit-content;
+        background-color: #017e07ff;
+        cursor: pointer;
 
-    & div {
-        display: flex;
-        align-items: center;
-        
-        & button {
-            margin-right: 1rem;
-            box-sizing: border-box;
-            border-radius: 1rem;
-            border: .3rem solid #444444;
-            padding: .5rem;
-            height: fit-content;
-            background-color: #fda41eff;
-            cursor: pointer;
+        &:hover {
+            background-color: #017e07aa;
+        }
 
-            &:hover {
-                background-color: #b47312ff;
-            }
-
-            &:active {
-                background-color: #995c007c;
-            }
+        &:active {
+            background-color: #017e0733;
         }
     }
 `;
 
-export const datePicker = css`
-    display: flex;
-    align-items: center;
-`
+
 
 export const calandar = css`
     margin-right: 2rem;
@@ -79,7 +64,7 @@ export const listcontainer = css`
 
     & div span {
         box-sizing: border-box;
-        padding: .5rem 2rem;
+        padding: .8rem 1rem;
         width: 7rem;
         flex-grow: 1;
         white-space: nowrap;
@@ -114,9 +99,11 @@ export const listcontainer = css`
             display: none;
             position: absolute;
             border-radius: 1rem;
+            padding: 1rem 5rem;
             width: max-content;
             font-size: 1.6rem;
-            background-color: #ffffffee;
+            color: #ffffff;
+            background-color: #333333cc;
             transform: translate(-100%, -50%);
             top: 50%;
             left: -10%;
@@ -132,26 +119,26 @@ export const listhead = css`
     padding: 0.6rem 0;
     font-weight: bold;
     background-color: #004417;
+    
     & * {
         color: #fafafa;
         cursor: default;
     }
 `;
 
-export const listbody = css`
+export const listbody = (status) => css`
     border-bottom: 0.1rem solid #dbdbdb;
     font-size: 1.5rem;
-    cursor: default;
-`;
+    cursor: 
+        ${status === "PAID" || status === "READY" ? "pointer" : "default"};
 
+    &:hover {
+        background-color: #dddddd;
 
-export const cancelreasons = (status) => css`
-    & > button {
-        width: 9rem;
-    }
-    & button:hover + span {
-        display: 
-            ${status === "CANCELLED" ? "block" : "none"};
+        & > span > span {
+            display: 
+                ${status === "CANCELLED" ? "block" : "none"};
+        }
     }
 `;
 
@@ -161,21 +148,13 @@ export const statusbutton = (status) => css`
     border: none;
     padding: 0 1.5rem;
     height: 4rem;
-    width: fit-content;
+    width: 9rem;
     color: #222222;
     background-color:
         ${status === "PAID" ? "#f1d21dff"
         : status === "FAILED" ? "#868686d2"
         : status === "CANCELLED" ? "#fd3f3f" : "#3fb7fd"};
     font-weight: 800;
-    
-    &:hover{
-        background-color:
-            ${status === "PAID" ? "#b39b17ff" : "yourDefaultColor"};
-        cursor:
-            ${status === "PAID" ? "pointer" : "default"};
-    }
-
 `;
 
 

@@ -35,11 +35,28 @@ export const modalBasich3 = css`
     align-items: center;
     box-sizing: border-box;
     margin: 0;
-    padding: 1rem 0 3rem;
+    padding: 1rem 0 3rem 4rem;
     width: 100%;
 
     font-size: 2rem;
     cursor: default;
+
+    & button {
+        margin: 0 0 1.2rem 2.8rem;
+        border: none;
+        border-radius: 100%;
+        box-sizing: border-box;
+        padding: 1rem;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #f5f5f5;
+        background-color: #1da840;
+
+        &:hover {
+            box-shadow: 0 0 .5rem .1rem #078827;
+            background-color: #078827;
+        }
+    }
 `;
 
 export const temp = css`

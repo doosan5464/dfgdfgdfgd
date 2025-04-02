@@ -9,20 +9,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("api/admin")
 public class AdminMenuInfoController {
     @Autowired
     private AdminMenuInfoService adminMenuInfoService;
 
-    // 메뉴 영양 정보 및 원산지 단건 조회
+    // 메뉴 영양 정보 및 원산지 다건 조회
     @GetMapping("/menuInfo/{menuId}")
-    public ResponseEntity<?> getMenuInfoByMenuId(@PathVariable int menuId) {
-        MenuInfo menuInfo = adminMenuInfoService.getMenuInfoById(menuId);
-        if (menuInfo != null) {
-            return ResponseEntity.ok(menuInfo);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<?> getMenuInfoListByMenuId(@PathVariable int menuId) {
+        return ResponseEntity.ok(adminMenuInfoService.getMenuInfoListByMenuId(menuId));
     }
 }

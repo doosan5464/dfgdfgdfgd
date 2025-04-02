@@ -12,14 +12,22 @@ import AdminSalesChart from '../AdminSalesChart/AdminSalesChart';
 import { salesModeState } from '../../../atoms/salesModeState/salesModeState';
 
 function AdminSaleByMenu({ menuList }) {
+    const [sales, setSales] = useState([]); // 매출 데이터
     const [searchParams, setSearchParams] = useSearchParams();
     const [salesMode, setSalesMode] = useRecoilState(salesModeState);
     const [salesByMenu, setSalesByMenu] = useState([]);
     const [menuInfo, setMenuInfo] = useState();
     const [selectedMenu, setSelectedMenu] = useState(null); // 선택된 메뉴
     const [yearOptions, setYearOptions] = useState([]);
+    const [salesData, setSalesData] = useState([]);
     const [year, setYear] = useState("");
     const navigate = useNavigate();
+
+    // sales와 year가 변경될 때마다 salesData 업데이트
+    useEffect(() => {
+        const filteredSales = salesByMenu.filter((sale) => sale.year === year);
+        setSalesData(filteredSales); // 필터링된 값으로 상태를 업데이트
+    }, [salesByMenu, year]);
 
     useEffect(() => {
         const menuIdFromParams = parseInt(searchParams.get("menuId"));
@@ -30,16 +38,16 @@ function AdminSaleByMenu({ menuList }) {
         }
 
         const menu = menuList.find((menu) => menu.menuId === menuIdFromParams);
-        if (menu) {
-            setMenuInfo(menu);
-            setSelectedMenu(menu); // 메뉴가 발견되면 해당 메뉴를 selectedMenu로 설정
-            console.log(menu);
-        } else {
-            console.log("Menu not found");
-            setMenuInfo(undefined);
-            setSelectedMenu(null); // 메뉴가 없으면 selectedMenu 초기화
-        }
-    }, [menuList, searchParams]);
+            if (menu) {
+                setMenuInfo(menu);
+                setSelectedMenu(menu); // 메뉴가 발견되면 해당 메뉴를 selectedMenu로 설정
+                console.log(menu);
+            } else {
+                console.log("Menu not found");
+                setMenuInfo(undefined);
+                setSelectedMenu(null); // 메뉴가 없으면 selectedMenu 초기화
+            }
+        }, [menuList, searchParams]);
 
     useEffect(() => {
         let maxYear = -Infinity;
@@ -127,6 +135,7 @@ function AdminSaleByMenu({ menuList }) {
 
             const validSalesData = salesData.filter(data => !isNaN(data.totalSales) && !isNaN(data.orderCount));
 
+            setSales(validSalesData);
             // 이제 포트원 데이터와 메뉴 리스트를 매칭하여 매출을 계산
             const salesByMenuWithNames = validSalesData.map(data => {
                 const menuSales = data.productDetails.reduce((acc, product) => {
@@ -139,12 +148,14 @@ function AdminSaleByMenu({ menuList }) {
                         console.log("판매된 메뉴", productName); // 하나씩 로그로 찍어보기
                         if (matchingMenu) {
                             const productMonth = data.month; // 판매된 월을 해당 `data`의 `month`로 설정
-                            
+                            const productYear = data.year; // 연도 추가
+            
                             // 메뉴 아이디가 없으면 초기화
                             if (!acc[matchingMenu.menuId]) {
                                 acc[matchingMenu.menuId] = {
                                     menuName: matchingMenu.menuName,
                                     menuId: matchingMenu.menuId,
+                                    year: productYear, // 연도 추가
                                     month: productMonth, // 월 추가
                                     totalSales: 0,
                                     totalCount: 0
@@ -164,12 +175,18 @@ function AdminSaleByMenu({ menuList }) {
             }).flat();
             
             setSalesByMenu(salesByMenuWithNames);
+            
 
-            const yearOptions = validSalesData.map(data => ({
-                label: data.year,
-                value: data.year
+            // 고유 연도 목록 추출하여 yearOptions에 설정
+            const yearOptions = validSalesData.map(data => data.year);
+
+            // Set을 사용하여 중복된 연도 제거
+            const uniqueYearOptions = [...new Set(yearOptions)].map(year => ({
+                label: year,
+                value: year
             }));
-            setYearOptions(yearOptions);
+
+            setYearOptions(uniqueYearOptions);
 
             if (yearOptions.length > 0) {
                 const selectedYear = yearOptions[0].value;
@@ -190,17 +207,14 @@ function AdminSaleByMenu({ menuList }) {
     };
 
     const handleYearOptionsOnChange = (e) => {
-        const newValue = e.target.value;
-        if (yearOptions.some(option => option.value === newValue)) {
-            setYear(newValue);
-        } else {
-            setYear("");
-        }
+        const selectedYear = e.target.value;
+        setYear(selectedYear);
     };
 
     const filteredSalesByMenu = selectedMenu
-        ? salesByMenu.filter(menuSale => menuSale.menuName === selectedMenu?.menuName) // menuName 기준으로 필터링
+        ? salesData.filter(menuSale => menuSale.menuName === selectedMenu?.menuName) // menuName 기준으로 필터링
         : [];
+
 
     return (
         <PageModal>
@@ -224,11 +238,15 @@ function AdminSaleByMenu({ menuList }) {
                                 <div>총 주문 수</div>
                             </div>
                             <Select
-                                value={year}
+                                value={year || "연도 선택"}
                                 onChange={handleYearOptionsOnChange}
                                 label="연도"
+                                style={{
+                                    width: "14rem",
+                                    fontSize: "1.4rem"
+                                }}
                             >
-                                <MenuItem value="">
+                                <MenuItem value="연도 선택">
                                     <em>연도 선택</em>
                                 </MenuItem>
                                 {yearOptions.map((yearOption) => (

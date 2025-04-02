@@ -25,8 +25,9 @@ function Payment(props) {
 
     return (
         <>
-            <header>
-
+            <header css={s.header}>
+                <img src="https://icons.veryicon.com/png/o/education-technology/blue-gray-solid-blend-icon/mobile-payment-2.png" alt="" />
+                <p>결 제</p>
             </header>
             <main css={s.main}>
                 <div css={s.method}>
@@ -37,9 +38,9 @@ function Payment(props) {
                             <p>(CreditCard)</p>
                         </div>
                     </div>
-                    <div>
+                    <div onClick={handleEasyPay}>
                         <img src="https://img.khan.co.kr/news/2023/11/23/news-p.v1.20231123.9a9908bef5904a3cab46a5afc2bce234_P1.jpg" alt="" />
-                        <div onClick={handleEasyPay}>
+                        <div>
                             <p>간편결제</p>
                             <p>(SmartPay)</p>
                         </div>
@@ -53,9 +54,11 @@ function Payment(props) {
                     </div>
                 </div>
             </main>
-            <footer css={s.footer} onClick={handleBack}>
-                이전 단계
-            </footer>
+            <div css={s.foot}>
+                <footer css={s.footer} onClick={handleBack}>
+                    이전 단계
+                </footer>
+            </div>
         </>
     );
 }

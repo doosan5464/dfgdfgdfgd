@@ -8,7 +8,7 @@ export const useAddMenuMutation = () => {
     return useMutation({
         mutationFn: addMenuApi,
         onSuccess: () => {
-            queryClient.invalidateQueries(["menuData"]);
+            queryClient.invalidateQueries({queryKey: ["menuData"]});
         },
         onError: (error) => {
             console.error("❌ [useAddMenuMutation] 메뉴 추가 실패:", error);
@@ -23,7 +23,7 @@ export const useUpdateMenuMutation = () => {
     return useMutation({
         mutationFn: ({ menuId, formData }) => updateMenuApi(menuId, formData),
         onSuccess: () => {
-            queryClient.invalidateQueries(["menuData"]);
+            queryClient.invalidateQueries({queryKey: ["menuData"]});
         },
         onError: (error) => {
             console.error("❌ [useUpdateMenuMutation] 메뉴 수정 실패:", error);
@@ -38,7 +38,7 @@ export const useDeleteMenuMutation = () => {
     return useMutation({
         mutationFn: deleteMenuApi,
         onSuccess: () => {
-            queryClient.invalidateQueries(["menuData"]);
+            queryClient.invalidateQueries({queryKey: ["menuData"]});
         },
         onError: (error) => {
             console.error("❌ [useDeleteMenuMutation] 메뉴 삭제 실패:", error);
