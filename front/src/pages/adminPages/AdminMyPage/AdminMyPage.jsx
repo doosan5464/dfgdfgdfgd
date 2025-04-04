@@ -29,74 +29,81 @@ function AdminMyPage() {
         loginUser.refetch();
     };
 
+    //실험용
+    
+
     return (
         <>
             <AdminHeader title={"내정보"} />
-                <div css={s.infoContainer}>
-                    <div css={s.infoBox}>
-                        <h3>관리자 아이디</h3>
-                        <p css={s.infoText}>{loginUser?.data?.data.adminName}</p>
-                    </div>
-
-                    <div css={s.infoBox}>
-                        <h3>매장 이름</h3>
-                        <div css={s.infoRow}>
-                            <input
-                                css={s.inputField}
-                                type="text"
-                                value={tradeNameValue}
-                                onChange={handleNicknameInputOnChange}
-                            />
-                            <button
-                                css={s.primaryButton}
-                                onClick={handleSaveNicknameButtonOnClick}
-                                disabled={loginUser?.data?.data.tradeName === tradeNameValue}
-                            >
-                                변경하기
-                            </button>
-                        </div>
-                    </div>
-
-                    <div css={s.infoBox}>
-                        <h3>이메일</h3>
-                        <div css={s.infoRow}>
-                            <p css={s.infoText}>{loginUser?.data?.data.email}</p>
-                            <button css={s.secondaryButton} onClick={() => setEmailModalOpen(true)}>
-                                이메일 변경하기
-                            </button>
-                        </div>
-                    </div>
-
-                    {!loginUser?.data?.data?.oauth2Name && (
+            <div css={s.container}>
+                <div css={s.conWrap}>
+                    <div css={s.infoContainer}>
                         <div css={s.infoBox}>
-                            <h3>비밀번호</h3>
+                            <h3>관리자 아이디</h3>
+                            <p css={s.infoText}>{loginUser?.data?.data.adminName}</p>
+                        </div>
+
+                        <div css={s.infoBox}>
+                            <h3>매장 이름</h3>
                             <div css={s.infoRow}>
-                                <p css={s.infoText}>계정에 로그인할 영구 비밀번호를 설정합니다.</p>
-                                <button css={s.secondaryButton} onClick={() => setPasswordModalOpen(true)}>
-                                    비밀번호 변경하기
+                                <input
+                                    css={s.inputField}
+                                    type="text"
+                                    value={tradeNameValue}
+                                    onChange={handleNicknameInputOnChange}
+                                />
+                                <button
+                                    css={s.primaryButton}
+                                    onClick={handleSaveNicknameButtonOnClick}
+                                    disabled={loginUser?.data?.data.tradeName === tradeNameValue}
+                                >
+                                    변경하기
                                 </button>
                             </div>
                         </div>
-                    )}
+
+                        <div css={s.infoBox}>
+                            <h3>이메일</h3>
+                            <div css={s.infoRow}>
+                                <p css={s.infoText}>{loginUser?.data?.data.email}</p>
+                                <button css={s.secondaryButton} onClick={() => setEmailModalOpen(true)}>
+                                    이메일 변경하기
+                                </button>
+                            </div>
+                        </div>
+
+                        {!loginUser?.data?.data?.oauth2Name && (
+                            <div css={s.infoBox}>
+                                <h3>비밀번호</h3>
+                                <div css={s.infoRow}>
+                                    <p css={s.infoText}>계정에 로그인할 비밀번호를 설정합니다.</p>
+                                    <button css={s.secondaryButton} onClick={() => setPasswordModalOpen(true)}>
+                                        비밀번호 변경하기
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
+            </div>
 
-                {/* 이메일 변경 모달 */}
-                <ReactModal
-                    isOpen={emailModalOpen}
-                    onRequestClose={() => setEmailModalOpen(false)}
-                    style={s.modalStyle}
-                >
-                    <ChangeEmailModal setOpen={setEmailModalOpen} />
-                </ReactModal>
+            {/* 이메일 변경 모달 */}
+            <ReactModal
+                isOpen={emailModalOpen}
+                onRequestClose={() => setEmailModalOpen(false)}
+                style={s.modalStyle}
+            >
+                <ChangeEmailModal setOpen={setEmailModalOpen} />
+            </ReactModal>
 
-                {/* 비밀번호 변경 모달 */}
-                <ReactModal
-                    isOpen={passwordModalOpen}
-                    onRequestClose={() => setPasswordModalOpen(false)}
-                    style={s.modalStyle}
-                >
-                    <PasswordModal setOpen={setPasswordModalOpen} />
-                </ReactModal>
+            {/* 비밀번호 변경 모달 */}
+            <ReactModal
+                isOpen={passwordModalOpen}
+                onRequestClose={() => setPasswordModalOpen(false)}
+                style={s.modalStyle}
+            >
+                <PasswordModal setOpen={setPasswordModalOpen} />
+            </ReactModal>
         </>
     );
 }

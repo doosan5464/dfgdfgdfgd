@@ -56,57 +56,36 @@ export const listcontainer = css`
     box-shadow: 0 0 0.3rem 0.2rem #00000022;
     overflow: hidden;
 
-    & div {
+    & > div {
         display: flex;
         align-items: center;
 
     }
 
-    & div span {
+    & > div > span {
         box-sizing: border-box;
         padding: .8rem 1rem;
         width: 7rem;
         flex-grow: 1;
         white-space: nowrap;
         text-align: center;
-    }
-
-    & div .orderid {
         overflow: hidden;
         text-overflow: ellipsis;
     }
 
     & div .ordername {
         flex-grow: 3;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    & div .totalamount {
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    & div .time {
-        overflow: hidden;
-        text-overflow: ellipsis;
     }
 
     & div .status {
         position: relative;
+        min-width: 7rem;
+        overflow: unset;
+        text-overflow: unset;
 
         & > span {
             display: none;
             position: absolute;
-            border-radius: 1rem;
-            padding: 1rem 5rem;
-            width: max-content;
-            font-size: 1.6rem;
-            color: #ffffff;
-            background-color: #333333cc;
-            transform: translate(-100%, -50%);
-            top: 50%;
-            left: -10%;
         }
     }
 `;
@@ -130,14 +109,29 @@ export const listbody = (status) => css`
     border-bottom: 0.1rem solid #dbdbdb;
     font-size: 1.5rem;
     cursor: 
-        ${status === "PAID" || status === "READY" ? "pointer" : "default"};
+        ${status === "PAID" ? "pointer" : "default"};
 
     &:hover {
-        background-color: #dddddd;
+        box-shadow: 
+            ${status === "PAID" ? "inset 0 0 0.7rem 0.1rem #000000" : "none"};
+
+        background-color: 
+            ${status === "PAID" ? "#cccccc" : "#e8e8e8"};
 
         & > span > span {
             display: 
-                ${status === "CANCELLED" ? "block" : "none"};
+                ${status === "CANCELLED" ? "inline-block" : "none"};
+            border-radius: 1rem;
+            padding: 1rem 5rem;
+            width: max-content;
+            max-width: 55rem;
+            white-space: normal;
+            font-size: 1.6rem;
+            color: #ffffff;
+            background-color: #333333cc;
+            transform: translate(-100%, -50%);
+            top: 50%;
+            left: -10%;
         }
     }
 `;

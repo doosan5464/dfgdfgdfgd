@@ -1,27 +1,10 @@
 import { css } from "@emotion/react";
 
-// 전체 컨테이너
-export const container = css`
-    margin: 2rem auto;
-    padding: 1.5rem;
-    border-radius: 10px;
-`;
-
-// 선택
-export const dropdownContainer = css`
-    margin-bottom: 1rem;
-`;
-
-export const dropdown = css`
-    width: 250px;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-`;
-
 // 상품 정보 컨테이너
 export const productContainer = css`
     display: flex;
+    justify-content: center;
+    align-items: center;
     gap: 1.5rem;
 `;
 
@@ -29,11 +12,18 @@ export const productContainer = css`
 export const imageCon = css`
     display: flex;
     flex-direction: column;
+    margin-right: 5rem;
+
+    & > span {
+        text-align: center;
+        font-size: 1.4rem;
+        margin: 0.7rem 0 2rem 0;
+    }
 `;
 
 export const imageBox = css`
     width: 30rem;
-    height: 30rem;
+    height: 25rem;
     background: white;
     border: 1px solid #ccc;
     display: flex;
@@ -45,6 +35,10 @@ export const imageBox = css`
     & > img {
         width: 100%;
     }
+
+    & > span {
+        font-size: 1.4rem;
+    }
 `;
 
 // 입력 필드 그룹
@@ -53,25 +47,38 @@ export const inputGroup = css`
     flex-direction: column;
     justify-content: center;
     gap: 3rem;
-    width: 80rem;
     
 
     & > div {
-        width: 70rem;
+        width: 60rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
 `;
 
+// 선택
+export const dropdownContainer = css`
+    margin-bottom: 1rem;
+`;
+
+export const dropdown = css`
+    width: 50%;
+    height: 4.5rem;
+    padding: 0 3rem;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+`;
+
 export const label = css`
-    font-size: 3rem;
+    font-size: 1.6rem;
     font-weight: bold;
     margin-bottom: 0.2rem;
 `;
 
 export const input = css`
-    width: 60%;
+    width: 50%;
     height: 4.5rem;
     padding: 0 3rem;
     border: 1px solid #ccc;
@@ -81,8 +88,8 @@ export const input = css`
 
 // 버튼 그룹
 export const buttonGroup = css`
-    width: 91%;
-    margin-top: 5rem;
+    width: 100%;
+    margin-top: 1.5rem;
     display: flex;
     justify-content: space-between;
 
@@ -92,16 +99,16 @@ export const buttonGroup = css`
 `;
 
 export const button = css`
+    flex-grow: 1;
     padding: 0.5rem 1rem;
-    color: black;
-    border: 1px solid #000;
+    border: none;
     border-radius: 6px;
     font-weight: bold;
-    cursor: pointer;
-    flex-grow: 1;
     height: 4rem;
+    background-color: #ffcc00;
+    cursor: pointer;
 
     &:hover {
-        background: #e5e7eb;
+        background: #ffdd33;
 }
 `;

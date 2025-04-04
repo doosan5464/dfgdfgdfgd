@@ -122,13 +122,14 @@ export const mapParent = css`
 export const childrenDiv = css`
     display: flex;
     justify-content: space-evenly;
-    
+    flex-wrap: wrap;
 `;
 export const modalSideSetImage = (isSeleted) => css`
     display: flex;
     width: 11rem;
     height: 11rem ;
     margin: 1rem;
+    flex-wrap: wrap;
 
     & > label {
         display: flex;

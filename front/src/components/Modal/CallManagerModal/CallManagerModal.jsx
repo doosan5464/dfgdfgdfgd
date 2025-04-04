@@ -1,11 +1,33 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState } from 'react';
 import * as s from './style';
-
-// 기능은 구현되어 있지 않고, 열리는 modal 창만 있음.
+import { selectedLanguageState } from '../../../atoms/selectedLanguage/selectedLanguage';
+import { useRecoilState } from 'recoil';
 
 function CallManagerModal() {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedLanguage] = useRecoilState(selectedLanguageState);
+
+    const languageTexts = {
+        한국어: {
+            callStaff: "직원호출",
+            staffCalled: "직원을 호출하였습니다.",
+            pleaseWait: "잠시만 기다려주세요.",
+            confirm: "확인"
+        },
+        영어: {
+            callStaff: "Call Staff",
+            staffCalled: "Staff has been called.",
+            pleaseWait: "Please wait a moment.",
+            confirm: "OK"
+        },
+        중국어: {
+            callStaff: "呼叫员工",
+            staffCalled: "已呼叫员工。",
+            pleaseWait: "请稍等。",
+            confirm: "确认"
+        }
+    };
 
     const openModal = () => {
         setIsModalOpen(true);
@@ -17,13 +39,17 @@ function CallManagerModal() {
 
     return (
         <div>
-            <div css={s.buttonText} onClick={openModal}>직원호출</div>
+            <div css={s.buttonText} onClick={openModal}>
+                {languageTexts[selectedLanguage].callStaff}
+            </div>
             {isModalOpen && (
                 <div css={s.modalContainer}>
                     <div css={s.modalContent}>
-                        <span css={s.modalText}>직원을 호출하였습니다.</span>
-                        <span css={s.modalText}>잠시만 기다려주세요.</span>
-                        <button onClick={closeModal} css={s.closeButton}>확인</button>
+                        <span css={s.modalText}>{languageTexts[selectedLanguage].staffCalled}</span>
+                        <span css={s.modalText}>{languageTexts[selectedLanguage].pleaseWait}</span>
+                        <button onClick={closeModal} css={s.closeButton}>
+                            {languageTexts[selectedLanguage].confirm}
+                        </button>
                     </div>
                 </div>
             )}

@@ -16,29 +16,47 @@ export const modalOverlay = css`
 
 export const modalContent = css`
     position: fixed;
-    width: 32rem;
-    max-height: 60rem;
     display: flex;
-    padding: 2rem 1rem 0 1rem;
+    padding: 2rem;
     border-radius: 1rem;
     background: white;
 
     & > div {
         display: flex;
         flex-direction: column;
-        width: 100%;
-        height: 100%;
+        max-width: 40rem;
     }
+
 `;
 
 export const modalBasich3 = css`
     display: flex;
     justify-content: center;
     align-items: center;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 1rem 0 3rem 4rem;
     width: 100%;
-    height: 1px;
+
     font-size: 2rem;
-    margin-bottom: 5rem;
+    cursor: default;
+
+    & button {
+        margin: 0 0 1.2rem 2.8rem;
+        border: none;
+        border-radius: 100%;
+        box-sizing: border-box;
+        padding: 1rem;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #f5f5f5;
+        background-color: #1da840;
+
+        &:hover {
+            box-shadow: 0 0 .5rem .1rem #078827;
+            background-color: #078827;
+        }
+    }
 `;
 
 export const temp = css`
@@ -46,41 +64,59 @@ export const temp = css`
     justify-content: space-evenly;
 `;
 
-export const modalBuguerSetImage = css`
+export const modalBuguerSetImage = (isSeleted) => css`
     display: flex;
-    width: 40%; 
+    width: 15rem; 
+    height: 15rem;
+    &:nth-of-type(2) {
+        margin-left: 2rem;
+    }
 
-    & > div {
-        position: relative;
+    & > label {
         display: flex;
-        justify-content: center;
-        align-items: end;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
         width: 100%;
-        height: 12.8rem;
-        border: 1px solid black;
-        border-radius: 0.5rem;
-        box-shadow: 0.2rem 0.2rem 0.2rem rgba(0,0,0,0.25); 
+        border-radius: 0.4rem;
+        box-shadow: ${isSeleted ? "0 0 0.3rem 0.2rem #ffa600e1" : "0 0 0.3rem 0.1rem #00000017"};
+        overflow: hidden;
 
         font-size: 11px;
         font-weight: 600;
+        cursor: pointer;
 
         &:hover {
-            background-color: #f0f0f0; 
-            box-shadow: 0.3rem 0.3rem 0.4rem rgba(0, 0, 0, 0.35); 
+            box-shadow: 0 0 0.6rem 0.1rem #ffa600e1;
+        }
+
+        & > input {
+            display: none;
         }
 
         & > img {
-            position: absolute;
             width: 100%;
             max-width: 30rem;
             bottom: 30px;
+        }
+
+        & > div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            & > p {
+                margin: 0;
+            }
         }
     }
 `;
 
 export const mapParent = css`
     display: flex;
+    justify-content: space-between;
     flex-wrap: wrap; // !!!
+    overflow-y: auto;
 `;
 
 export const childrenDiv = css`
@@ -88,56 +124,57 @@ export const childrenDiv = css`
     justify-content: space-evenly;
     
 `;
-
-export const modalSideSetImage = css`
+export const modalSideSetImage = (isSeleted) => css`
     display: flex;
-    flex-direction: column;
-    width: 7.6rem; 
-    height: 7.6rem;
-    margin: 2px;
-    
-    justify-content: space-evenly;
+    width: 11rem;
+    height: 11rem ;
+    margin: 1rem;
 
-    & > div {
-        position: relative;
+    & > label {
         display: flex;
-        justify-content: center;
-        align-items: end;
-        width: 100%;
-        height: 100%;
-        border: 1px solid black;
-        border-radius: 0.5rem;
-        box-shadow: 0.2rem 0.2rem 0.2rem rgba(0,0,0,0.25); 
-        
-        & > div {
-            font-size: 7px;
-            font-weight: 800;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        width: 7rem;
+        flex-grow: 1;
+        border-radius: 0.4rem;
+        box-shadow: ${isSeleted ? "0 0 0.3rem 0.2rem #ffa600e1" : "0 0 0.3rem 0.1rem #00000017"};
+        overflow: hidden;
 
-            
-            & > p {
-                display: flex;
-                justify-content: center;
-                margin: 0;
-            }
-        }
+        font-size: 11px;
+        font-weight: 600;
+        cursor: pointer;
 
         &:hover {
-            background-color: #f0f0f0; 
-            box-shadow: 0.3rem 0.3rem 0.4rem rgba(0, 0, 0, 0.35); 
+            box-shadow: 0 0 0.6rem 0.1rem #ffa600e1;
+        }
+
+        & > input {
+            display: none;
         }
 
         & > img {
-            position: absolute;
             width: 100%;
-            max-width: 30rem;
-            bottom: 20px;
+            bottom: 30px;
+        }
+
+        & > div {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            & > p {
+                margin: 0;
+                text-align: center;
+            }
         }
     }
 `;
 
 export const nextAndClose = css`
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     margin: 30px 10px 10px 10px;
 
     & > span {
@@ -146,16 +183,18 @@ export const nextAndClose = css`
         align-items: center;
         text-justify: center;
         text-align: center;
-        font-size: 2rem;
+        font-size: 1.6rem;
         font-weight: 500;
         width: 13rem;
-        height: 5rem;
+        height: 4rem;
         border-radius: 10px;
         color: white;
-        background-color: #EE4545;
+        background-color: #1c7a2c;
+        cursor: pointer;
 
         :nth-last-of-type(1) {
-            background-color: #5CC6F3;
+            margin-left: 2rem;
+            background-color: #EE4545;
         }
     }
 `;

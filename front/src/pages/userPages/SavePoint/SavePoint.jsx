@@ -87,7 +87,8 @@ const SavePoint = () => {
     return (
         <>
             <div css={s.container}>
-                <p>적립할 번호를 입력해주세요</p>
+                <img src="https://cdn-icons-png.flaticon.com/512/99/99656.png" alt="" css={s.img} />
+                <p css={s.p}>적립할 번호를 입력해주세요</p>
                 <input
                     type="text"
                     value={input}

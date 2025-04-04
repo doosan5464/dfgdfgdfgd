@@ -64,7 +64,6 @@ function UsePointModal({ phoneNumber, closeModal }) {
         
 
         if (usePoint > 0 && usePoint <= point) {       
-                alert(`포인트 ${usePoint}점 사용되었습니다.`);
                 closeModal(); // 모달 닫기
                 navigate("/payment", { 
                     state: { 
@@ -109,7 +108,7 @@ function UsePointModal({ phoneNumber, closeModal }) {
                     ))}
                 </div>
 
-                <button onClick={closeModal}>닫기</button>
+                <button css={s.footer} onClick={closeModal}>취소하기</button>
             </div>
         </div>
     );

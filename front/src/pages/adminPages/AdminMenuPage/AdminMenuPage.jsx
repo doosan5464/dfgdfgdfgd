@@ -18,10 +18,9 @@ function AdminMenuPage(props) {
     const page = parseInt(searchParams.get("page") || "1"); //현재 페이지번호
     
     const allMenuList = useAllMenuList(); //모든 메뉴 불러오기
-    const { data: searchMenuList, isLoading: isMenuLoading } = allMenuList; //모든 메뉴 배열에 담기
-    
+    const { data: searchMenuList, isLoading: isMenuLoading, isFetchedAfterMount: isMenuFetchedAfterMount } = allMenuList; //모든 메뉴 배열에 담기
     // const updateIsExposureMutation = useUpdateIsPosureMutation(); //노출여부 뮤태이션
-
+    //console.log(allMenuList.isRefetching);
     const [ infoModalOpen, setInfoModalOpen ] = useState(false); //모달 열림 상태
     const [ infoModalDate, setInfoModalDate ] = useState(1); //모달에 전달할 메뉴데이터
 
@@ -37,6 +36,13 @@ function AdminMenuPage(props) {
             allMenuList.refetch();
         }
     }, [infoModalOpen]);
+
+    //다른 페이지 갔다왔는지 여부 isMenuFetchedAfterMount /  모달,다른페이지는 isRefetching 
+    useEffect(() => {
+        if(isMenuFetchedAfterMount) {
+            allMenuList.refetch();
+        }
+    }, [isMenuFetchedAfterMount]);
 
     //필요한 목록 불러오기
     const renderMenuList = () => {
@@ -177,8 +183,8 @@ function AdminMenuPage(props) {
                             position: "static",
                             boxSizing: "border-box",
                             borderRadius: "1.5rem",
-                            height: "85rem",
-                            width: "120rem",
+                            height: "83rem",
+                            width: "110rem",
                         }
                     }}
                 >

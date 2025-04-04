@@ -18,7 +18,25 @@
         <result property="menuOrigin" column="menu_origin" />
     </resultMap>
 
-    <!--  메뉴 영양 정보 및 원산지 다건 조회  -->
+    <!--  메뉴 영양 정보 및 원산지 수정  -->
+    <update id="updateMenuInfoByMenuId">
+        UPDATE
+            menu_info_tb
+        SET
+            weight = #{weight},
+            volume = #{volume},
+            calories = #{calories},
+            sugars = #{sugars},
+            protein = #{protein},
+            saturated_fat = #{saturatedFat},
+            sodium = #{sodium},
+            caffeine = #{caffeine},
+            menu_origin = #{menuOrigin}
+        WHERE
+            menu_info_id = #{menuInfoId}
+    </update>
+
+    <!--  메뉴 영양 정보 및 원산지 단건 조회  -->
     <select id="getMenuInfoListByMenuId" resultMap="adminMenuInfoResultMap">
         select
             menu_info_id,

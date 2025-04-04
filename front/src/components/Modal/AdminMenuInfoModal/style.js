@@ -33,7 +33,7 @@ export const headline = css`
 `;
 
 export const text = css`
-    margin: 1rem 0 1rem 0rem;
+    margin: 1rem 0 1rem 2rem;
     border-bottom: 0.5rem dashed #00000022;
     padding-bottom: 1rem;
     font-size: 2.5rem;
@@ -63,6 +63,67 @@ export const headleft = css`
         object-fit: contain;
         max-height: 21rem;
     }
+`;
+
+export const selectsize = (toggledSize) => css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 18rem;
+
+    & > div {
+        min-width: 9rem;
+    }
+
+    & > label {
+        position: relative;
+        display: inline-block;
+        margin-left: 3rem;
+        width: 6rem;
+        height: 3.1rem;
+        
+        & > input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        & > span {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #06b30f;
+            transition: 0.4s;
+            border-radius: 3rem;
+
+            &::before {
+                position: absolute;
+                box-shadow: 0 0 0.5rem 0.1rem #000000cc;
+                height: 25px;
+                width: 25px;
+                border-radius: 50%;
+                left: 0.3rem;
+                bottom: 0.3rem;
+                background-color: white;
+                transition: 0.4s;
+                content: "";
+            }
+        }
+    }
+
+    & > label > input:checked + span { //배경색 변경
+        background-color: #1d4ce9;
+
+    }
+
+    & > label > input:checked + span::before { //동그라미 이동
+        transform: translateX(29px);
+    }
+
+
 `;
 
 export const headright = css`
@@ -186,7 +247,7 @@ export const bodyup = css`
 export const bodydown = css`
     display: flex;
     align-items: center;
-    margin: 2rem 0 2rem 3.5rem;
+    margin: 3.5rem 0 2rem 3.5rem;
     font-size: 2.5rem;
 
     & div {

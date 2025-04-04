@@ -16,6 +16,16 @@ export const container = css`
     align-items: center;
 `;
 
+export const p = css`
+    font-size: 2rem;
+`;
+
+export const img = css`
+    display: flex;
+    width: 15rem;
+    margin-bottom: 5rem;
+`
+
 // 입력 필드 스타일
 export const input = css`
     width: 80%;
@@ -57,10 +67,18 @@ export const button = css`
     }
 `;
 
+export const foott = css`
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+    
+`
+
 // 하단 버튼 스타일 (포인트 조회)
 export const footer = css`
-    width: 80%;
-    height: 4rem;
+    display: flex;
+    width: 30%;
+    height: 5rem;
     background-color: #ffd154;
     border-radius: 0.5rem;
     text-align: center;

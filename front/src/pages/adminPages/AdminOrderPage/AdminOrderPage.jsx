@@ -76,110 +76,110 @@ function AdminOrderPage(props) {
         "READY": "결제 중"
     }
 
-    //상품목록 더미데이터 (삭제예정)
-    const orders = [
-        {
-            orderId: 1024,
-            products: [
-                {
-                    productId: 1,
-                    productName: "빅맥",
-                    price: 5500,
-                    category: "버거",
-                    count: 3,
-                },
-                {
-                    productId: 30,
-                    productName: "후렌치후라이",
-                    price: 1100,
-                    category: "사이드",
-                    count: 1,
-                },
-                {
-                    productId: 55,
-                    productName: "코카콜라",
-                    price: 1300,
-                    category: "음료",
-                    count: 1,
-                },
-            ]
-        },
-        {
-            orderId: 4025,
-            products: [
-                {
-                    productId: 3,
-                    productName: "1955버거",
-                    price: 6400,
-                    category: "버거",
-                    count: 1,
-                },
-                {
-                    productId: 55,
-                    productName: "코카콜라",
-                    price: 1900,
-                    category: "음료",
-                    count: 1,
-                },
-                {
-                    productId: 100,
-                    productName: "콜라L",
-                    price: 2400,
-                    category: "음료",
-                    count: 1,
-                },
-            ]
-        },
-        {
-            orderId: 4026,
-            products: [
-                {
-                    productId: 2,
-                    productName: "맥스파이시 상하이버거",
-                    price: 5500,
-                    category: "버거",
-                    count: 1,
-                },
-            ]
-        }
-    ]
-    //console.log(foundorder);
+    // 더미데이터용 상품목록
+    // const orders = [
+    //     {
+    //         orderId: 1024,
+    //         products: [
+    //             {
+    //                 productId: 1,
+    //                 productName: "빅맥",
+    //                 price: 5500,
+    //                 category: "버거",
+    //                 count: 3,
+    //             },
+    //             {
+    //                 productId: 30,
+    //                 productName: "후렌치후라이",
+    //                 price: 1100,
+    //                 category: "사이드",
+    //                 count: 1,
+    //             },
+    //             {
+    //                 productId: 55,
+    //                 productName: "코카콜라",
+    //                 price: 1300,
+    //                 category: "음료",
+    //                 count: 1,
+    //             },
+    //         ]
+    //     },
+    //     {
+    //         orderId: 4025,
+    //         products: [
+    //             {
+    //                 productId: 3,
+    //                 productName: "1955버거",
+    //                 price: 6400,
+    //                 category: "버거",
+    //                 count: 1,
+    //             },
+    //             {
+    //                 productId: 55,
+    //                 productName: "코카콜라",
+    //                 price: 1900,
+    //                 category: "음료",
+    //                 count: 1,
+    //             },
+    //             {
+    //                 productId: 100,
+    //                 productName: "콜라L",
+    //                 price: 2400,
+    //                 category: "음료",
+    //                 count: 1,
+    //             },
+    //         ]
+    //     },
+    //     {
+    //         orderId: 4026,
+    //         products: [
+    //             {
+    //                 productId: 2,
+    //                 productName: "맥스파이시 상하이버거",
+    //                 price: 5500,
+    //                 category: "버거",
+    //                 count: 1,
+    //             },
+    //         ]
+    //     }
+    // ]
+    // //console.log(foundorder);
 
-    // 물품구입 - payone으로 보내기 (삭제 예정)
-    const handlePaymentClick = async (orderId) => {
-        const foundorder = orders.find(o => o.orderId === orderId); //주문번호로 찾기
-        const nameOfProducts = foundorder.products.map(product => 
-            product.productName + " " + product.count + "개").join(", "); //제품 이름 나열
-        const SumPrice = foundorder.products.reduce((sum, product) => {
-            return sum + (product.price * product.count);}, 0); //초기값 0의 모든 제품 합산 가격
-        try {
-            const paymentResponse = await PortOne.requestPayment({ //payone에 정보 입력
-                storeId: import.meta.env.VITE_PORTONE_STOREID,
-                paymentId: uuid(),
-                orderName: nameOfProducts, //제품 이름 나열
-                totalAmount: SumPrice, //총가격
-                currency: "CURRENCY_KRW",
-                payMethod: "EASY_PAY",
-                channelKey: "channel-key-880a138a-b3ba-4ad9-9135-791ff84b4e76",
-                customer: { //주문번호 집어넣음
-                    customerId: foundorder.orderId.toString(),
-                },
-                products: //map에 담겨 return되는 값 자체가 배열이라서 [] 생략
-                    foundorder.products.map( p => {
-                        return {
-                            id: p.productId.toString(),
-                            name: p.productName,
-                            amount: p.price,
-                            quantity: p.count,
-                            tag: p.category
-                        };
-                    }),
-            });
-            //console.log(paymentResponse);
-        }  catch(error) {
-            console.log(error);
-        }
-    }
+    // // 더미데이터용 물품구입 - payone으로 보내기
+    // const handlePaymentClick = async (orderId) => {
+    //     const foundorder = orders.find(o => o.orderId === orderId); //주문번호로 찾기
+    //     const nameOfProducts = foundorder.products.map(product => 
+    //         product.productName + " " + product.count + "개").join(", "); //제품 이름 나열
+    //     const SumPrice = foundorder.products.reduce((sum, product) => {
+    //         return sum + (product.price * product.count);}, 0); //초기값 0의 모든 제품 합산 가격
+    //     try {
+    //         const paymentResponse = await PortOne.requestPayment({ //payone에 정보 입력
+    //             storeId: import.meta.env.VITE_PORTONE_STOREID,
+    //             paymentId: uuid(),
+    //             orderName: nameOfProducts, //제품 이름 나열
+    //             totalAmount: SumPrice, //총가격
+    //             currency: "CURRENCY_KRW",
+    //             payMethod: "EASY_PAY",
+    //             channelKey: "channel-key-39a34f05-a2cb-44f1-a0ca-0798cf19bca2",
+    //             customer: { //주문번호 집어넣음
+    //                 customerId: foundorder.orderId.toString(),
+    //             },
+    //             products: //map에 담겨 return되는 값 자체가 배열이라서 [] 생략
+    //                 foundorder.products.map( p => {
+    //                     return {
+    //                         id: p.productId.toString(),
+    //                         name: p.productName,
+    //                         amount: p.price,
+    //                         quantity: p.count,
+    //                         tag: p.category
+    //                     };
+    //                 }),
+    //         });
+    //         //console.log(paymentResponse);
+    //     }  catch(error) {
+    //         console.log(error);
+    //     }
+    // }
 
     //결제 내역 받기 - payone에서 받기
     useEffect(() => {
@@ -220,7 +220,7 @@ function AdminOrderPage(props) {
                 status: item.status,
                 mid: item.merchantId,
                 uuid: item.id,
-                orderId: item.customer.name,
+                orderId: item.products[0].id,
                 orderName: item.orderName,
                 totalAmount: item.amount.total,
                 time: new Date(new Date(item.requestedAt).getTime() + 9 * 60 * 60 * 1000).toISOString().slice(11, 19),
@@ -240,7 +240,7 @@ function AdminOrderPage(props) {
     //결제 취소 버튼 로직
     const handleCancelButtonOnClick = (payData) => {
         setPayModalDate(payData); //결제 데이터 모달로 넘겨주기
-        setPayModalOpen(payData.status === "PAID" || payData.status === "READY" ? true : false); //결제 완료일때만 모달 동작하기        
+        setPayModalOpen(payData.status === "PAID" ? true : false); //결제 완료일때만 모달 동작하기        
     }
     //console.log(payModalDate);
     //console.log(payments);
@@ -330,7 +330,7 @@ function AdminOrderPage(props) {
                 </button>
             </div>
         
-            <div>
+            {/* <div>
                 ===더미데이터용(삭제예정)===
                 {
                     orders.map(o => 
@@ -345,7 +345,7 @@ function AdminOrderPage(props) {
                         </div>
                     )
                 }
-                </div>
+            </div> */}
         </>
     );
 }

@@ -4,6 +4,7 @@ import { css } from "@emotion/react";
 export const container = css`
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     border-right: 0.2rem solid #dbdbdb;
     border-top-right-radius: 2rem;
     border-bottom-right-radius: 2rem;
@@ -28,14 +29,10 @@ export const headerLink = css`
 export const body = css`
     display: flex;
     flex-direction: column;
+    justify-content: start;
     align-items: center;
-    justify-content: space-around;
     width: 100%;
     height: 100%;
-
-    button:nth-last-of-type(1) {
-        margin-top: 33rem;
-    }
 `;
 
 export const menuButton = (isActive) => css`
@@ -83,6 +80,5 @@ export const activeButton = css`
 `;
 
 export const footer = css`
-    display: flex;
-    flex-grow: 1;
+    margin-bottom: 5rem;
 `;

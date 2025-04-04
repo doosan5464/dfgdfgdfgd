@@ -8,6 +8,13 @@ export const container = css`
     background-color: #f8f9fa;
 `;
 
+export const conWrap = css`
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;  // 또는 center로 중앙 전체 정렬도 가능
+    width: 100%;
+`;
+
 export const title = css`
     font-size: 2.4rem;
     font-weight: 700;

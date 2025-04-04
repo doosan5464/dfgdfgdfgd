@@ -11,3 +11,14 @@ export const fetchMenuInfoListApi = async (menuId) => {
         throw error;
     }
 };
+
+// 메뉴 영양 정보 및 원산지 수정
+export const updateMenuInfoApi = async (menuInfo) => {
+    try {
+        const response = await api.put("/api/admin/menuInfo", menuInfo);
+        return response.data;
+    } catch (error) {
+        console.error("❌ [updateMenuInfoApi] 요청 실패:", error);
+        throw error;
+    }
+};

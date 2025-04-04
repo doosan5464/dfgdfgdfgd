@@ -42,8 +42,9 @@ function AdminPayMoal({ setOpen, payData }) { //uuid 넘겨받기
                     }
                 } else { //3초 이상 클릭하면 환불처리
                     handleCancelOnClick(timeDifference);
-                    setPressMessage("결제가 취소되었습니다");
                     clearInterval(interval);
+                    setPressMessage("결제가 취소되었습니다");
+                    setOpen(false);
                 }
             }, 500);
             return () => clearInterval(interval);

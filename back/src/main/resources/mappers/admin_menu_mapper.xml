@@ -24,16 +24,11 @@
         <result property="discountPrice" column="discount_price" />
     </resultMap>
 
-    <resultMap id="menuWithInfoResultMap" type="com.korit.mcdonaldkiosk.entity.MenuWithAllInfo">
-        <id property="menuId" column="menu_id" />
-        <result property="menuName" column="menu_name" />
-        <result property="menuCategory" column="menu_category" />
-        <result property="singleImg" column="single_img" />
-        <result property="isExposure" column="is_exposure" />
-        <result property="menuPrice" column="menu_price" />
-        <result property="size" column="size" />
-        <result property="weightG" column="weight" />
-        <result property="volumeMl" column="volume" />
+    <resultMap id="menuInfoResultMap" type="com.korit.mcdonaldkiosk.entity.MenuInfo">
+        <id property="menuInfoId" column="menu_info_id" />
+        <result property="size" column="info_size" />
+        <result property="weight" column="weight" />
+        <result property="volume" column="volume" />
         <result property="calories" column="calories" />
         <result property="sugars" column="sugars" />
         <result property="protein" column="protein" />
@@ -41,6 +36,19 @@
         <result property="sodium" column="sodium" />
         <result property="caffeine" column="caffeine" />
         <result property="menuOrigin" column="menu_origin" />
+    </resultMap>
+
+    <resultMap id="menuWithInfoResultMap" type="com.korit.mcdonaldkiosk.entity.MenuWithAllInfo">
+        <id property="menuId" column="menu_id" />
+        <result property="menuName" column="menu_name" />
+        <result property="menuCategory" column="menu_category" />
+        <result property="singleImg" column="single_img" />
+        <result property="setImg" column="set_img" />
+        <result property="isExposure" column="is_exposure" />
+
+        <collection property="menuPrice" resultMap="menuPriceResultMap" />
+
+        <collection property="menuInfo" resultMap="menuInfoResultMap" />
     </resultMap>
 
     <!--아이디에 해당하는 메뉴정보 모두 불러오기-->
@@ -51,11 +59,15 @@
             mt.menu_category,
             mt.menu_sequence,
             mt.single_img,
+            mt.set_img,
             mt.is_exposure,
 
+            mpt.menu_price_id,
             mpt.menu_price,
+            mpt.size,
 
-            mit.size,
+            mit.menu_info_id,
+            mit.size as info_size,
             mit.weight,
             mit.volume,
             mit.calories,
@@ -195,6 +207,27 @@
         </foreach>
     </insert>
 
+    <!--  영양정보 및 원산지 추가  -->
+    <insert id="insertMenuInfo">
+        INSERT INTO menu_info_tb (
+            menu_id,
+            size,
+            weight,
+            volume,
+            calories,
+            sugars,
+            protein,
+            saturated_fat,
+            sodium,
+            caffeine,
+            menu_origin
+        )
+        VALUES (
+            #{menuId},
+            #{size},
+            0, 0, 0, 0, 0, 0, 0, 0, NULL
+        )
+    </insert>
 
     <!-- 기존 가격 삭제 -->
     <delete id="deleteMenuPrices" parameterType="int">
@@ -209,6 +242,14 @@
     <delete id="deleteMenu">
         DELETE FROM
             menu_tb
+        WHERE
+            menu_id = #{menuId}
+    </delete>
+
+    <!--  영양정보 및 원산지 테이블(menu_info_tb) 삭제  -->
+    <delete id="deleteMenuInfo">
+        DELETE FROM
+            menu_info_tb
         WHERE
             menu_id = #{menuId}
     </delete>

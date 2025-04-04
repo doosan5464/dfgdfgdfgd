@@ -20,7 +20,7 @@ public class AdminMenuRepository {
     private AdminMenuMapper adminMenuMapper;
 
     // 모든 메뉴 리스트를 반환
-    public Optional<MenuWithAllInfo> findAllInfoMenuById(int menuId) {
+    public Optional<List<MenuWithAllInfo>> findAllInfoMenuById(int menuId) {
         return Optional.ofNullable(adminMenuMapper.selectAllInfoMenuById(menuId));
     }
 
@@ -58,6 +58,11 @@ public class AdminMenuRepository {
             if (!menuPrices.isEmpty()) {
                 adminMenuMapper.insertMenuPrice(menu.getMenuId(), menuPrices);
             }
+            // ⭐️ 영양정보 기본값 insert
+            adminMenuMapper.insertMenuInfo(menu.getMenuId(), "M");
+            if (menu.getSetImg() != null) {
+                adminMenuMapper.insertMenuInfo(menu.getMenuId(), "L");
+            }
             return Optional.of(true);
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,7 +73,8 @@ public class AdminMenuRepository {
     // 메뉴 삭제
     public Optional<Boolean> deleteMenu(int menuId) {
         try {
-            adminMenuMapper.deleteMenuPrices(menuId);
+            adminMenuMapper.deleteMenuPrices(menuId); // 가격 테이블 삭제
+            adminMenuMapper.deleteMenuInfo(menuId); // 영양정보 및 원산지 테이블 삭제
             int deletedRows = adminMenuMapper.deleteMenu(menuId);
             return Optional.of(deletedRows > 0);
         } catch (Exception e) {

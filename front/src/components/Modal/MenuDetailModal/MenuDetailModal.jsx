@@ -32,7 +32,7 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
     }
 
     useEffect(() => {
-        // console.log(radioChecked);
+
     }, [radioChecked])
 
     const [isLarge, setIsLarge] = useState(false);
@@ -44,28 +44,31 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
     // 사이드와 음료 데이터만 필터링
     const filteredSides = menuData?.filter(item => item.menuCategory === "사이드");
     const filteredDrinks = menuData?.filter(item => item.menuCategory === "음료");
-    // console.log("Filtered Sides:", filteredSides); // 사이드 확인
-    // console.log("Filtered Drinks:", filteredDrinks); // 음료 확인
 
     // 기본 사이드 및 음료
     const defaultSide = filteredSides?.find((item) => item.menuName === "후렌치 후라이")?.menuName;
     const defaultDrink = filteredDrinks?.find((item) => item.menuName === "코카 콜라")?.menuName;
-    // console.log("Default side:", defaultSide); // 기본 사이드 확인
-    // console.log("Default drink:", defaultDrink); // 기본 음료 확인
+
+    const defaultSetSide = filteredSides?.find((item) => item.menuName === "후렌치 후라이")?.menuPrice[1].discountPrice - filteredSides?.find((item) => item.menuName === "후렌치 후라이")?.menuPrice[0].discountPrice;
+    const defaultSetDrink = filteredDrinks?.find((item) => item.menuName === "코카 콜라")?.menuPrice[1].discountPrice - filteredDrinks?.find((item) => item.menuName === "코카 콜라")?.menuPrice[0].discountPrice;
 
 
-    const handleTemp = () => {
+    const handleTemp = (selectedMenu) => {
         setIsLarge(true);
 
-        if (menu.category === "음료") {
+        console.log("handleTemp의 조건문 바깥");
+        console.log("selectedMenu :", selectedMenu);
+
+        if (selectedMenu === "음료" || selectedMenu === "커피") {
             setDrinkLarge("L")
+            console.log("handleTemp의 조건문 안쪽 drink");
         }
-        if (menu.category === "커피") {
-            setDrinkLarge("L")
-        }
-        if (menu.category === "사이드") {
+
+        if (selectedMenu === "사이드") {
             setSideLarge("L")
+            console.log("handleTemp의 조건문 안쪽 side");
         }
+
         return;
     }
 
@@ -114,7 +117,7 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
     };
 
     const handleChangeSideOnClick = (selectedSide) => {
-        console.log("Selected side:", selectedSide); // 선택한 사이드 확인
+        //console.log("Selected side:", selectedSide); // 선택한 사이드 확인
         if (isSet) {
             let newPrice = filteredSides?.find(side => side.menuName === selectedSide)?.menuPrice[0].discountPrice - filteredSides?.find(side => side.menuName === defaultSide)?.menuPrice[0].discountPrice;
             if (newPrice < 0) {
@@ -141,9 +144,20 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
         const newOrderId = addedCartState.length > 0 ? Math.max(...addedCartState.map(item => item.orderId)) + 1 : 1;
 
         // console.log("Menu object before add:", menu); // menu 객체 확인
-        const basePrice = isSet ? menu.price1 : isLarge? menu.price2 : menu.price1; // NaN 방지 
-        const sidePrice = isSet ? (side !== defaultSide ? filteredSides?.find(temp1 => temp1.menuName === side)?.menuPrice[0].discountPrice : filteredSides?.find(temp1 => temp1.menuName === defaultSide)?.menuPrice[0].discountPrice) : 0;
-        const drinkPrice = isSet ? (drink !== defaultDrink ? filteredDrinks?.find(temp2 => temp2.menuName === drink)?.menuPrice[0].discountPrice : filteredDrinks?.find(temp2 => temp2.menuName === defaultDrink)?.menuPrice[0].discountPrice ) : 0;
+        const basePrice = isSet ? menu.price1 : isLarge ? menu.price2 : menu.price1; // NaN 방지
+        
+        // size 는 undefined 다른 조건 찾아야 함
+        const sidePrice = isSet 
+            ? (side !== defaultSide 
+                ? filteredSides?.find(temp1 => temp1.menuName === side)?.menuPrice[sideLarge ? 1 : 0].discountPrice 
+                : filteredSides?.find(temp1 => temp1.menuName === defaultSide)?.menuPrice[sideLarge ? 1 : 0].discountPrice) 
+            : 0;
+
+        const drinkPrice = isSet 
+            ? (drink !== defaultDrink 
+                ? filteredDrinks?.find(temp2 => temp2.menuName === drink)?.menuPrice[drinkLarge === "L" ? 1 : 0].discountPrice 
+                : filteredDrinks?.find(temp2 => temp2.menuName === defaultDrink)?.menuPrice[drinkLarge === "L" ? 1 : 0].discountPrice) 
+            : 0;
 
         // console.log("Base price:", basePrice); // 기본 가격 확인
         // console.log("Side price:", sidePrice); // 사이드 가격 확인
@@ -192,7 +206,7 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
 
     //상세정보 모달로 데이터 전송
     const handleMenuInfoModalButtonOnClick = (menuId) => {
-        //console.log("데이터 아이디: " + menuId);
+        // console.log("데이터 아이디: " + menuId);
         setMenuInfoModalData(menuId);
         setMenuInfoModalOpen(true);
     }
@@ -242,24 +256,48 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
                             <h3>사이드 선택</h3>
                         </div>
                         <div css={s.mapParent}>
-                            {filteredSides?.map((side, index) => (
-                                <div css={s.childrenDiv} key={`${side.menuName}-${index}`}>
-                                    <div css={s.modalSideSetImage(radioChecked.side === index.toString())}>
-                                        <label onClick={() => handleChangeSideOnClick(side.menuName)}>
-                                            <input type="radio" name='side' onChange={handleRadioOnChange} value={index}/>
-                                            <img src={side.singleImg} alt={side.menuName} />
-                                            <div>
-                                                <p>{side.menuName}</p>
-                                                <p>
-                                                {side.menuName === defaultSide 
-                                                    ? "+0원" 
-                                                    : `+${Math.max(side.menuPrice[0].discountPrice - filteredSides?.find(side => side.menuName === defaultSide)?.menuPrice[0]?.discountPrice, 0)}원`}
-                                                </p>
-                                            </div>
-                                        </label>
+                        {filteredSides
+                            ?.filter((menu) => menu.isExposure === 1)
+                            .sort((a, b) => a.menuSequence - b.menuSequence)
+                            .flatMap((side, index) => {
+                                const common = {
+                                key: `${side.menuName}-${index}`,
+                                name: side.menuName,
+                                };
+                                const defaultPrice = filteredSides?.find(d => d.menuName === defaultSide)?.menuPrice[0]?.discountPrice;
+
+                                const single = (
+                                <div css={s.modalSideSetImage(radioChecked.side === `${index}-single`)} key={`${side.menuName}-single`}>
+                                    <label onClick={() => handleChangeSideOnClick(side.menuName)}>
+                                    <input type="radio" name="side" onChange={handleRadioOnChange} value={`${index}-single`} />
+                                    <img src={side.singleImg} alt={side.menuName} />
+                                    <div>
+                                        <p>{side.menuName}</p>
+                                        <p>{side.menuName === defaultSide ? "+0원" : `+${Math.max(side.menuPrice[0].discountPrice - defaultPrice, 0)}원`}</p>
                                     </div>
+                                    </label>
                                 </div>
-                            ))}
+                                );
+
+                                const set = side.setImg && (
+                                <div css={s.modalSideSetImage(radioChecked.side === `${index}-set`)} key={`${side.menuName}-set`}>
+                                    <label onClick={() => {
+                                    handleChangeDrinkOnClick(side.menuName);
+                                    handleTemp(side.menuCategory);
+                                    }}>
+                                    <input type="radio" name="side" onChange={handleRadioOnChange} value={`${index}-set`} />
+                                    <img src={side.setImg} alt={`${side.menuName} 세트`} />
+                                    <div>
+                                        <p>{side.menuName} L</p>
+                                        <p>{side.menuName === defaultSide ? `+${defaultSetSide}원` : `+${Math.max(side.menuPrice[1].discountPrice - defaultPrice, 0)}원`}</p>
+                                    </div>
+                                    </label>
+                                </div>
+                                );
+
+                                return set ? [single, set] : [single];
+                            })
+                        }
                         </div>
                         <div css={s.nextAndClose}>
                             <span onClick={handleNext}>다음</span>
@@ -274,24 +312,48 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
                             <h3>음료 선택</h3>
                         </div>
                         <div css={s.mapParent}>
-                            {filteredDrinks?.map((drink, index) => (
-                                <div css={s.childrenDiv} key={`${drink.menuName}-${index}`}>
-                                    <div css={s.modalSideSetImage(radioChecked.drink === index.toString())}>
-                                        <label onClick={() => handleChangeDrinkOnClick(drink.menuName)}>
-                                        <input type="radio" name='drink' onChange={handleRadioOnChange} value={index}/>
-                                            <img src={drink.singleImg} alt={drink.menuName} />
-                                            <div>
-                                                <p>{drink.menuName}</p>
-                                                <p>
-                                                    {drink.menuName === defaultDrink 
-                                                        ? "+0원" 
-                                                        : `+${Math.max(drink.menuPrice[0].discountPrice - filteredDrinks?.find(drink => drink.menuName === defaultDrink)?.menuPrice[0]?.discountPrice, 0)}원`}
-                                                </p>
-                                            </div>
-                                        </label>
+                        {filteredDrinks
+                            ?.filter((menu) => menu.isExposure === 1)
+                            .sort((a, b) => a.menuSequence - b.menuSequence)
+                            .flatMap((drink, index) => {
+                                const common = {
+                                key: `${drink.menuName}-${index}`,
+                                name: drink.menuName,
+                                };
+                                const defaultPrice = filteredDrinks?.find(d => d.menuName === defaultDrink)?.menuPrice[0]?.discountPrice;
+
+                                const single = (
+                                <div css={s.modalSideSetImage(radioChecked.drink === `${index}-single`)} key={`${drink.menuName}-single`}>
+                                    <label onClick={() => handleChangeDrinkOnClick(drink.menuName)}>
+                                    <input type="radio" name="drink" onChange={handleRadioOnChange} value={`${index}-single`} />
+                                    <img src={drink.singleImg} alt={drink.menuName} />
+                                    <div>
+                                        <p>{drink.menuName}</p>
+                                        <p>{drink.menuName === defaultDrink ? "+0원" : `+${Math.max(drink.menuPrice[0].discountPrice - defaultPrice, 0)}원`}</p>
                                     </div>
+                                    </label>
                                 </div>
-                            ))}
+                                );
+
+                                const set = drink.setImg && (
+                                <div css={s.modalSideSetImage(radioChecked.drink === `${index}-set`)} key={`${drink.menuName}-set`}>
+                                    <label onClick={() => {
+                                    handleChangeDrinkOnClick(drink.menuName);
+                                    handleTemp(drink.menuCategory);
+                                    }}>
+                                    <input type="radio" name="drink" onChange={handleRadioOnChange} value={`${index}-set`} />
+                                    <img src={drink.setImg} alt={`${drink.menuName} 세트`} />
+                                    <div>
+                                        <p>{drink.menuName} L</p>
+                                        <p>{drink.menuName === defaultDrink ? `+${defaultSetDrink}원` : `+${Math.max(drink.menuPrice[1].discountPrice - defaultPrice, 0)}원`}</p>
+                                    </div>
+                                    </label>
+                                </div>
+                                );
+
+                                return set ? [single, set] : [single];
+                            })
+                        }
                         </div>
                         <div css={s.nextAndClose}>
                             <span onClick={handleAddToCart} css={s.cart}>카트에 담기</span>
@@ -308,7 +370,7 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
                         </div>                        
                         <div css={s.temp}>
                             <div css={s.modalBuguerSetImage(radioChecked.size === "1")}>
-                                <label onClick={() => handleTemp(true)}>
+                                <label>
                                     <input type="radio" name='size' onChange={handleRadioOnChange} value={1}/>
                                     <img src={menu.img} alt={menu.name} />
                                     <div>
@@ -318,7 +380,7 @@ const MenuDetailModal = ({ menu, onClose }) => { // menu, onClose -> OrderPage�
                             </div>
                             {menu.img2 !== null && ( 
                                 <div css={s.modalBuguerSetImage(radioChecked.size === "2")}>
-                                    <label onClick={() => handleTemp(true)}>
+                                    <label onClick={() => handleTemp(menu.category)}>
                                         <input type="radio" name='size' onChange={handleRadioOnChange} value={2}/>
                                         <img src={menu.img2} alt={menu.name} />
                                         <div>

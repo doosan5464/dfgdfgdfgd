@@ -90,15 +90,15 @@ function MainSidebar(props) {
                 >
                     내 정보
                 </button>
-                <button 
-                    css={s.menuButton(false)}  // 클릭된 버튼에 activeButton 스타일 적용
-                    onClick={handleLogoutButtonOnClick}
-                >
-                    <BiLogOut />로그아웃
-                </button>
-                
-                <div css={s.footer}></div>
             </div>
+            <div css={s.footer}>
+                    <button 
+                        css={s.menuButton(false)} 
+                        onClick={handleLogoutButtonOnClick}
+                    >
+                        <BiLogOut />로그아웃
+                    </button>
+                </div>
         </div>
     );
 }

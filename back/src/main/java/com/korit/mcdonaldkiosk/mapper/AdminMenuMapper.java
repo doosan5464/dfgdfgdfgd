@@ -11,7 +11,7 @@ import java.util.List;
 @Mapper
 public interface AdminMenuMapper {
     // 메뉴 상세 정보 조회
-    MenuWithAllInfo selectAllInfoMenuById(int menuId);
+    List<MenuWithAllInfo> selectAllInfoMenuById(int menuId);
 
     // 모든 카테고리 조회
     List<Menu> selectAllCategories();
@@ -25,7 +25,7 @@ public interface AdminMenuMapper {
     List<Menu> selectAllMenus();
     // 단일 메뉴 조회
     Menu selectMenuById(int menuId);
-    // 해당 메뉴의 가격 리스트 조회
+    // 해당 메뉴의 가격 조회
     List<MenuPrice> getMenuPrices(int menuId);
     // 메뉴 등록
     int insertMenu(Menu menu);
@@ -39,7 +39,8 @@ public interface AdminMenuMapper {
     List<Menu> selectAllMenuImages();
     // 메뉴 수정
     int updateMenu(Menu menu);
-
-
-
+    // 영양정보 및 원산지 테이블(menu_info_tb) 추가
+    int insertMenuInfo(@Param("menuId") int menuId, @Param("size") String size);
+    // 영양정보 및 원산지 테이블(menu_info_tb) 삭제
+    int deleteMenuInfo(int menuId);
 }

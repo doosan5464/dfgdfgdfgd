@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,18 +17,11 @@ public class MenuWithAllInfo {
     private String menuCategory;
     private int menuSequence;
     private String singleImg;
+    private String setImg;
     private int isExposure;
 
-    private int menuPrice;
+    private List<MenuPrice> menuPrice;
 
-    private String size;
-    private int weightG;
-    private int volumeMl;
-    private int calories;
-    private int sugars;
-    private int protein;
-    private int saturatedFat;
-    private int sodium;
-    private int caffeine;
-    private String menuOrigin;
+    private List<MenuInfo> menuInfo;
+
 }

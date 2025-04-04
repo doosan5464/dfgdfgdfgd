@@ -31,6 +31,10 @@ const UsePoint = () => {
         }
     };
 
+    const handleBackOnClick = () => {
+        navigate("/prePayment")
+    }
+
     // 포인트 조회 버튼 클릭
     const handlePointCheck = async () => {
         const formattedPhoneNumber = input.replace(/-/g, ""); // 하이픈 제거
@@ -57,7 +61,8 @@ const UsePoint = () => {
     return (
         <>
             <div css={s.container}>
-                <p>전화번호를 입력하고 포인트 조회하기</p>
+                <img src="https://cdn-icons-png.flaticon.com/512/99/99656.png" alt="" css={s.img} />
+                <p css={s.p}>전화번호를 입력하고 포인트 조회하기</p>
                 <input
                     type="text"
                     value={input}
@@ -76,7 +81,10 @@ const UsePoint = () => {
                         </button>
                     ))}
                 </div>
-                <button css={s.footer} onClick={handlePointCheck}>포인트 조회</button>
+                <div css={s.foott}>
+                    <button css={s.footer} onClick={handlePointCheck}>포인트 조회</button>
+                    <button css={s.footer} onClick={handleBackOnClick}>뒤로 가기</button>
+                </div>
                 
                 {/* 에러 메시지가 있을 경우 표시 */}
                 {errorMessage && <p css={s.errorMessage}>{errorMessage}</p>}

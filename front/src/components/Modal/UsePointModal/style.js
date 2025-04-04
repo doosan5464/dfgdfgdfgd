@@ -25,6 +25,10 @@ export const modalContainer = css`
     text-align: center;
     position: relative;
     overflow: hidden;
+
+    & > h1,p {
+        font-size: 2rem;
+    }
 `;
 
 // 모달 제목 스타일
@@ -45,9 +49,8 @@ export const modalPointDisplay = css`
 export const keypad = css`
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-    margin-top: 2rem;
+    gap: 1rem;
+    margin: 2rem 4rem;
 `;
 
 // 키패드 버튼 스타일
@@ -93,6 +96,23 @@ export const closeButton = css`
     font-weight: 550;
     cursor: pointer;
     margin-top: 1rem;
+
+    &:hover {
+        background-color: #ffcc00;
+    }
+
+    &:active {
+        background-color: #e6b800;
+    }
+`;
+export const footer = css`
+    box-sizing: border-box;
+    border: 1px solid #ffffff;
+    padding: 1rem 6rem;
+    background-color: #ffd154;
+    border-radius: 0.5rem;
+    font-size: 2rem;
+    font-weight: 600;
 
     &:hover {
         background-color: #ffcc00;

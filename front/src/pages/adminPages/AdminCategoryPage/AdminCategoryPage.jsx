@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 /**@jsxImportSource @emotion/react */
 import * as s from './style'; // 스타일 파일 import
-import { disabledCategoriesState } from '../../atoms/disabledCategories/disabledCategories';
+import { disabledCategoriesState } from '../../../atoms/disabledCategories/disabledCategories';
 import { useRecoilState } from 'recoil';
-import menuForUser from '../../hooks/menu/menuForUser';
-import { orderedCategoriesState } from '../../atoms/orderedCategoriesState/orderedCategoriesState';
+import menuForUser from '../../../hooks/menu/menuForUser';
+import { orderedCategoriesState } from '../../../atoms/orderedCategoriesState/orderedCategoriesState';
+import AdminHeader from '../../../components/common/AdminHeader/AdminHeader';
 
 function AdminCategoryPage() {
     // 비활성화된 카테고리 상태 관리
@@ -55,6 +56,7 @@ function AdminCategoryPage() {
 
     return (
         <div css={s.container}>
+            <AdminHeader title={"키오스크 카테고리 관리"} />
             <h1 css={s.title}>카테고리 관리</h1>
             <table css={s.table}>
                 <thead>

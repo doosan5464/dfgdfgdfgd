@@ -17,4 +17,9 @@ public class AdminMenuInfoRepository {
     public List<MenuInfo> getMenuInfoListByMenuId(int menuId) {
         return adminMenuInfoMapper.getMenuInfoListByMenuId(menuId);
     }
+
+    // 메뉴 영양 정보 및 원산지 수정
+    public int updateMenuInfo(MenuInfo menuInfo) {
+        return adminMenuInfoMapper.updateMenuInfoByMenuId(menuInfo);
+    }
 }

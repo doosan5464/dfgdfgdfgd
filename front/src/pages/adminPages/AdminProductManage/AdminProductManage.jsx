@@ -9,6 +9,8 @@ import {
 } from "../../../mutations/menuMutation";
 import useMenuData, { useMenuDetail } from "../../../hooks/menu/getMenuHooks";
 import ImageModal from "../AdminMenuImagine/AdminMenuImagine";
+import AdminHeader from "../../../components/common/AdminHeader/AdminHeader";
+import { useSearchParams } from "react-router-dom";
 
 const INITIAL_FORM_DATA = {
     menuName: "",
@@ -24,7 +26,12 @@ const INITIAL_FORM_DATA = {
 };
 
 function AdminProductManage() {
-    const [selectedMenu, setSelectedMenu] = useState(null);
+    //메뉴관리페이지에서 넘어오는 정보 받기 - 삭제 ㄴㄴ
+    const [ searchParams, setSearchParams ] = useSearchParams();
+    //메뉴관리페이지에서 넘어오는거 없으면 null로 기존꺼 유지됨 - 삭제 ㄴㄴ
+    const [ selectedMenu, setSelectedMenu ] = useState(!!searchParams.get("menuId") ? parseInt(searchParams.get("menuId")) : null);
+
+    //const [selectedMenu, setSelectedMenu] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedImageType, setSelectedImageType] = useState("");
@@ -36,6 +43,8 @@ function AdminProductManage() {
     const addMenuMutation = useAddMenuMutation();
     const deleteMenuMutation = useDeleteMenuMutation();
     const updateMenuMutation = useUpdateMenuMutation();
+
+
 
     useEffect(() => {
         if (menus.length > 0 && !isAdding) {
@@ -76,6 +85,7 @@ function AdminProductManage() {
     }, [menuDetail, isAdding]);
 
     const handleOpenModalOnClick = (type) => {
+        if (!isEditing && !isAdding) return; // 수정/추가 상태일 때만 가능
         const convertedType = type === "single" ? "singleImg" : "setImg";
         setSelectedImageType(convertedType);
         setModalOpen(true);
@@ -135,7 +145,20 @@ function AdminProductManage() {
             setSelectedMenu(null);
             return;
         }
-
+    
+        const missingFields = [];
+    
+        if (!formData.singleImg) missingFields.push("메뉴 이미지");
+        if (!formData.menuName.trim()) missingFields.push("상품명");
+        if (!formData.menuCategory.trim()) missingFields.push("카테고리");
+        if (!formData.menuSequence) missingFields.push("상품 우선 순위");
+        if (!formData.prices.find((p) => p.size === "M")?.price) missingFields.push("M 사이즈 가격");
+    
+        if (missingFields.length > 0) {
+            alert(`다음 항목을 입력하세요:\n- ${missingFields.join("\n- ")}`);
+            return;
+        }
+    
         try {
             await addMenuMutation.mutateAsync(formData);
             alert("✅ 메뉴가 성공적으로 추가되었습니다.");
@@ -172,43 +195,27 @@ function AdminProductManage() {
     };
 
     return (
-        <div css={s.container}>
-            <div css={s.dropdownContainer}>
-                <select
-                    onChange={(e) => setSelectedMenu(Number(e.target.value))}
-                    css={s.dropdown}
-                    value={selectedMenu || ""}
-                    disabled={isAdding}
-                >
-                    <option value="">메뉴를 선택해주세요</option>
-                    {!isLoading && menus.length > 0 ? (
-                        menus.map((menu) => (
-                            <option key={menu.menuId} value={menu.menuId}>
-                                {menu.menuName}
-                            </option>
-                        ))
-                    ) : (
-                        <option disabled>메뉴가 없습니다</option>
-                    )}
-                </select>
-            </div>
-
+        <>
+            <AdminHeader title={"상품 관리"} />
             <div css={s.productContainer}>
                 <div css={s.imageCon}>
                     <label css={s.imageBox} onClick={() => handleOpenModalOnClick("single")}>
                         {formData.singleImg ? (
                             <img src={formData.singleImg} alt="Single" />
                         ) : (
-                            <span>단품 또는 M사이즈</span>
+                            <span>이미지가 없습니다.</span>
                         )}
                     </label>
+                    <span>단품 또는 M사이즈</span>
+
                     <label css={s.imageBox} onClick={() => handleOpenModalOnClick("set")}>
                         {formData.setImg ? (
                             <img src={formData.setImg} alt="Set" />
                         ) : (
-                            <span>세트 또는 L사이즈</span>
+                            <span>이미지가 없습니다.</span>
                         )}
                     </label>
+                    <span>세트 또는 L사이즈</span>
                 </div>
 
                 <ImageModal
@@ -221,6 +228,26 @@ function AdminProductManage() {
                 />
 
                 <div css={s.inputGroup}>
+                    <div css={s.dropdownContainer}>
+                        <label css={s.label}>메뉴 선택</label>
+                        <select
+                            onChange={(e) => setSelectedMenu(Number(e.target.value))}
+                            css={s.dropdown}
+                            value={selectedMenu || ""}
+                            disabled={isAdding}
+                        >
+                            <option value="">선택된 메뉴가 없습니다.</option>
+                            {!isLoading && menus.length > 0 ? (
+                                menus.map((menu) => (
+                                    <option key={menu.menuId} value={menu.menuId}>
+                                        {menu.menuName}
+                                    </option>
+                                ))
+                            ) : (
+                                <option disabled>메뉴가 없습니다</option>
+                            )}
+                        </select>
+                    </div>
                     <div>
                         <label css={s.label}>상품명</label>
                         <input
@@ -285,39 +312,39 @@ function AdminProductManage() {
                             disabled={!isEditing}
                         />
                     </div>
+                    <div css={s.buttonGroup}>
+                        <button
+                            onClick={handleSubmitMenuOnClick}
+                            css={s.button}
+                            disabled={isEditing && !isAdding}
+                        >
+                            {isAdding ? "확인" : "메뉴 추가"}
+                        </button>
+                        <button
+                            onClick={() => {
+                                if (isEditing && !isAdding) {
+                                    handleUpdateMenuOnClick();
+                                } else {
+                                    setIsEditing(true);
+                                }
+                            }}
+                            css={s.button}
+                            disabled={isAdding}
+                        >
+                            {isEditing && !isAdding ? "확인" : "편집"}
+                        </button>
+                        <button
+                            onClick={handleDeleteMenuOnClick}
+                            css={s.button}
+                            disabled={isEditing}
+                        >
+                            삭제
+                        </button>
+                    </div>
                 </div>
             </div>
-
-            <div css={s.buttonGroup}>
-                <button
-                    onClick={handleSubmitMenuOnClick}
-                    css={s.button}
-                    disabled={isEditing && !isAdding}
-                >
-                    {isAdding ? "확인" : "메뉴 추가"}
-                </button>
-                <button
-                    onClick={() => {
-                        if (isEditing && !isAdding) {
-                            handleUpdateMenuOnClick();
-                        } else {
-                            setIsEditing(true);
-                        }
-                    }}
-                    css={s.button}
-                    disabled={isAdding}
-                >
-                    {isEditing && !isAdding ? "확인" : "편집"}
-                </button>
-                <button
-                    onClick={handleDeleteMenuOnClick}
-                    css={s.button}
-                    disabled={isEditing}
-                >
-                    삭제
-                </button>
-            </div>
-        </div>
+            
+        </>
     );
 }
 

@@ -1,6 +1,7 @@
 /**@jsxImportSource @emotion/react */
 import React from 'react';
 import menuForUser from '../../../../hooks/menu/menuForUser';
+import { addedCart } from '../../../../atoms/addedCart/addedCart';
 
 function MenuCategory({ selectedCategory, onMenuItemClick }) {
     const { data: menuData, error, isLoading } = menuForUser();
@@ -17,7 +18,8 @@ function MenuCategory({ selectedCategory, onMenuItemClick }) {
     return (
         <div>
             {(menuData || [])
-                .filter((menu) => menu.menuCategory === selectedCategory)
+                .filter((menu) => menu.menuCategory === selectedCategory && menu.isExposure === 1)
+                .sort((a, b) => a.menuSequence - b.menuSequence) // seq 낮은 순 정렬
                 .map((menu) => (
                     <div 
                         key={menu.menuId} 

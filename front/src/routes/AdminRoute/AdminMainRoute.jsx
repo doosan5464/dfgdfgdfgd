@@ -1,5 +1,5 @@
-import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import MainSidebar from '../../components/common/MainSidebar/MainSidebar';
 import MainContainer from '../../components/common/MainContainer/MainContainer';
 import AdminMenuPage from '../../pages/adminPages/AdminMenuPage/AdminMenuPage';
@@ -12,9 +12,31 @@ import AdminProductManage from '../../pages/adminPages/AdminProductManage/AdminP
 import AdminMyPage from '../../pages/adminPages/AdminMyPage/AdminMyPage';
 import AdminMainPage from '../../pages/adminPages/AdminMainPage/AdminMainPage';
 import AdminProductInfo from '../../pages/adminPages/AdminProductInfo/AdminProductInfo';
-import AdminCategoryPage from '../../pages/AdminCategoryPage/AdminCategoryPage';
+import AdminCategoryPage from '../../pages/adminPages/AdminCategoryPage/AdminCategoryPage';
 
 function AdminMainRoute(props) {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const handleStorageChange = (event) => {
+            if (event.key === 'AccessToken' && !event.newValue) {
+                navigate('/admin/login');
+            }
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, [navigate]);
+
+    useEffect(() => {
+        // AccessToken이 없으면 로그인 페이지로 리디렉션
+        if (!localStorage.getItem("AccessToken")) {
+            navigate("/admin/login");
+        }
+    }, [navigate]);
     return (
         <>
             <MainSidebar />

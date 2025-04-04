@@ -5,8 +5,6 @@ export const mainContainer = css`
     justify-content: center; 
     align-items: center; 
     box-sizing: border-box;
-    height: 100%; 
-    width: 100%;
     margin: 0;
     padding: 5rem;
 `;
@@ -18,34 +16,29 @@ export const mainCon = css`
     flex-grow: 1;
 
     & > div {
-        width: 28rem;
-        height: 28rem;
-        background-color: #47a8af;
+        width: 35rem;
+        height: 60rem;
         border-radius: 3rem;
         cursor: pointer;
-        font-size: 4.5rem;
-        text-align: center;
-        
-        &:hover {
-            text-decoration: underline;
-        }
+    }  
+`;
 
-        & > svg {
-            margin-top: 8rem;
-        }
-
-        & > h5 {
-            margin-top: 1rem;
-        }
+export const content = css`
+    width: 100%;
+    height: 100%;
+    margin: 0 3.5rem;
+    border-radius: 2rem;
+    overflow: hidden;
+    
+    & > img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
     }
     
-    & > div:nth-of-type(2) {
-        margin-right: 6rem;
-        margin-left: 6rem;
-        background-color: #a837aa;
-    }
-
-    & > div:nth-of-type(3) {
-        background-color: #42df34;
+    &:hover {
+        transition: transform 0.4s ease-in-out;
+        transform: scale(1.1);
     }
 `;

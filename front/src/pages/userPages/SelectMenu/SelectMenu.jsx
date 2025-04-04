@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { useNavigate } from 'react-router-dom';
 import { selectedLanguageState } from '../../../atoms/selectedLanguage/selectedLanguage';
+import { addedCart } from '../../../atoms/addedCart/addedCart';
 
 function SelectMenu(props) {
     const navi = useNavigate();
@@ -18,6 +19,8 @@ function SelectMenu(props) {
 
     const [selectedLanguage, setSelectedLanguage] = useRecoilState(selectedLanguageState); // 선택된 언어의 전역 상태 
 
+    const [cart, setCart] = useRecoilState(addedCart); // 추가
+
     useEffect(() => {
         const interval = setInterval(() => {
             setImageIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -26,9 +29,15 @@ function SelectMenu(props) {
         return () => clearInterval(interval); // 언마운트 시 정리
     }, [images.length]);
 
+
     const handleLanguageClick = (language) => {
-        if (selectedLanguage !== language) { // 이미 선택된 언어를 클릭했을 때 아무 것도 하지 않도록 처리
-            setSelectedLanguage(language);   // 언어 변경
+        if (selectedLanguage !== language) { 
+            setSelectedLanguage(language);
+            
+            // 선택한 언어를 addedCart에 추가 (중복 방지)
+            if (!cart.includes(language)) {
+                setCart([...cart, language]);
+            }
         }
     };
 
@@ -52,7 +61,7 @@ function SelectMenu(props) {
     }
 
     return (
-        <div css={s.container}>
+        <>
             <header css={s.smImage}>
                 {images.map((image, index) => (
                     <img
@@ -97,7 +106,7 @@ function SelectMenu(props) {
             <footer>
                 {/* Footer 내용 */}
             </footer>
-        </div>
+        </>
     );
 }
 

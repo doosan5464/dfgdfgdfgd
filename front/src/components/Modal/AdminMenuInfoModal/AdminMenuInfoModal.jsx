@@ -3,15 +3,31 @@ import { useNavigate } from 'react-router-dom';
 import { useUpdateIsPosureMutation } from '../../../mutations/adminMutaion';
 import { useInfoMenuById } from '../../../queries/AdminQuery/AdminMenuBoardQuery';
 import * as s from './style';
+import { useEffect, useState } from 'react';
 
 function AdminMenuInfoModal({ setOpen, menuId }) {
 
     const navigate = useNavigate();
-    const getInfoMenuById = useInfoMenuById(menuId);
-
-    console.log(getInfoMenuById);
-
     const updateIsExposureMutation = useUpdateIsPosureMutation(); //노출여부 뮤태이션
+    const [ toggledSize, setToggledSize ] = useState(0); //스위치 상태
+    const [ isSize, setIsSize ] = useState("M"); //사이즈 상태
+    
+    const getInfoMenuById = useInfoMenuById(menuId); //메뉴정보 불러오기
+    const selectedSizeMenu = getInfoMenuById.data?.data[0].menuInfo.find(item => item.size === isSize); //사이즈에 맞는 영양정보
+    const selectedSizePrice = getInfoMenuById.data?.data[0].menuPrice.find(item => item.size === isSize).menuPrice; //사이즈에 맞는 가격
+    //console.log(getInfoMenuById);
+    // console.log(selectedSizeMenu);
+    // console.log(selectedSizePrice);
+    //console.log(getInfoMenuById.data?.data[0].menuPrice.length)
+
+    useEffect( () => { //사이즈 바뀔때마다 재로딩
+    }, [isSize]);
+
+    //사이즈 변경 함수
+    const sizeChangeSwitchOnClick = () => {
+        setToggledSize(!toggledSize);
+        setIsSize(isSize === "M" ? "L" : "M");
+    }
 
     //노출여부 변경 및 목록 다시 불러오기
     const handleChangeIsExposureOnClick = async (menuId, isExposure) => {
@@ -25,7 +41,7 @@ function AdminMenuInfoModal({ setOpen, menuId }) {
             navigate(`/admin/main/product/manage?menuId=${menuData}`);  
         }
         if(buttonName === 'info') {
-            navigate(`/admin/main/option/`); 
+            navigate(`/admin/main/product/information?menuId=${menuData}`);
         }
     
     //삭제ㄴㄴㄴ
@@ -55,10 +71,24 @@ function AdminMenuInfoModal({ setOpen, menuId }) {
                 <div css={s.modalhead}>
                     <div css={s.headleft}>
                         <div>
-                            <img src={getInfoMenuById?.data?.data?.singleImg} alt="" />
+                            {isSize === "M"
+                                ? (<img src={getInfoMenuById.data?.data[0]?.singleImg} alt="" />) 
+                                :  (<img src={getInfoMenuById.data?.data[0]?.setImg} alt="" />)
+                            }
                         </div>
-                        <div>
-                            size : {getInfoMenuById?.data?.data?.size}
+                        <div css={s.selectsize(toggledSize)}>
+                            <div>size : &nbsp; {selectedSizeMenu?.size}</div>
+                            {
+                                getInfoMenuById.data?.data[0].menuPrice.length > 1
+                                ? <label>
+                                    <input type="checkbox" 
+                                        checked={toggledSize} 
+                                        onChange={sizeChangeSwitchOnClick}
+                                    />
+                                    <span></span>
+                                  </label>
+                                : null
+                            }    
                         </div>
                     </div>
                     <div css={s.headright}>
@@ -67,10 +97,10 @@ function AdminMenuInfoModal({ setOpen, menuId }) {
                             <div css={s.exBox}>
                                 <input 
                                     type='checkbox' 
-                                    checked={getInfoMenuById?.data?.data?.isExposure === 1}
+                                    checked={getInfoMenuById.data?.data[0]?.isExposure === 1}
                                     onChange={() => {
-                                        const newCheckedState = getInfoMenuById?.data?.data?.isExposure === 1 ? 0 : 1;
-                                        handleChangeIsExposureOnClick(getInfoMenuById?.data?.data?.menuId, newCheckedState);
+                                        const newCheckedState = getInfoMenuById.data?.data[0]?.isExposure === 1 ? 0 : 1;
+                                        handleChangeIsExposureOnClick(getInfoMenuById.data?.data[0]?.menuId, newCheckedState);
                                     }}
                                 />
                             </div>
@@ -78,19 +108,19 @@ function AdminMenuInfoModal({ setOpen, menuId }) {
                         <div className="idname">
                             <div className="line">
                                 <div>메뉴id</div>
-                                <div>{getInfoMenuById?.data?.data?.menuId}</div>
+                                <div>{getInfoMenuById.data?.data[0]?.menuId}</div>
                             </div>
                             <div className="line">
                                 <div>메뉴이름</div>
-                                <div>{getInfoMenuById?.data?.data?.menuName}</div>
+                                <div>{getInfoMenuById.data?.data[0]?.menuName}</div>
                             </div>
                             <div className="line">
                                 <div>메뉴가격</div>
-                                <div>{getInfoMenuById?.data?.data?.menuPrice}</div>
+                                <div>{selectedSizePrice}</div>
                             </div>
                             <div className="line">
                                 <div>카테고리</div>
-                                <div>{getInfoMenuById?.data?.data?.menuCategory}</div>
+                                <div>{getInfoMenuById.data?.data[0]?.menuCategory}</div>
                             </div>
                         </div>
                     </div>
@@ -105,55 +135,56 @@ function AdminMenuInfoModal({ setOpen, menuId }) {
                         </div>
                         <div className="line">
                             <div>중량(g)</div>
-                            <div>{getInfoMenuById?.data?.data?.weightG === 0 ? '-' : `${getInfoMenuById?.data?.data?.weightG}g`}</div>
+                            <div>{selectedSizeMenu?.weight === 0 ? '-' : `${selectedSizeMenu?.weight}g`}</div>
                             <div>-</div>
                         </div>
                         <div className="line">
                             <div>중량(ml)</div>
-                            <div>{getInfoMenuById?.data?.data?.volumeMl === 0 ? '-' : `${getInfoMenuById?.data?.data?.volumeMl}ml`}</div>
+                            <div>{selectedSizeMenu?.volume === 0 ? '-' : `${selectedSizeMenu?.volume}ml`}</div>
                             <div>-</div>
                         </div>
                         <div className="line">
                             <div>열량</div>
-                            <div>{getInfoMenuById?.data?.data?.calories === 0 ? '-' : `${getInfoMenuById?.data?.data?.calories}kcal`}</div>
+                            <div>{selectedSizeMenu?.calories === 0 ? '-' : `${selectedSizeMenu?.calories}kcal`}</div>
                             <div>-</div>
                         </div>
                         <div className="line">
                             <div>당</div>
-                            <div>{getInfoMenuById?.data?.data?.sugars === 0 ? '-' : `${getInfoMenuById?.data?.data?.sugars}g`}</div>
-                            <div>{getInfoMenuById?.data?.data?.sugars === 0 ? '-' : `${Math.round((getInfoMenuById?.data?.data?.sugars / 100) * 100)}%`}</div>
+                            <div>{selectedSizeMenu?.sugars === 0 ? '-' : `${selectedSizeMenu?.sugars}g`}</div>
+                            <div>{selectedSizeMenu?.sugars === 0 ? '-' : `${Math.round((selectedSizeMenu?.sugars / 100) * 100)}%`}</div>
                         </div>
                         <div className="line">
                             <div>단백질</div>
-                            <div>{getInfoMenuById?.data?.data?.protein === 0 ? '-' : `${getInfoMenuById?.data?.data?.protein}g`}</div>
-                            <div>{getInfoMenuById?.data?.data?.protein === 0 ? '-' : `${Math.round((getInfoMenuById?.data?.data?.protein / 55) * 100)}%`}</div>
+                            <div>{selectedSizeMenu?.protein === 0 ? '-' : `${selectedSizeMenu?.protein}g`}</div>
+                            <div>{selectedSizeMenu?.protein === 0 ? '-' : `${Math.round((selectedSizeMenu?.protein / 55) * 100)}%`}</div>
                         </div>
                         <div className="line">
                             <div>포화지방</div>
-                            <div>{getInfoMenuById?.data?.data?.saturatedFat === 0 ? '-' : `${getInfoMenuById?.data?.data?.saturatedFat}g`}</div>
-                            <div>{getInfoMenuById?.data?.data?.saturatedFat === 0 ? '-' : `${Math.round((getInfoMenuById?.data?.data?.saturatedFat / 54) * 100)}%`}</div>
+                            <div>{selectedSizeMenu?.saturatedFat === 0 ? '-' : `${selectedSizeMenu?.saturatedFat}g`}</div>
+                            <div>{selectedSizeMenu?.saturatedFat === 0 ? '-' : `${Math.round((selectedSizeMenu?.saturatedFat / 54) * 100)}%`}</div>
                         </div>
                         <div className="line">
                             <div>나트륨</div>
-                            <div>{getInfoMenuById?.data?.data?.sodium === 0 ? '-' : `${getInfoMenuById?.data?.data?.sodium}mg`}</div>
-                            <div>{getInfoMenuById?.data?.data?.sodium === 0 ? '-' : `${Math.round((getInfoMenuById?.data?.data?.sodium / 2000) * 100)}%`}</div>
+                            <div>{selectedSizeMenu?.sodium === 0 ? '-' : `${selectedSizeMenu?.sodium}mg`}</div>
+                            <div>{selectedSizeMenu?.sodium === 0 ? '-' : `${Math.round((selectedSizeMenu?.sodium / 2000) * 100)}%`}</div>
                         </div>
                         <div className="line">
                             <div>카페인</div>
-                            <div>{getInfoMenuById?.data?.data?.caffeine === 0 ? '-' : `${getInfoMenuById?.data?.data?.caffeine}mg`}</div>
-                            <div>{getInfoMenuById?.data?.data?.caffeine === 0 ? '-' : `${Math.round((getInfoMenuById?.data?.data?.caffeine / 400) * 100)}%`}</div>
+                            <div>{selectedSizeMenu?.caffeine === 0 ? '-' : `${selectedSizeMenu?.caffeine}mg`}</div>
+                            <div>{selectedSizeMenu?.caffeine === 0 ? '-' : `${Math.round((selectedSizeMenu?.caffeine / 400) * 100)}%`}</div>
                         </div>
                     </div>
                     <div css={s.bodydown}>
                         <div>원산지</div>
-                        {getInfoMenuById?.data?.data?.menuOrigin?.split('/').map((item, index) => (
-                            <div key={index}>{item}</div>))
+                        {
+                            selectedSizeMenu?.menuOrigin === null ? (<div>---</div>) :
+                            selectedSizeMenu?.menuOrigin?.split('/').map((item, index) => (<div key={index}>{item}</div>))
                         }
                     </div>
                 </div>
                 <div css={s.modalfooter}>
-                    <button onClick={() => handleButtonOnClick('product', getInfoMenuById?.data?.data?.menuId)}>제품 정보 변경</button>
-                    <button onClick={() => handleButtonOnClick('info', getInfoMenuById?.data?.data?.menuId)}>제품 상세정보 변경</button>
+                    <button onClick={() => handleButtonOnClick('product', menuId)}>제품 정보 변경</button>
+                    <button onClick={() => handleButtonOnClick('info', menuId)}>제품 상세정보 변경</button>
                 </div>
 
             </div>

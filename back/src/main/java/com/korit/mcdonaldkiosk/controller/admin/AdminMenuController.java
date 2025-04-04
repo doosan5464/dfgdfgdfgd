@@ -23,7 +23,7 @@ public class AdminMenuController {
 
     // 메뉴의 모든 정보를 조회하는 API
     @GetMapping("/menuinfo")
-    public ResponseEntity<MenuWithAllInfo> getAllInfoMenu(@ModelAttribute ReqExposureDto dto) {
+    public ResponseEntity<List<MenuWithAllInfo>> getAllInfoMenu(@ModelAttribute ReqExposureDto dto) {
         //System.out.println(adminMenuService.getAllInfoMenuList(dto.getMenuId()));
         return ResponseEntity.ok().body(adminMenuService.getAllInfoMenuList(dto.getMenuId()));
     }

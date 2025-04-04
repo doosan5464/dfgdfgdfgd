@@ -33,6 +33,7 @@
         m.menu_sequence,
         m.single_img,
         m.set_img,
+        m.is_exposure,
 
         mp.menu_price_id,
         mp.menu_id AS mp_menu_id,

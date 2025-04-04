@@ -24,8 +24,8 @@ function ExportOrderId(props) {
             <div css={s.num}>
                 {location.state?.orderId}
             </div>
-            <div>영수증을 출력하시겠습니까?</div>
-            <div>
+            <div css={s.ask}>영수증을 출력하시겠습니까?</div>
+            <div css={s.twice}>
                 <div onClick={handleGoFirst}>예</div>
                 <div onClick={handleGoFirst}>아니오</div>
             </div>

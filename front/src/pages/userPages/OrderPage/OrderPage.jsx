@@ -10,6 +10,7 @@ import MenuCategory from './menu/MenuCategory';
 import { disabledCategoriesState } from '../../../atoms/disabledCategories/disabledCategories';
 import { orderedCategoriesState } from '../../../atoms/orderedCategoriesState/orderedCategoriesState';
 import { useNavigate } from 'react-router-dom';
+import { selectedLanguageState } from '../../../atoms/selectedLanguage/selectedLanguage';
 
 function OrderPage(props) {
     const navi = useNavigate();
@@ -21,6 +22,41 @@ function OrderPage(props) {
     const [categories] = useRecoilState(orderedCategoriesState); // 기존 useState 제거
     const [disabledCategories] = useRecoilState(disabledCategoriesState); // atom 사용
 
+    const [selectedLanguage] = useRecoilState(selectedLanguageState); // 선택된 언어의 전역 상태 
+
+    const languageTexts = {
+        한국어: {
+            backToHome: "처음으로",
+            order: "주문하기",
+            voucher: "상품권",
+            emptyCart: "장바구니에 아무것도 없습니다.",
+            modify: "수정",
+            delete: "삭제",
+            set: "세트",
+            currency: "원" // 추가
+        },
+        영어: {
+            backToHome: "Home",
+            order: "Order Now",
+            voucher: "Voucher",
+            emptyCart: "Your cart is empty.",
+            modify: "Modify",
+            delete: "Delete",
+            set: "Set",
+            currency: "KRW" // 추가
+        },
+        중국어: {
+            backToHome: "首页",
+            order: "立即下单",
+            voucher: "优惠券",
+            emptyCart: "购物车为空。",
+            modify: "修改",
+            delete: "删除",
+            set: "套餐",
+            currency: "韩元" // 추가
+        }
+    };
+    
     useEffect(() => {
         if (categories.length > 0) {
             // 카테고리 로드 후 첫 번째 활성화된 카테고리로 초기값 설정
@@ -28,6 +64,8 @@ function OrderPage(props) {
             setSelectedCategory(firstAvailableCategory || categories[0]);
         }
     }, [categories, disabledCategories]);
+
+    console.log("장바구니 :", addedCartState);
 
     const handleMenuCategoryOnClick = (category) => {
         if (selectedCategory !== category) {
@@ -85,7 +123,7 @@ function OrderPage(props) {
                     <img src="https://pngimg.com/uploads/mcdonalds/mcdonalds_PNG17.png" alt="" />
                 </div>
                 <div css={s.buttons}>
-                    <div onClick={handleBackMenuOnClick}>처음으로</div>
+                    <div onClick={handleBackMenuOnClick}>{languageTexts[selectedLanguage].backToHome}</div>
                     <CallManagerModal />
                 </div>
             </header>
@@ -114,9 +152,9 @@ function OrderPage(props) {
                                     <div css={s.cartList}>
                                         {index + 1}. {item.detailMenu} 
                                         <span style={{ marginLeft: "auto" }}>
-                                            {item.isSet && " 세트"}
+                                            {item.isSet && `${languageTexts[selectedLanguage].set}`}
                                         </span>
-                                        - {item.detailPrice}원 x {item.quantity}
+                                        - {item.detailPrice}{languageTexts[selectedLanguage].currency} x {item.quantity}
                                     </div>
                                     <div css={s.cartListButtons}>
                                         <div>
@@ -125,21 +163,21 @@ function OrderPage(props) {
                                         </div>
                                         <span>
                                             {(item.isSet) && (
-                                                <button css={s.edit} onClick={() => handleModifyFromCart(index)}>수정</button>
+                                                <button css={s.edit} onClick={() => handleModifyFromCart(index)}>{languageTexts[selectedLanguage].modify}</button>
                                             )}
-                                            <button onClick={() => handleRemoveFromCart(index)}>삭제</button>
+                                            <button onClick={() => handleRemoveFromCart(index)}>{languageTexts[selectedLanguage].delete}</button>
                                         </span>
                                     </div>
                                 </li>
                             ))} 
                         </ul>
                     ) : (
-                        <p>장바구니에 아무것도 없습니다.</p>
+                        <p>{languageTexts[selectedLanguage].emptyCart}</p>
                     )}
                 </div>
                 <span>
-                    <p onClick={handlePaymentOnClick}>주문하기</p>
-                    <p>상품권</p>
+                    <p onClick={handlePaymentOnClick}>{languageTexts[selectedLanguage].order}</p>
+                    <p>{languageTexts[selectedLanguage].voucher}</p>
                 </span>
             </footer>
 
